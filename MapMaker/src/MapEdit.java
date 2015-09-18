@@ -236,7 +236,7 @@ boolean choosing =false;
 							theY -= 50;
 						}
 						enemies.add((getSelChar() + "," + theX + "," + theY
-								+ "," + getSelString() + "," + selFlying() + (selDelay() != 0 ? ","
+								+ "," + getSelString() + "," + selFlying() +","+ selHealth()+(selDelay() != 0 ? ","
 								+ selDelay()
 								: "")));
 					}
@@ -906,7 +906,30 @@ g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
 		}
 
 	}
-	
+	public int selHealth(){
+		switch(selChar){
+		
+		case 'P':
+		case 'F':
+			return 5;
+			
+		case 't':
+		case '0':
+			return 6;
+			
+		case 'T':
+		case 'C':
+		case 'c':
+			return 8;
+		
+		case '1':
+		case 'B':
+		case 'G':
+		case 'M':
+		default:
+			return 10;
+		}
+	}
 	public void addRowEnd(){
 		String[] nStrings=new String[strings.length+1];
 		int ml=0;

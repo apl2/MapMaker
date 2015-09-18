@@ -182,6 +182,7 @@ public class Run extends JFrame {
 						this.getHeight() / 2);
 			}
 		};
+		drawPan.setFocusable(true);
 		clearPacks = new JButton("Clear Packs");
 		clearPacks.addActionListener(new ActionListener() {
 
