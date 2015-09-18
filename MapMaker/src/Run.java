@@ -87,6 +87,7 @@ public class Run extends JFrame {
 	}
 
 	public void run() {
+		System.out.println("Test 1");
 		// JOptionPane.showMessageDialog(run, new
 		// File("bin/images/view.png").exists());
 		if (!new File("projects").exists()) {
