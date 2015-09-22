@@ -892,7 +892,6 @@ public class MapEdit extends JFrame {
 		switch (selChar) {
 		
 		case '0':
-		case '1':
 			return 'L';// Launch
 			
 		case 'P':
@@ -912,6 +911,9 @@ public class MapEdit extends JFrame {
 		case 'B':
 			return 'W';// WalkEnemy
 
+		case '1':
+			return 'E';//ExplosiveSpawner
+			
 			// Lowercase denotes an enemy that must see you before attacking.
 	
 		case 'c':
