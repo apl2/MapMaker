@@ -8,7 +8,6 @@ import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -22,11 +21,8 @@ import java.awt.event.WindowListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -268,7 +264,7 @@ public class MapEdit extends JFrame {
 							}
 							enemies.add((getSelChar() + "," + theX + "," + theY
 									+ "," + getSelString() + "," + selFlying()
-									+ "," + selHealth() + (selDelay() != 0 ? ","
+									+ "," + selHealth() + (selDelay() != null ? ","
 									+ selDelay()
 									: "")));
 						}
@@ -445,6 +441,11 @@ public class MapEdit extends JFrame {
 							g2d.drawRect(((c) * 100) - x, ((int) (cA * 100))
 									- y, width, height);
 							break;
+						case '2':
+							g2d.setColor(BROWN);
+							g2d.fillRect(((c) * 100) - x, ((int) (cA * 100))
+									- y, width, height);
+							break;
 						case 'O':
 							g2d.setColor(LIGHT_OFF_GREEN);
 							g2d.fill(new Rectangle(((c % side) * 100) - x + 40,
@@ -603,9 +604,9 @@ public class MapEdit extends JFrame {
 				// TODO Auto-generated method stub
 				if (blocks) {
 					if (selNum < 0) {
-						selNum = 7;
+						selNum = 8;
 					}
-					if (selNum > 7) {
+					if (selNum > 8) {
 						selNum = 0;
 					}
 					switch (selNum) {
@@ -633,14 +634,17 @@ public class MapEdit extends JFrame {
 					case 7:
 						selChar = '>';
 						break;
+					case 8:
+						selChar = '2';
+						break;
 					}
 
 				} else {
-					if (selNum > 10) {
+					if (selNum > 12) {
 						selNum = 0;
 					}
 					if (selNum < 0) {
-						selNum = 10;
+						selNum = 12;
 					}
 					switch (selNum) {
 					case 0:
@@ -678,6 +682,12 @@ public class MapEdit extends JFrame {
 					case 10:
 						selChar = 't';
 						break;
+					case 11:
+						selChar = 'S';
+						break;
+					case 12:
+						selChar = 'D';
+						break;	
 					}
 				}
 				if (zoom) {
@@ -880,6 +890,10 @@ public class MapEdit extends JFrame {
 			return "images/enemies/turrets/0.png";
 		case '1':
 			return "images/enemies/turrets/1.png";
+		case 'S':
+			return "images/enemies/unique/security.png";
+		case 'D':
+			return "images/enemies/unique/explosiveBox.png";	
 		case 'B':
 		default:
 			return "images/enemies/unique/blob.png";
@@ -896,7 +910,7 @@ public class MapEdit extends JFrame {
 			
 		case 'P':
 			return 'P';// PursuingLaunch
-			
+		case 'M':	
 		case 'C':
 		case 'F':
 		case 'T':
@@ -911,7 +925,7 @@ public class MapEdit extends JFrame {
 		case 'B':
 			return 'W';// WalkEnemy
 
-		case '1':
+		case 'D':
 			return 'E';//ExplosiveSpawner
 			
 			// Lowercase denotes an enemy that must see you before attacking.
@@ -919,29 +933,33 @@ public class MapEdit extends JFrame {
 		case 'c':
 			return 'w';// SeeChaseEnemy
 			
-		case 'M':
+		
+		case '1':
 			return 'l';// SeeShootEnemy
-			
+		case 'S':
+			return 's';// SecurityEnemy
 			default:
 				return 'S';//StandEnemy
 		}
 
 	}
 
-	public int selDelay() {
+	public String selDelay() {
 
 		switch (selChar) {
 		case 'M':
-			return 20;
+			return "20";
 		case '0':
 		case '1':
 		case 'P':
-			return 75;
+			return "75";
 
-		
-
+		case 'S':		
+			return "cop";
+		case 'D':
+			return "100";	
 		default:
-			return 0;
+			return null;
 		}
 
 	}
@@ -963,6 +981,7 @@ public class MapEdit extends JFrame {
 
 		case 'P':
 		case 'F':
+		case 'D':
 			return 5;
 
 		case 't':
@@ -978,6 +997,7 @@ public class MapEdit extends JFrame {
 		case 'B':
 		case 'G':
 		case 'M':
+		case 'S':	
 		default:
 			return 10;
 		}
@@ -1112,6 +1132,10 @@ public class MapEdit extends JFrame {
 			return "cannon";
 		case 'B':
 			return "blob";
+		case 'S':
+			return "security";
+		case 'D':
+			return "explosiveBox";	
 		default:
 			return "?";
 		}
@@ -1124,6 +1148,8 @@ public class MapEdit extends JFrame {
 
 		case '1':
 			return "grass";
+		case '2':
+			return "dirt";	
 		case 'O':
 
 			return "spawn";

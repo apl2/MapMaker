@@ -128,12 +128,11 @@ public class Run extends JFrame {
 								+ list.getSelectedValue()).toPath());
 
 						MapMaker.updateAllNor();
-						JOptionPane
-								.showMessageDialog(run,
-										"Hover the mouse over the buttons below, they will become visible again.");
-						lm.removeAllElements();
-						run.revalidate();
-						loadPack.doClick();
+//						JOptionPane
+//								.showMessageDialog(run,
+//										"Hover the mouse over the buttons below, they will become visible again.");
+//					
+						reset();
 					} catch (Exception ex) {
 
 					}
@@ -310,5 +309,10 @@ public class Run extends JFrame {
 
 		}
 
+	}
+	public void reset(){
+		new Run().run();
+		this.dispose();
+		
 	}
 }
