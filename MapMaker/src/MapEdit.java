@@ -81,7 +81,8 @@ boolean choosing =false;
 				+ "R: delete enemy\n"
 				+ "Z: zoom out/back\n"
 				+ "X: remove (Opens Menu)\n"
-				+ "C: add (Opens Menu)");
+				+ "C: add (Opens Menu)\n"
+				+ "I: info");
 		loadS();
 
 		// TODO Auto-generated method stub
@@ -103,6 +104,17 @@ boolean choosing =false;
 					MapMaker.saveStrings(strings, name, project);
 					MapMaker.saveStrings(enemies, nameWithE(), project);
 					mapEdit.dispose();
+				}
+				else if(key==KeyEvent.VK_I){
+					JOptionPane.showMessageDialog(mapEdit, "Space/Click: place\n"
+							+ "Up/Down/Scroll Wheel: change selected block/enemy\n"
+							+ "E/Right Click: swap between enemies and blocks\n"
+							+ "Q/Middle Mouse Button: change enemy placement precision\n"
+							+ "R: delete enemy\n"
+							+ "Z: zoom out/back\n"
+							+ "X: remove (Opens Menu)\n"
+							+ "C: add (Opens Menu)\n"
+							+ "I: info");
 				}
 				else if(key==KeyEvent.VK_C&&zoom){
 					
@@ -543,15 +555,15 @@ g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
 				}
 				else if(!zoom){if (blocks) {
 					g2d.setColor(Color.red);
-					g2d.drawString("" + selChar, m.x + 10, m.y - 10);
+					g2d.drawString("" + getSelShowStringBlocks(), m.x + 10, m.y - 10);
 				} else {
 					g2d.setColor(Color.black);
 					if (enPre) {
-						g2d.drawString("" + selChar,
+						g2d.drawString("" + getSelShowString(),
 								((int) ((m.x + x) / 100) * 100) + 50 - x,
 								((int) ((m.y + y) / 100) * 100) + 50 - y);
 					} else {
-						g2d.drawString("" + selChar,
+						g2d.drawString("" + getSelShowString(),
 								((int) ((m.x + x) / 50) * 50 - x),
 								((int) ((m.y + y) / 50) * 50 - y));
 					}
@@ -1029,5 +1041,68 @@ public void remColMid(){
 		for(int c=0;c<strings.length;c++){
 			strings[c]=strings[c].substring(0, block-1)+strings[c].substring(block);
 		}
+	}private String getSelShowString() {
+
+		switch (selChar) {
+		case 'C':
+			return "cactus";
+		case 'c':
+			return "chair";
+		case 'F':
+			return "fishbowl";
+		case 'G':
+			return "ghost";
+		case 'M':
+			return "machineLaunch";
+		case 'P':
+			return "pizza";
+		case 'T':
+			return "tires";
+		case 't':
+			return "tv";
+		case '0':
+			return "tennisLauncher";
+		case '1':
+			return "cannon";
+		case 'B':
+			return "blob";
+		default:
+			return "?";
+		}
+
+	}
+	private String getSelShowStringBlocks() {
+
+		switch (selChar) {
+		
+		
+		case '1':
+			return "grass";
+		case 'O':
+			
+			return "spawn";
+
+		case 'W':
+			return "wall";
+
+		case 'P':
+			return "pit";
+
+		case 'R':
+			return "rock";
+
+		case 'C':
+			return "carpet";
+
+		case '*':
+			return "crystal";
+
+		case '>':
+			return "switch";
+			
+		default:
+			return "?";
+		}
+
 	}
 }
