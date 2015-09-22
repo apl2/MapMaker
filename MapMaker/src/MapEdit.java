@@ -61,11 +61,12 @@ public class MapEdit extends JFrame {
 	boolean blocks = true;
 	boolean enPre = false;
 	ArrayList<String> enemies = new ArrayList<String>();
-boolean zoom=false;
-boolean choosing =false;
+	boolean zoom = false;
+	boolean choosing = false;
+
 	public MapEdit(String name, String project) {
 		// TODO Auto-generated constructor stub
-		
+
 		this.name = name;
 		this.project = project;
 		// this.imUrl=imUrl;
@@ -78,10 +79,8 @@ boolean choosing =false;
 				+ "Up/Down/Scroll Wheel: change selected block/enemy\n"
 				+ "E/Right Click: swap between enemies and blocks\n"
 				+ "Q/Middle Mouse Button: change enemy placement precision\n"
-				+ "R: delete enemy\n"
-				+ "Z: zoom out/back\n"
-				+ "X: remove (Opens Menu)\n"
-				+ "C: add (Opens Menu)\n"
+				+ "R: delete enemy\n" + "Z: zoom out/back\n"
+				+ "X: remove (Opens Menu)\n" + "C: add (Opens Menu)\n"
 				+ "I: info");
 		loadS();
 
@@ -104,197 +103,219 @@ boolean choosing =false;
 					MapMaker.saveStrings(strings, name, project);
 					MapMaker.saveStrings(enemies, nameWithE(), project);
 					mapEdit.dispose();
-				}
-				else if(key==KeyEvent.VK_I){
-					JOptionPane.showMessageDialog(mapEdit, "Space/Click: place\n"
-							+ "Up/Down/Scroll Wheel: change selected block/enemy\n"
-							+ "E/Right Click: swap between enemies and blocks\n"
-							+ "Q/Middle Mouse Button: change enemy placement precision\n"
-							+ "R: delete enemy\n"
-							+ "Z: zoom out/back\n"
-							+ "X: remove (Opens Menu)\n"
-							+ "C: add (Opens Menu)\n"
-							+ "I: info");
-				}
-				else if(key==KeyEvent.VK_C&&zoom){
-					
-					String[]options={"Cancel","Add row at the end","Add column at the end"};
-					choosing=true;
-					int sel=JOptionPane.showOptionDialog(mapEdit, "What and where would you like to add?\n If you want to add things in the middle, get out of zooming out.", "Add", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, 0);
-				choosing=false;
-					switch(sel){
-				
-				case 1:
-					addRowEnd();
-					break;
-				
-				case 2:
-					addColEnd();
-					break;
-				default:	
-				}
-				
-				}else if(key==KeyEvent.VK_X&&zoom){
-					String[]options={"Cancel","Remove row at the end","Remove column at the end"};
-					choosing=true;
-					JFrame f=new JFrame();
-					f.setLocation(mapEdit.getX()+mapEdit.getWidth()/2, 0);
-					//f.setSize(0,0);
-					f.setVisible(true);
-					int sel=JOptionPane.showOptionDialog(f, "What and where would you like to add?", "Add", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, 0);
-			f.dispose();
-					choosing=false;
-					switch(sel){
-				
-				case 1:
-					remRowEnd();
-					break;
-				
-				case 2:
-					remColEnd();
-					break;
-				default:	
-				}
-				
-				}
-				else if (key == KeyEvent.VK_Z) {
-					zoom=!zoom;
+				} else if (key == KeyEvent.VK_I) {
+					JOptionPane
+							.showMessageDialog(
+									mapEdit,
+									"Space/Click: place\n"
+											+ "Up/Down/Scroll Wheel: change selected block/enemy\n"
+											+ "E/Right Click: swap between enemies and blocks\n"
+											+ "Q/Middle Mouse Button: change enemy placement precision\n"
+											+ "R: delete enemy\n"
+											+ "Z: zoom out/back\n"
+											+ "X: remove (Opens Menu)\n"
+											+ "C: add (Opens Menu)\n"
+											+ "I: info");
+				} else if (key == KeyEvent.VK_C && zoom) {
 
-				}else if(!zoom){
-				if (key == KeyEvent.VK_S) {
-					yd = 25;
-				} else if (key == KeyEvent.VK_W) {
-					yd = -25;
-				} else if (key == KeyEvent.VK_A) {
-					xd = -25;
-				} else if (key == KeyEvent.VK_D) {
-					xd = 25;
-				}
-				else if(key==KeyEvent.VK_X){
-					String[]options={"Cancel","Remove row here","Remove row at the end","Remove column here","Remove column at the end"};
-					choosing=true;
-					JFrame f=new JFrame();
-					f.setLocation(mapEdit.getX()+mapEdit.getWidth()/2, 0);
-					//f.setSize(0,0);
-					f.setVisible(true);
-					int sel=JOptionPane.showOptionDialog(f, "What and where would you like to add?", "Add", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, 0);
-			f.dispose();
-					choosing=false;
-					switch(sel){
-				case 1:
-					remRowMid();
-					break;
-				case 2:
-					remRowEnd();
-					break;
-				case 3:
-					remColMid();
-					break;
-				case 4:
-					remColEnd();
-					break;
-				default:	
-				}
-				
-				}
-				else if(key==KeyEvent.VK_C){
-					String[]options={"Cancel","Add row here","Add row at the end","Add column here","Add column at the end"};
-					choosing=true;
-					JFrame f=new JFrame();
-					f.setLocation(mapEdit.getX()+mapEdit.getWidth()/2, 0);
-					//f.setSize(0,0);
-					f.setVisible(true);
-					int sel=JOptionPane.showOptionDialog(f, "What and where would you like to add?", "Add", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, 0);
-			f.dispose();
-					choosing=false;
-					switch(sel){
-				case 1:
-					addRowMid();
-					break;
-				case 2:
-					addRowEnd();
-					break;
-				case 3:
-					addColMid();
-					break;
-				case 4:
-					addColEnd();
-					break;
-				default:	
-				}
-				
-				}
-				else if (key == KeyEvent.VK_SPACE) {
-					
-					if (blocks) {
-						Point m = MouseInfo.getPointerInfo().getLocation();
-						String s = strings[(int) ((y + m.getY()-10) / 100)];
-						s = s.substring(0, (int) ((x + m.getX()+10) / 100))
-								+ selChar
-								+ s.substring((int) ((x + m.getX()+10) / 100) + 1);
+					String[] options = { "Cancel", "Add row at the end",
+							"Add column at the end" };
+					choosing = true;
+					int sel = JOptionPane
+							.showOptionDialog(
+									mapEdit,
+									"What and where would you like to add?\n If you want to add things in the middle, get out of zooming out.",
+									"Add", JOptionPane.DEFAULT_OPTION,
+									JOptionPane.PLAIN_MESSAGE, null, options, 0);
+					choosing = false;
+					switch (sel) {
 
-						strings[(int) ((y -10+ m.getY()) / 100)] = s;
-					} else {
+					case 1:
+						addRowEnd();
+						break;
 
-						Point m = MouseInfo.getPointerInfo().getLocation();
-						int sen = 100;
-						if (!enPre) {
-							sen = 50;
-						}
-						int theX = ((int) ((m.x + x) / sen) * sen);
-						int theY = ((int) ((m.y + y) / sen) * sen);
-						if (!enPre) {
-							theX -= 50;
-							theY -= 50;
-						}
-						enemies.add((getSelChar() + "," + theX + "," + theY
-								+ "," + getSelString() + "," + selFlying() +","+ selHealth()+(selDelay() != 0 ? ","
-								+ selDelay()
-								: "")));
+					case 2:
+						addColEnd();
+						break;
+					default:
 					}
-				}   else if (key == KeyEvent.VK_DOWN) {
-					selNum++;
-				} else if (key == KeyEvent.VK_UP) {
-					selNum--;
-				} else if (key == KeyEvent.VK_E) {
-					blocks = !blocks;
-					selNum = 0;
-					selChar = 'S';
-				} else if (key == KeyEvent.VK_Q) {
-					enPre = !enPre;
 
-				}
-				
-				else if (key == KeyEvent.VK_R) {
-					Point m = MouseInfo.getPointerInfo().getLocation();
-					for (int c = 0; c < enemies.size(); c++) {
-						ArrayList<String> stuff = new ArrayList<String>();// should
-																			// have
-																			// 5
-						String currentS = "";
-						for (int c2 = 0; c2 < enemies.get(c).length(); c2++) {
+				} else if (key == KeyEvent.VK_X && zoom) {
+					String[] options = { "Cancel", "Remove row at the end",
+							"Remove column at the end" };
+					choosing = true;
+					JFrame f = new JFrame();
+					f.setLocation(mapEdit.getX() + mapEdit.getWidth() / 2, 0);
+					// f.setSize(0,0);
+					f.setVisible(true);
+					int sel = JOptionPane.showOptionDialog(f,
+							"What and where would you like to add?", "Add",
+							JOptionPane.DEFAULT_OPTION,
+							JOptionPane.PLAIN_MESSAGE, null, options, 0);
+					f.dispose();
+					choosing = false;
+					switch (sel) {
 
-							if (enemies.get(c).charAt(c2) == ',') {
-								stuff.add(currentS);
-								currentS = "";
+					case 1:
+						remRowEnd();
+						break;
 
-							} else {
-								currentS += enemies.get(c).charAt(c2);
+					case 2:
+						remColEnd();
+						break;
+					default:
+					}
+
+				} else if (key == KeyEvent.VK_Z) {
+					zoom = !zoom;
+
+				} else if (!zoom) {
+					if (key == KeyEvent.VK_S) {
+						yd = 25;
+					} else if (key == KeyEvent.VK_W) {
+						yd = -25;
+					} else if (key == KeyEvent.VK_A) {
+						xd = -25;
+					} else if (key == KeyEvent.VK_D) {
+						xd = 25;
+					} else if (key == KeyEvent.VK_X) {
+						String[] options = { "Cancel", "Remove row here",
+								"Remove row at the end", "Remove column here",
+								"Remove column at the end" };
+						choosing = true;
+						JFrame f = new JFrame();
+						f.setLocation(mapEdit.getX() + mapEdit.getWidth() / 2,
+								0);
+						// f.setSize(0,0);
+						f.setVisible(true);
+						int sel = JOptionPane.showOptionDialog(f,
+								"What and where would you like to add?", "Add",
+								JOptionPane.DEFAULT_OPTION,
+								JOptionPane.PLAIN_MESSAGE, null, options, 0);
+						f.dispose();
+						choosing = false;
+						switch (sel) {
+						case 1:
+							remRowMid();
+							break;
+						case 2:
+							remRowEnd();
+							break;
+						case 3:
+							remColMid();
+							break;
+						case 4:
+							remColEnd();
+							break;
+						default:
+						}
+
+					} else if (key == KeyEvent.VK_C) {
+						String[] options = { "Cancel", "Add row here",
+								"Add row at the end", "Add column here",
+								"Add column at the end" };
+						choosing = true;
+						JFrame f = new JFrame();
+						f.setLocation(mapEdit.getX() + mapEdit.getWidth() / 2,
+								0);
+						// f.setSize(0,0);
+						f.setVisible(true);
+						int sel = JOptionPane.showOptionDialog(f,
+								"What and where would you like to add?", "Add",
+								JOptionPane.DEFAULT_OPTION,
+								JOptionPane.PLAIN_MESSAGE, null, options, 0);
+						f.dispose();
+						choosing = false;
+						switch (sel) {
+						case 1:
+							addRowMid();
+							break;
+						case 2:
+							addRowEnd();
+							break;
+						case 3:
+							addColMid();
+							break;
+						case 4:
+							addColEnd();
+							break;
+						default:
+						}
+
+					} else if (key == KeyEvent.VK_SPACE) {
+
+						if (blocks) {
+							Point m = MouseInfo.getPointerInfo().getLocation();
+							String s = strings[(int) ((y + m.getY() - 10) / 100)];
+							s = s.substring(0,
+									(int) ((x + m.getX() + 10) / 100))
+									+ selChar
+									+ s.substring((int) ((x + m.getX() + 10) / 100) + 1);
+
+							strings[(int) ((y - 10 + m.getY()) / 100)] = s;
+						} else {
+
+							Point m = MouseInfo.getPointerInfo().getLocation();
+							int sen = 100;
+							if (!enPre) {
+								sen = 50;
+							}
+							int theX = ((int) ((m.x + x) / sen) * sen);
+							int theY = ((int) ((m.y + y) / sen) * sen);
+							if (!enPre) {
+								theX -= 50;
+								theY -= 50;
+							}
+							enemies.add((getSelChar() + "," + theX + "," + theY
+									+ "," + getSelString() + "," + selFlying()
+									+ "," + selHealth() + (selDelay() != 0 ? ","
+									+ selDelay()
+									: "")));
+						}
+					} else if (key == KeyEvent.VK_DOWN) {
+						selNum++;
+					} else if (key == KeyEvent.VK_UP) {
+						selNum--;
+					} else if (key == KeyEvent.VK_E) {
+						blocks = !blocks;
+						selNum = 0;
+						selChar = 'S';
+					} else if (key == KeyEvent.VK_Q) {
+						enPre = !enPre;
+
+					}
+
+					else if (key == KeyEvent.VK_R) {
+						Point m = MouseInfo.getPointerInfo().getLocation();
+						for (int c = 0; c < enemies.size(); c++) {
+							ArrayList<String> stuff = new ArrayList<String>();// should
+																				// have
+																				// 5
+							String currentS = "";
+							for (int c2 = 0; c2 < enemies.get(c).length(); c2++) {
+
+								if (enemies.get(c).charAt(c2) == ',') {
+									stuff.add(currentS);
+									currentS = "";
+
+								} else {
+									currentS += enemies.get(c).charAt(c2);
+								}
+							}
+							Image enImg = new ImageIcon(getClass().getResource(
+									stuff.get(3))).getImage();
+							if (new Rectangle(Integer.parseInt(stuff.get(1)),
+									Integer.parseInt(stuff.get(2)),
+									enImg.getWidth(null), enImg.getHeight(null))
+									.contains(new Point(x + m.x, y + m.y))) {
+								enemies.remove(c);
+								c--;
 							}
 						}
-						Image enImg = new ImageIcon(getClass().getResource(
-								stuff.get(3))).getImage();
-						if (new Rectangle(Integer.parseInt(stuff.get(1)),
-								Integer.parseInt(stuff.get(2)),
-								enImg.getWidth(null), enImg.getHeight(null))
-								.contains(new Point(x + m.x, y + m.y))) {
-							enemies.remove(c);
-							c--;
-						}
-					}
 
+					}
 				}
-			}}
+			}
 
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -384,30 +405,29 @@ boolean choosing =false;
 			@Override
 			public void paintComponent(Graphics g) {
 				Graphics2D g2d = (Graphics2D) g;
-				
-int x=mapEdit.x;
-int y=mapEdit.y;
-g2d.clearRect(0, 0, this.getWidth(), this.getHeight());
-g2d.setColor(OFF_GREEN);
-g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
-				if(zoom){
-	x=0;
-	y=0;
-	int mWidth=0;
-	for(int c=0;c<strings.length;c++){
-		if(strings[c].length()>mWidth){
-			mWidth=strings[c].length();
-		}
-	}
-	
-	mWidth*=100;
-	int mHeight=strings.length*100;
-	int scale=Math.max(mWidth, mHeight);
-	g2d.scale((double)this.getWidth()/(double)scale, (double)this.getHeight()/(double)scale);
-}
-				
-			
-				
+
+				int x = mapEdit.x;
+				int y = mapEdit.y;
+				g2d.clearRect(0, 0, this.getWidth(), this.getHeight());
+				g2d.setColor(OFF_GREEN);
+				g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
+				if (zoom) {
+					x = 0;
+					y = 0;
+					int mWidth = 0;
+					for (int c = 0; c < strings.length; c++) {
+						if (strings[c].length() > mWidth) {
+							mWidth = strings[c].length();
+						}
+					}
+
+					mWidth *= 100;
+					int mHeight = strings.length * 100;
+					int scale = Math.max(mWidth, mHeight);
+					g2d.scale((double) this.getWidth() / (double) scale,
+							(double) this.getHeight() / (double) scale);
+				}
+
 				for (int cA = 0; cA < strings.length; cA++) {
 					for (int c = 0; c < strings[cA].length(); c++) {
 						int side = (int) strings[cA].length();
@@ -544,32 +564,35 @@ g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
 					}
 				}
 				Point m = MouseInfo.getPointerInfo().getLocation();
-				if(choosing&&!zoom){
-				
-					int theX=((int)(this.getWidth()/100)*100)/2+(x%100);
-					int theY=((int)(this.getHeight()/100)*100)/2+50+(y%100);
-					g2d.setColor(Color.red);
-					g2d.fillRect(theX-6, theY-6, 12, 12);
-					g2d.setColor(Color.black);
-					g2d.fillOval(theX-4, theY-4, 8, 8);
-				}
-				else if(!zoom){if (blocks) {
-					g2d.setColor(Color.red);
-					g2d.drawString("" + getSelShowStringBlocks(), m.x + 10, m.y - 10);
-				} else {
-					g2d.setColor(Color.black);
-					if (enPre) {
-						g2d.drawString("" + getSelShowString(),
-								((int) ((m.x + x) / 100) * 100) + 50 - x,
-								((int) ((m.y + y) / 100) * 100) + 50 - y);
-					} else {
-						g2d.drawString("" + getSelShowString(),
-								((int) ((m.x + x) / 50) * 50 - x),
-								((int) ((m.y + y) / 50) * 50 - y));
-					}
-				}
+				if (choosing && !zoom) {
 
-			}
+					int theX = ((int) (this.getWidth() / 100) * 100) / 2
+							+ (x % 100);
+					int theY = ((int) (this.getHeight() / 100) * 100) / 2 + 50
+							+ (y % 100);
+					g2d.setColor(Color.red);
+					g2d.fillRect(theX - 6, theY - 6, 12, 12);
+					g2d.setColor(Color.black);
+					g2d.fillOval(theX - 4, theY - 4, 8, 8);
+				} else if (!zoom) {
+					if (blocks) {
+						g2d.setColor(Color.red);
+						g2d.drawString("" + getSelShowStringBlocks(), m.x + 10,
+								m.y - 10);
+					} else {
+						g2d.setColor(Color.black);
+						if (enPre) {
+							g2d.drawString("" + getSelShowString(),
+									((int) ((m.x + x) / 100) * 100) + 50 - x,
+									((int) ((m.y + y) / 100) * 100) + 50 - y);
+						} else {
+							g2d.drawString("" + getSelShowString(),
+									((int) ((m.x + x) / 50) * 50 - x),
+									((int) ((m.y + y) / 50) * 50 - y));
+						}
+					}
+
+				}
 			}
 		};
 
@@ -657,9 +680,9 @@ g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
 						break;
 					}
 				}
-				if(zoom){
-					xd=0;
-					yd=0;
+				if (zoom) {
+					xd = 0;
+					yd = 0;
 				}
 				x += xd * 2;
 				y += yd * 2;
@@ -867,27 +890,38 @@ g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
 	private char getSelChar() {
 
 		switch (selChar) {
-		case 'G':// I put flying as tracking because flying is a variable, not a
-					// class
-		case 'c':
-			return 'T';
-
-		case 'P':
-		case 't':
-
-			return 'W';
-
-		case 'M':
+		
 		case '0':
 		case '1':
-			return 'L';
-
-		case 'B':
+			return 'L';// Launch
+			
+		case 'P':
+			return 'P';// PursuingLaunch
+			
 		case 'C':
 		case 'F':
 		case 'T':
-		default:
-			return 'S';
+			return 'S';// StandEnemy
+		
+		case 'G':
+			return 'T';// TrackingEnemy
+			
+		case 't':
+			return 'C';// ChargeEnemy
+			
+		case 'B':
+			return 'W';// WalkEnemy
+
+			// Lowercase denotes an enemy that must see you before attacking.
+	
+		case 'c':
+			return 'w';// SeeChaseEnemy
+			
+		case 'M':
+			return 'l';// SeeShootEnemy
+			
+			default:
+				return 'S';//StandEnemy
 		}
 
 	}
@@ -899,7 +933,10 @@ g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
 			return 20;
 		case '0':
 		case '1':
+		case 'P':
 			return 75;
+
+		
 
 		default:
 			return 0;
@@ -918,22 +955,23 @@ g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
 		}
 
 	}
-	public int selHealth(){
-		switch(selChar){
-		
+
+	public int selHealth() {
+		switch (selChar) {
+
 		case 'P':
 		case 'F':
 			return 5;
-			
+
 		case 't':
 		case '0':
 			return 6;
-			
+
 		case 'T':
 		case 'C':
 		case 'c':
 			return 8;
-		
+
 		case '1':
 		case 'B':
 		case 'G':
@@ -942,106 +980,112 @@ g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
 			return 10;
 		}
 	}
-	public void addRowEnd(){
-		String[] nStrings=new String[strings.length+1];
-		int ml=0;
-		for(int c=0;c<strings.length;c++){
-			nStrings[c]=strings[c];
-			if(strings[c].length()>ml){
-				ml=strings[c].length();
+
+	public void addRowEnd() {
+		String[] nStrings = new String[strings.length + 1];
+		int ml = 0;
+		for (int c = 0; c < strings.length; c++) {
+			nStrings[c] = strings[c];
+			if (strings[c].length() > ml) {
+				ml = strings[c].length();
 			}
 		}
-		String addString="";
-		for(int c=0;c<ml;c++){
-			addString+='1';
+		String addString = "";
+		for (int c = 0; c < ml; c++) {
+			addString += '1';
 		}
-		nStrings[strings.length]=addString;
-		strings=nStrings;
+		nStrings[strings.length] = addString;
+		strings = nStrings;
 	}
 
-	public void addRowMid(){
-		String[] nStrings=new String[strings.length+1];
-		int ml=0;
-		int cA=0;
+	public void addRowMid() {
+		String[] nStrings = new String[strings.length + 1];
+		int ml = 0;
+		int cA = 0;
 
-		int theRow=(int) ((y + (this.getHeight()/2)) / 100);
-		for(int c=0;c<strings.length;c++,cA++){
-			
-			if(strings[c].length()>ml){
-				ml=strings[c].length();
+		int theRow = (int) ((y + (this.getHeight() / 2)) / 100);
+		for (int c = 0; c < strings.length; c++, cA++) {
+
+			if (strings[c].length() > ml) {
+				ml = strings[c].length();
 			}
-			if(theRow==c){
-			nStrings[cA]="";
-			cA++;
+			if (theRow == c) {
+				nStrings[cA] = "";
+				cA++;
 			}
-				nStrings[cA]=strings[c];
-			
+			nStrings[cA] = strings[c];
+
 		}
-		String addString="";
-		for(int c=0;c<ml;c++){
-			addString+='1';
+		String addString = "";
+		for (int c = 0; c < ml; c++) {
+			addString += '1';
 		}
-		nStrings[theRow]+=addString;
-	
-		strings=nStrings;
+		nStrings[theRow] += addString;
+
+		strings = nStrings;
 	}
-	public void addColEnd(){
-		for(int c=0;c<strings.length;c++){
-			strings[c]+='1';
-		}
-	}
-	public void addColMid(){
-		
-		int block=(int) ((x + (this.getWidth()/2)) / 100)-1;
-		for(int c=0;c<strings.length;c++){
-			strings[c]=strings[c].substring(0, block)+"1"+strings[c].substring(block);
+
+	public void addColEnd() {
+		for (int c = 0; c < strings.length; c++) {
+			strings[c] += '1';
 		}
 	}
-	public void remRowEnd(){
-		String[] nStrings=new String[strings.length-1];
-		int ml=0;
-		for(int c=0;c<nStrings.length;c++){
-			nStrings[c]=strings[c];
-			if(strings[c].length()>ml){
-				ml=strings[c].length();
+
+	public void addColMid() {
+
+		int block = (int) ((x + (this.getWidth() / 2)) / 100) - 1;
+		for (int c = 0; c < strings.length; c++) {
+			strings[c] = strings[c].substring(0, block) + "1"
+					+ strings[c].substring(block);
+		}
+	}
+
+	public void remRowEnd() {
+		String[] nStrings = new String[strings.length - 1];
+		int ml = 0;
+		for (int c = 0; c < nStrings.length; c++) {
+			nStrings[c] = strings[c];
+			if (strings[c].length() > ml) {
+				ml = strings[c].length();
 			}
 		}
-	
-		strings=nStrings;
+
+		strings = nStrings;
 	}
-	public void remRowMid(){
-		String[] nStrings=new String[strings.length-1];
-		
-		
-int cA=0;
-		int theRow=(int) ((y -1+ (this.getHeight()/2)) / 100);
-		for(int c=0;c<strings.length;c++){
-			
-			
-			if(theRow!=c){
-			nStrings[cA]=strings[c];
-			cA++;
+
+	public void remRowMid() {
+		String[] nStrings = new String[strings.length - 1];
+
+		int cA = 0;
+		int theRow = (int) ((y - 1 + (this.getHeight() / 2)) / 100);
+		for (int c = 0; c < strings.length; c++) {
+
+			if (theRow != c) {
+				nStrings[cA] = strings[c];
+				cA++;
 			}
-				
-			
+
 		}
-		
-	
-	
-		strings=nStrings;
+
+		strings = nStrings;
 	}
-	public void remColEnd(){
-		for(int c=0;c<strings.length;c++){
-			strings[c]=strings[c].substring(0, strings[c].length()-1);
+
+	public void remColEnd() {
+		for (int c = 0; c < strings.length; c++) {
+			strings[c] = strings[c].substring(0, strings[c].length() - 1);
 		}
 	}
-public void remColMid(){
-		
-		int block=(int) ((x + (this.getWidth()/2)) / 100);
-		for(int c=0;c<strings.length;c++){
-			strings[c]=strings[c].substring(0, block-1)+strings[c].substring(block);
+
+	public void remColMid() {
+
+		int block = (int) ((x + (this.getWidth() / 2)) / 100);
+		for (int c = 0; c < strings.length; c++) {
+			strings[c] = strings[c].substring(0, block - 1)
+					+ strings[c].substring(block);
 		}
-	}private String getSelShowString() {
+	}
+
+	private String getSelShowString() {
 
 		switch (selChar) {
 		case 'C':
@@ -1071,15 +1115,15 @@ public void remColMid(){
 		}
 
 	}
+
 	private String getSelShowStringBlocks() {
 
 		switch (selChar) {
-		
-		
+
 		case '1':
 			return "grass";
 		case 'O':
-			
+
 			return "spawn";
 
 		case 'W':
@@ -1099,7 +1143,7 @@ public void remColMid(){
 
 		case '>':
 			return "switch";
-			
+
 		default:
 			return "?";
 		}
