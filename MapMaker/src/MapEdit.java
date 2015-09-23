@@ -31,6 +31,7 @@ import javax.swing.Timer;
 
 
 
+
 public class MapEdit extends JFrame {
 	public static final Color NIGHT_SKY = // new Color(24, 24, 61);
 	Color.black;
@@ -49,6 +50,8 @@ public class MapEdit extends JFrame {
 	public static final Color LIGHT_OFF_TAN = new Color(225,180,0);
 	public static final Color OFF_TAN = new Color(220,185,60);
 	public static final Color SAND_STONE = new Color(110,90,30);
+	public static final Color DESERT_BLUE = new Color(100, 200, 255);
+	public static final Color BLUE = new Color(50, 100, 255);
 	String name;
 	MapEdit mapEdit = this;
 	JPanel drawPan;
@@ -475,7 +478,13 @@ char theChar=strings[cA].charAt(c);
 							g2d.fill(new Rectangle(nx + 30, ny + 76, 70,4));
 							g2d.draw(new Rectangle(nx,ny,100,100));
 							break;
-
+						case 'L':
+							g2d.setColor(getColor(theChar));
+							g2d.fill(new Rectangle(nx,ny,100,100));
+							g2d.setColor(LIGHT_BLUE);
+							g2d.fill(new Rectangle(nx + 60, ny + 67, 40, 3));
+							g2d.fill(new Rectangle(nx, ny + 70, 60, 3));
+							break;
 						case 'W':
 							g2d.setColor(getColor(theChar));
 							g2d.fill(new Rectangle(nx,ny,100,100));
@@ -536,7 +545,15 @@ char theChar=strings[cA].charAt(c);
 							g2d.fill(new Rectangle(nx + 60, ny + 60, 4, 10));
 							g2d.draw(new Rectangle(nx,ny,100,100));
 							break;
-
+						case 'L':
+							g2d.setColor(getColor(theChar));
+							g2d.fill(new Rectangle(nx,ny,100,100));
+							g2d.setColor(LIGHT_BLUE);
+							g2d.fill(new Rectangle(nx, ny + 30, 40, 4));
+							g2d.fill(new Rectangle(nx + 80, ny + 76, 20, 4));
+							g2d.fill(new Rectangle(nx, ny + 80, 80, 4));
+							g2d.fill(new Rectangle(nx + 40, ny + 26, 60,4));
+							break;
 						case 'W':
 							g2d.setColor(getColor(theChar));
 							g2d.fill(new Rectangle(nx,ny,100,100));
@@ -655,9 +672,9 @@ char theChar=strings[cA].charAt(c);
 				// TODO Auto-generated method stub
 				if (blocks) {
 					if (selNum < 0) {
-						selNum = 8;
+						selNum = 9;
 					}
-					if (selNum > 8) {
+					if (selNum > 9) {
 						selNum = 0;
 					}
 					switch (selNum) {
@@ -688,14 +705,17 @@ char theChar=strings[cA].charAt(c);
 					case 8:
 						selChar = '2';
 						break;
+					case 9:
+						selChar='L';
+						break;
 					}
 
 				} else {
-					if (selNum > 12) {
+					if (selNum > 13) {
 						selNum = 0;
 					}
 					if (selNum < 0) {
-						selNum = 12;
+						selNum = 13;
 					}
 					switch (selNum) {
 					case 0:
@@ -739,6 +759,9 @@ char theChar=strings[cA].charAt(c);
 					case 12:
 						selChar = 'D';
 						break;
+					case 13:
+						selChar = 'I';
+						break;	
 					}
 				}
 				if (zoom) {
@@ -820,6 +843,8 @@ char theChar=strings[cA].charAt(c);
 	case '1':
 	case 'O':
 		return OFF_TAN;
+	case 'L':
+		return DESERT_BLUE;	
 	case 'W':
 		return SAND_STONE;
 	case 'P':
@@ -848,6 +873,8 @@ char theChar=strings[cA].charAt(c);
 		case '1':
 		case 'O':
 			return OFF_GREEN;
+		case 'L':
+			return BLUE;	
 		case 'W':
 			return Color.DARK_GRAY;
 		case'P':
@@ -1003,6 +1030,8 @@ char theChar=strings[cA].charAt(c);
 			return "images/enemies/unique/security.png";
 		case 'D':
 			return "images/enemies/unique/explosiveBox.png";
+		case 'I':
+			return "images/enemies/unique/invGhost.png";
 		case 'B':
 		default:
 			return "images/enemies/unique/blob.png";
@@ -1013,7 +1042,8 @@ char theChar=strings[cA].charAt(c);
 	private char getSelChar() {
 
 		switch (selChar) {
-
+		case 'I':
+			return 'c';//LookChaseEnemy
 		case '0':
 			return 'L';// Launch
 
@@ -1076,6 +1106,7 @@ char theChar=strings[cA].charAt(c);
 
 		switch (selChar) {
 		case 'G':
+		case 'I':	
 			return 't';
 
 		default:
@@ -1106,6 +1137,7 @@ char theChar=strings[cA].charAt(c);
 		case 'G':
 		case 'M':
 		case 'S':
+		case 'I':	
 		default:
 			return 10;
 		}
@@ -1244,6 +1276,8 @@ char theChar=strings[cA].charAt(c);
 			return "security";
 		case 'D':
 			return "explosiveBox";
+		case 'I':
+			return "invisibleGhost";
 		default:
 			return "?";
 		}
@@ -1279,7 +1313,8 @@ char theChar=strings[cA].charAt(c);
 
 		case '>':
 			return "switch";
-
+		case 'L':
+			return "liquid";
 		default:
 			return "?";
 		}
