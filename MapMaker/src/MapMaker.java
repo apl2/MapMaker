@@ -251,9 +251,10 @@ public class MapMaker extends JFrame {
 								// }
 
 								String[] arrB = new String[Integer
-										.parseInt(nMheight.getText())];
+										.parseInt(nMheight.getText())+1];
 								int width = Integer.parseInt(nMSize.getText());
-								for (int c = 0; c < arrB.length; c++) {
+								arrB[0]="Grassy";
+								for (int c = 1; c < arrB.length; c++) {
 									arrB[c] = "";
 									for (int c2 = 0; c2 < width; c2++) {
 										arrB[c] += "1";

@@ -29,6 +29,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+
+
 public class MapEdit extends JFrame {
 	public static final Color NIGHT_SKY = // new Color(24, 24, 61);
 	Color.black;
@@ -42,7 +44,11 @@ public class MapEdit extends JFrame {
 	public static final Color OFF_GREEN = new Color(148, 190, 50);
 	public static final Color LIGHT_OFF_GREEN = new Color(167, 207, 73);
 	public static final Color LIGHT_BLUE = new Color(132, 255, 255);
-	public static final Font ACHANGE = new Font("Algerian", Font.PLAIN, 60);
+	public static final Font BLOCK = new Font("Calibri", Font.PLAIN, 80);
+	public static final Font MOUSE = new Font("Calibri", Font.PLAIN, 20);
+	public static final Color LIGHT_OFF_TAN = new Color(225,180,0);
+	public static final Color OFF_TAN = new Color(220,185,60);
+	public static final Color SAND_STONE = new Color(110,90,30);
 	String name;
 	MapEdit mapEdit = this;
 	JPanel drawPan;
@@ -77,7 +83,7 @@ public class MapEdit extends JFrame {
 				+ "Q/Middle Mouse Button: change enemy placement precision\n"
 				+ "R: delete enemy\n" + "Z: zoom out/back\n"
 				+ "X: remove (Opens Menu)\n" + "C: add (Opens Menu)\n"
-				+ "I: info");
+				+ "I: info\n" + "T: change texture pack");
 		loadS();
 
 		// TODO Auto-generated method stub
@@ -111,7 +117,17 @@ public class MapEdit extends JFrame {
 											+ "Z: zoom out/back\n"
 											+ "X: remove (Opens Menu)\n"
 											+ "C: add (Opens Menu)\n"
-											+ "I: info");
+											+ "I: info\n"
+											+ "T: change texture pack");
+				} else if (key == KeyEvent.VK_T) {
+					String[] options = { "cancel", "Grassy", "Desert" };
+					int sel=JOptionPane.showOptionDialog(mapEdit,
+							"Which texture pack do you want?", "Texture Pack",
+							JOptionPane.CANCEL_OPTION,
+							JOptionPane.DEFAULT_OPTION, null, options, 0);
+					if(sel!=0){
+						strings[0]=options[sel];
+					}
 				} else if (key == KeyEvent.VK_C && zoom) {
 
 					String[] options = { "Cancel", "Add row at the end",
@@ -242,13 +258,13 @@ public class MapEdit extends JFrame {
 
 						if (blocks) {
 							Point m = MouseInfo.getPointerInfo().getLocation();
-							String s = strings[(int) ((y + m.getY() - 10) / 100)];
+							String s = strings[(int) ((y + m.getY() - 10) / 100)+1];
 							s = s.substring(0,
 									(int) ((x + m.getX() + 10) / 100))
 									+ selChar
 									+ s.substring((int) ((x + m.getX() + 10) / 100) + 1);
 
-							strings[(int) ((y - 10 + m.getY()) / 100)] = s;
+							strings[(int) ((y - 10 + m.getY()) / 100)+1] = s;
 						} else {
 
 							Point m = MouseInfo.getPointerInfo().getLocation();
@@ -405,128 +421,138 @@ public class MapEdit extends JFrame {
 				int x = mapEdit.x;
 				int y = mapEdit.y;
 				g2d.clearRect(0, 0, this.getWidth(), this.getHeight());
-				g2d.setColor(OFF_GREEN);
+				g2d.setColor(getTextureBack());
 				g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
 				if (zoom) {
 					x = 0;
 					y = 0;
 					int mWidth = 0;
-					for (int c = 0; c < strings.length; c++) {
+					for (int c = 1; c < strings.length; c++) {
 						if (strings[c].length() > mWidth) {
 							mWidth = strings[c].length();
 						}
 					}
 
 					mWidth *= 100;
-					int mHeight = strings.length * 100;
+					int mHeight = (strings.length-1) * 100;
 					int scale = Math.max(mWidth, mHeight);
 					g2d.scale((double) this.getWidth() / (double) scale,
 							(double) this.getHeight() / (double) scale);
 				}
 
-				for (int cA = 0; cA < strings.length; cA++) {
+				for (int cA = 1; cA < strings.length; cA++) {
 					for (int c = 0; c < strings[cA].length(); c++) {
 						int side = (int) strings[cA].length();
-
 						int width = 100;
 						int height = 100;
-
-						switch (strings[cA].charAt(c)) {
-
+						int nx=c*width-x;
+						int ny=(cA-1)*height-y;
+char theChar=strings[cA].charAt(c);
+System.out.println(theChar);
+						switch(getTexturePack()){
+						case 'D'://Start desert
+						switch (theChar) {
+						
 						case '1':
-							g2d.setColor(LIGHT_OFF_GREEN);
-							g2d.fill(new Rectangle(((c) * 100) - x + 40,
-									((int) (cA * 100)) - y + 40, width - 80,
-									height - 80));
-							g2d.drawRect(((c) * 100) - x, ((int) (cA * 100))
-									- y, width, height);
-							break;
-						case '2':
-							g2d.setColor(BROWN);
-							g2d.fillRect(((c) * 100) - x, ((int) (cA * 100))
-									- y, width, height);
-							break;
-						case 'O':
-							g2d.setColor(LIGHT_OFF_GREEN);
-							g2d.fill(new Rectangle(((c % side) * 100) - x + 40,
-									((int) ((int) (cA * 100))) - y + 40,
-									width - 80, height - 80));
-							g2d.drawRect(((c % side) * 100) - x,
-									((int) ((int) (cA * 100))) - y, width,
-									height);
-							g2d.setColor(Color.black);
-							g2d.drawString("Spawn",
-									((c % side) * 100) - x + 40,
-									((int) (cA * 100)) - y + 40);
+							g2d.setColor(getColor(theChar));
+							g2d.fill(new Rectangle(nx,ny,100,100));
+							g2d.setColor(LIGHT_OFF_TAN);
+							g2d.fill(new Rectangle(nx, ny + 30, 60, 4));
+							g2d.fill(new Rectangle(nx + 60, ny + 26, 40, 4));
+							g2d.fill(new Rectangle(nx, ny + 80, 30, 4));
+							g2d.fill(new Rectangle(nx + 30, ny + 76, 70,4));
+							g2d.draw(new Rectangle(nx,ny,100,100));
 							break;
 
 						case 'W':
-							g2d.setColor(Color.DARK_GRAY);
-							g2d.fillRect(((c % side) * 100) - x,
-									((int) (cA * 100)) - y, width, height);
+							g2d.setColor(getColor(theChar));
+							g2d.fill(new Rectangle(nx,ny,100,100));
 							g2d.setColor(Color.BLACK);
-							g2d.drawRect(((c % side) * 100) - x,
-									((int) (cA * 100)) - y, width, height);
-							break;
-
-						case 'P':
-							g2d.setColor(Color.black);
-							g2d.fillRect(((c % side) * 100) - x,
-									((int) (cA * 100)) - y, width, height);
-							break;
-
-						case 'R':
-							g2d.setColor(Color.LIGHT_GRAY);
-							g2d.fillRect(((c % side) * 100) - x,
-									((int) (cA * 100)) - y, width, height);
+							g2d.draw(new Rectangle(nx,ny,100,100));
 							break;
 
 						case 'C':
-							g2d.setColor(TAN);
-							g2d.fillRect(((c % side) * 100) - x,
-									((int) (cA * 100)) - y, width, height);
-							g2d.setColor(Color.RED);
-							g2d.drawLine(((c % side) * 100) - x,
-									((int) (cA * 100)) - y, ((c % side) * 100)
-											- x + width, ((int) (cA * 100)) - y
-											+ height);
-							g2d.drawLine(((c % side) * 100) - x + width,
-									((int) (cA * 100)) - y, ((c % side) * 100)
-											- x, ((int) (cA * 100)) - y
-											+ height);
-							g2d.drawLine(((c % side) * 100) - x,
-									((int) (cA * 100)) - y + height / 2,
-									((c % side) * 100) - x + width,
-									((int) (cA * 100)) - y + height / 2);
-							g2d.drawLine(((c % side) * 100) - x + width / 2,
-									((int) (cA * 100)) - y, ((c % side) * 100)
-											- x + width / 2, ((int) (cA * 100))
-											- y + height);
-							break;
-
-						case '*':
-							g2d.setColor(LIGHT_BLUE);
-							g2d.fillRect(((c % side) * 100) - x,
-									((int) (cA * 100)) - y, width, height);
+							g2d.setColor(getColor(theChar));
+							g2d.fill(new Rectangle(nx,ny,100,100));
+							g2d.setColor(LIGHT_OFF_TAN);
+							g2d.drawLine(nx, ny, nx + width, ny + height);
+							g2d.drawLine(nx + width, ny, nx, ny + height);
+							g2d.drawLine(nx, ny + height / 2, nx + width, ny + height / 2);
+							g2d.drawLine(nx + width / 2, ny, nx + width / 2, ny + height);
 							break;
 
 						case '>':
-							Font f = g2d.getFont();
-							g2d.setFont(ACHANGE);
-							g2d.setColor(Color.LIGHT_GRAY);
-							g2d.drawRect(((c % side) * 100) - x,
-									((int) (cA * 100)) - y, width, height);
+
+							g2d.setFont(BLOCK);
+							g2d.setColor(getColor(theChar));
+							g2d.fill(new Rectangle(nx,ny,100,100));
 							g2d.setColor(Color.BLUE);
-							g2d.drawString("<->", ((c % side) * 100) - x,
-									((int) (cA * 100)) - y + 70);
-							g2d.drawRect(((c % side) * 100) - x,
-									((int) (cA * 100)) - y, width, height);
-							g2d.setFont(f);
+							g2d.drawString("<->", nx, ny + 70);
+							g2d.draw(new Rectangle(nx,ny,100,100));
 							break;
+
+						default:
+							g2d.setColor(getColor(theChar));
+							g2d.fill(new Rectangle(nx,ny,100,100));
+							break;
+						}
+						break;
+						
+						case 'G':
+						default://Start grassy
+						switch (theChar) {
+						
+						case '1':
+							g2d.setColor(getColor(theChar));
+							g2d.fill(new Rectangle(nx,ny,100,100));
+							g2d.setColor(LIGHT_OFF_GREEN);
+							g2d.fill(new Rectangle(nx + 30, ny + 15, 4, 10));
+							g2d.fill(new Rectangle(nx + 80, ny + 20, 4, 10));
+							g2d.fill(new Rectangle(nx + 20, ny + 80, 4, 10));
+							g2d.fill(new Rectangle(nx + 60, ny + 60, 4, 10));
+							g2d.draw(new Rectangle(nx,ny,100,100));
+							break;
+
+						case 'W':
+							g2d.setColor(getColor(theChar));
+							g2d.fill(new Rectangle(nx,ny,100,100));
+							g2d.setColor(Color.BLACK);
+							g2d.draw(new Rectangle(nx,ny,100,100));
+							break;
+
+						case'C':
+							g2d.setColor(getColor(theChar));
+							g2d.fill(new Rectangle(nx,ny,100,100));
+							g2d.setColor(Color.RED);
+							g2d.drawLine(nx, ny, nx + width, ny + height);
+							g2d.drawLine(nx + width, ny, nx, ny + height);
+							g2d.drawLine(nx, ny + height / 2, nx + width, ny + height / 2);
+							g2d.drawLine(nx + width / 2, ny, nx + width / 2, ny + height);
+							break;
+
+						case '>':
+
+							g2d.setFont(BLOCK);
+							g2d.setColor(getColor(theChar));
+							g2d.fill(new Rectangle(nx,ny,100,100));
+							g2d.setColor(Color.BLUE);
+							g2d.drawString("<->", nx, ny + 70);
+							g2d.draw(new Rectangle(nx,ny,100,100));
+							break;
+
+						default:
+							g2d.setColor(getColor(theChar));
+							g2d.fill(new Rectangle(nx,ny,100,100));
+							break;
+						}
+						break;// End Grassy
+						
+						
 						}
 					}
 
 				}
+				
 				for (int c = 0; c < enemies.size(); c++) {
 					ArrayList<String> stuff = new ArrayList<String>();// should
 																		// have
@@ -576,6 +602,7 @@ public class MapEdit extends JFrame {
 					g2d.setColor(Color.black);
 					g2d.fillOval(theX - 4, theY - 4, 8, 8);
 				} else if (!zoom) {
+					g2d.setFont(MOUSE);
 					if (blocks) {
 						g2d.setColor(Color.red);
 						g2d.drawString("" + getSelShowStringBlocks(), m.x + 10,
@@ -687,7 +714,7 @@ public class MapEdit extends JFrame {
 						break;
 					case 12:
 						selChar = 'D';
-						break;	
+						break;
 					}
 				}
 				if (zoom) {
@@ -760,7 +787,61 @@ public class MapEdit extends JFrame {
 		this.requestFocus();
 		this.setVisible(true);
 	}
+	public Color getColor(char type) {
+		// TODO Auto-generated method stub
+		switch (getTexturePack()){
+		case 'D':
+	switch (type) {
+	case '2':
+	case '1':
+		return OFF_TAN;
+	case 'W':
+		return SAND_STONE;
+	case 'P':
+		return LIGHT_OFF_TAN;
+	case 'R':
+		return TAN;
+	case '>':
+		return Color.LIGHT_GRAY;
+	case 'C':
+		return TAN;
 
+	case '*':
+		return LIGHT_BLUE;
+
+	default:
+		System.err.println("Type " + type + " does not have a color case");
+		return Color.RED;
+	}
+	
+		
+		case 'G':
+			default:
+		switch (type) {
+		case '2':
+			return BROWN;
+		case '1':
+			return OFF_GREEN;
+		case 'W':
+			return Color.DARK_GRAY;
+		case'P':
+			return Color.BLACK;
+		case 'R':
+		case '>':
+			return Color.LIGHT_GRAY;
+		case 'C':
+			return TAN;
+
+		case '*':
+			return LIGHT_BLUE;
+
+		default:
+			System.err.println("Type " + type + " does not have a color case");
+			return Color.RED;
+		}
+		
+		}
+	}
 	private void loadS() {
 		String[] strings;
 		ArrayList<String> lines = new ArrayList<String>();
@@ -772,11 +853,12 @@ public class MapEdit extends JFrame {
 				String line;
 
 				while ((line = reader.readLine()) != null) {
+					
 					lines.add(line);
 				}
 				reader.close();
 				int mL = 0;
-				for (int c = 0; c < lines.size(); c++) {
+				for (int c = 1; c < lines.size(); c++) {
 					if (mL < lines.get(c).length()) {
 						mL = lines.get(c).length();
 					}
@@ -893,7 +975,7 @@ public class MapEdit extends JFrame {
 		case 'S':
 			return "images/enemies/unique/security.png";
 		case 'D':
-			return "images/enemies/unique/explosiveBox.png";	
+			return "images/enemies/unique/explosiveBox.png";
 		case 'B':
 		default:
 			return "images/enemies/unique/blob.png";
@@ -904,42 +986,41 @@ public class MapEdit extends JFrame {
 	private char getSelChar() {
 
 		switch (selChar) {
-		
+
 		case '0':
 			return 'L';// Launch
-			
+
 		case 'P':
 			return 'P';// PursuingLaunch
-		case 'M':	
+		case 'M':
 		case 'C':
 		case 'F':
 		case 'T':
 			return 'S';// StandEnemy
-		
+
 		case 'G':
 			return 'T';// TrackingEnemy
-			
+
 		case 't':
 			return 'C';// ChargeEnemy
-			
+
 		case 'B':
 			return 'W';// WalkEnemy
 
 		case 'D':
-			return 'E';//ExplosiveSpawner
-			
+			return 'E';// ExplosiveSpawner
+
 			// Lowercase denotes an enemy that must see you before attacking.
-	
+
 		case 'c':
 			return 'w';// SeeChaseEnemy
-			
-		
+
 		case '1':
 			return 'l';// SeeShootEnemy
 		case 'S':
 			return 's';// SecurityEnemy
-			default:
-				return 'S';//StandEnemy
+		default:
+			return 'S';// StandEnemy
 		}
 
 	}
@@ -954,10 +1035,10 @@ public class MapEdit extends JFrame {
 		case 'P':
 			return "75";
 
-		case 'S':		
+		case 'S':
 			return "cop";
 		case 'D':
-			return "100";	
+			return "100";
 		default:
 			return null;
 		}
@@ -997,7 +1078,7 @@ public class MapEdit extends JFrame {
 		case 'B':
 		case 'G':
 		case 'M':
-		case 'S':	
+		case 'S':
 		default:
 			return 10;
 		}
@@ -1135,7 +1216,7 @@ public class MapEdit extends JFrame {
 		case 'S':
 			return "security";
 		case 'D':
-			return "explosiveBox";	
+			return "explosiveBox";
 		default:
 			return "?";
 		}
@@ -1149,7 +1230,7 @@ public class MapEdit extends JFrame {
 		case '1':
 			return "grass";
 		case '2':
-			return "dirt";	
+			return "dirt";
 		case 'O':
 
 			return "spawn";
@@ -1176,5 +1257,19 @@ public class MapEdit extends JFrame {
 			return "?";
 		}
 
+	}
+	public Color getTextureBack(){
+		switch(getTexturePack()){
+		case 'D':
+			return OFF_TAN;
+		case 'G':
+		default:
+			return OFF_GREEN;
+		}
+	}
+	public char getTexturePack(){
+		return strings[0].charAt(0);
+		
+		
 	}
 }
