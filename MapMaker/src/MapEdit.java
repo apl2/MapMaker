@@ -442,13 +442,13 @@ public class MapEdit extends JFrame {
 
 				for (int cA = 1; cA < strings.length; cA++) {
 					for (int c = 0; c < strings[cA].length(); c++) {
-						int side = (int) strings[cA].length();
-						int width = 100;
-						int height = 100;
-						int nx=c*width-x;
-						int ny=(cA-1)*height-y;
+						
+						
+						int nx=c*100-x;
+						int ny=(cA-1)*100-y;
+						if(zoom||(nx>-100&&nx<this.getWidth()&&ny>-100&&ny<this.getHeight())){
+						
 char theChar=strings[cA].charAt(c);
-System.out.println(theChar);
 						switch(getTexturePack()){
 						case 'D'://Start desert
 						switch (theChar) {
@@ -487,10 +487,10 @@ System.out.println(theChar);
 							g2d.setColor(getColor(theChar));
 							g2d.fill(new Rectangle(nx,ny,100,100));
 							g2d.setColor(LIGHT_OFF_TAN);
-							g2d.drawLine(nx, ny, nx + width, ny + height);
-							g2d.drawLine(nx + width, ny, nx, ny + height);
-							g2d.drawLine(nx, ny + height / 2, nx + width, ny + height / 2);
-							g2d.drawLine(nx + width / 2, ny, nx + width / 2, ny + height);
+							g2d.drawLine(nx, ny, nx + 100, ny + 100);
+							g2d.drawLine(nx + 100, ny, nx, ny + 100);
+							g2d.drawLine(nx, ny + 100 / 2, nx + 100, ny + 100 / 2);
+							g2d.drawLine(nx + 100 / 2, ny, nx + 100 / 2, ny + 100);
 							break;
 
 						case '>':
@@ -548,10 +548,10 @@ System.out.println(theChar);
 							g2d.setColor(getColor(theChar));
 							g2d.fill(new Rectangle(nx,ny,100,100));
 							g2d.setColor(Color.RED);
-							g2d.drawLine(nx, ny, nx + width, ny + height);
-							g2d.drawLine(nx + width, ny, nx, ny + height);
-							g2d.drawLine(nx, ny + height / 2, nx + width, ny + height / 2);
-							g2d.drawLine(nx + width / 2, ny, nx + width / 2, ny + height);
+							g2d.drawLine(nx, ny, nx + 100, ny + 100);
+							g2d.drawLine(nx + 100, ny, nx, ny + 100);
+							g2d.drawLine(nx, ny + 100 / 2, nx + 100, ny + 100 / 2);
+							g2d.drawLine(nx + 100 / 2, ny, nx + 100 / 2, ny + 100);
 							break;
 
 						case '>':
@@ -574,7 +574,7 @@ System.out.println(theChar);
 						
 						}
 					}
-
+					}
 				}
 				
 				for (int c = 0; c < enemies.size(); c++) {
@@ -867,6 +867,7 @@ System.out.println(theChar);
 		}
 		
 		}
+	
 	}
 	private void loadS() {
 		String[] strings;
