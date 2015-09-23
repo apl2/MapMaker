@@ -452,7 +452,19 @@ System.out.println(theChar);
 						switch(getTexturePack()){
 						case 'D'://Start desert
 						switch (theChar) {
-						
+						case 'O':
+							g2d.setColor(getColor(theChar));
+							g2d.fill(new Rectangle(nx,ny,100,100));
+							g2d.setColor(LIGHT_OFF_TAN);
+							g2d.fill(new Rectangle(nx, ny + 30, 60, 4));
+							g2d.fill(new Rectangle(nx + 60, ny + 26, 40, 4));
+							g2d.fill(new Rectangle(nx, ny + 80, 30, 4));
+							g2d.fill(new Rectangle(nx + 30, ny + 76, 70,4));
+							g2d.draw(new Rectangle(nx,ny,100,100));
+							g2d.setFont(MOUSE);
+							g2d.setColor(Color.BLACK);
+							g2d.drawString("spawn", nx+30, ny+40);
+							break;
 						case '1':
 							g2d.setColor(getColor(theChar));
 							g2d.fill(new Rectangle(nx,ny,100,100));
@@ -501,7 +513,19 @@ System.out.println(theChar);
 						case 'G':
 						default://Start grassy
 						switch (theChar) {
-						
+						case 'O':
+							g2d.setColor(getColor(theChar));
+							g2d.fill(new Rectangle(nx,ny,100,100));
+							g2d.setColor(LIGHT_OFF_GREEN);
+							g2d.fill(new Rectangle(nx + 30, ny + 15, 4, 10));
+							g2d.fill(new Rectangle(nx + 80, ny + 20, 4, 10));
+							g2d.fill(new Rectangle(nx + 20, ny + 80, 4, 10));
+							g2d.fill(new Rectangle(nx + 60, ny + 60, 4, 10));
+							g2d.draw(new Rectangle(nx,ny,100,100));
+							g2d.setFont(MOUSE);
+							g2d.setColor(Color.BLACK);
+							g2d.drawString("spawn", nx+30, ny+40);
+							break;
 						case '1':
 							g2d.setColor(getColor(theChar));
 							g2d.fill(new Rectangle(nx,ny,100,100));
@@ -794,6 +818,7 @@ System.out.println(theChar);
 	switch (type) {
 	case '2':
 	case '1':
+	case 'O':
 		return OFF_TAN;
 	case 'W':
 		return SAND_STONE;
@@ -821,6 +846,7 @@ System.out.println(theChar);
 		case '2':
 			return BROWN;
 		case '1':
+		case 'O':
 			return OFF_GREEN;
 		case 'W':
 			return Color.DARK_GRAY;
