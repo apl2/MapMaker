@@ -249,14 +249,25 @@ public class MapMaker extends JFrame {
 								// }
 
 								String[] arrB = new String[Integer
-										.parseInt(nMheight.getText())+1];
-								int width = Integer.parseInt(nMSize.getText());
+										.parseInt(nMheight.getText())+3];
+								int width = Integer.parseInt(nMSize.getText())+2;
 								arrB[0]="Grassy";
-								for (int c = 1; c < arrB.length; c++) {
+							
+									arrB[1]="";
+								for(int c=0;c<width;c++){
+									arrB[1]+='I';
+								}
+								for (int c = 2; c < arrB.length-1; c++) {
 									arrB[c] = "";
-									for (int c2 = 0; c2 < width; c2++) {
+									arrB[c]+="I";
+									for (int c2 = 1; c2 < width-1; c2++) {
 										arrB[c] += "1";
 									}
+									arrB[c]+="I";
+								}
+								arrB[arrB.length-1]="";
+								for(int c=0;c<width;c++){
+									arrB[arrB.length-1]+='I';
 								}
 								try {
 									saveStrings(arrB, project + ".txt",
@@ -283,6 +294,8 @@ public class MapMaker extends JFrame {
 				} catch (NumberFormatException ex) {
 					JOptionPane.showMessageDialog(mapMaker,
 							"Side size must be a number");
+				}catch(ArrayIndexOutOfBoundsException e2){
+					JOptionPane.showMessageDialog(mapMaker, "Size must be greater than 0");
 				}
 				updateNor();
 			

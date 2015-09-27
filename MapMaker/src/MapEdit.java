@@ -264,15 +264,22 @@ public class MapEdit extends JFrame {
 					} else if (key == KeyEvent.VK_SPACE) {
 
 						if (blocks == 0) {
+							int maxWidth=0;
+							for(int c=0;c<strings.length;c++){
+								if(strings[c].length()>maxWidth){
+									maxWidth=strings[c].length();
+								}
+							}
 							Point m = MouseInfo.getPointerInfo().getLocation();
+							if((int) ((y + m.getY() - 10) / 100) >0&&(int) ((y + m.getY() - 10) / 100) + 2<strings.length&&(int) ((x + m.getX() + 10) / 100)>0&&(int) ((x + m.getX() + 10) / 100)+1<maxWidth)
+							{
 							String s = strings[(int) ((y + m.getY() - 10) / 100) + 1];
 							s = s.substring(0,
 									(int) ((x + m.getX() + 10) / 100))
 									+ selChar
 									+ s.substring((int) ((x + m.getX() + 10) / 100) + 1);
-
-							strings[(int) ((y - 10 + m.getY()) / 100) + 1] = s;
-						} else if (blocks == 1) {
+						strings[(int) ((y - 10 + m.getY()) / 100) + 1] = s;
+						}} else if (blocks == 1) {
 
 							Point m = MouseInfo.getPointerInfo().getLocation();
 							int sen = 100;
@@ -502,6 +509,7 @@ if(returnVal!=null){
 										&& ny > -100 && ny < this.getHeight())) {
 
 							char theChar = strings[cA].charAt(c);
+							if(theChar!='I')
 							switch (getTexturePack()) {
 							case 'D':// Start desert
 								switch (theChar) {
@@ -1058,9 +1066,9 @@ g2d.drawString(to, px-x, py-y);
 				// TODO Auto-generated method stub
 				if (blocks == 0) {
 					if (selNum < 0) {
-						selNum = 9;
+						selNum = 10;
 					}
-					if (selNum > 9) {
+					if (selNum > 10) {
 						selNum = 0;
 					}
 					switch (selNum) {
@@ -1093,6 +1101,9 @@ g2d.drawString(to, px-x, py-y);
 						break;
 					case 9:
 						selChar = 'L';
+						break;
+					case 10:
+						selChar = 'I';
 						break;
 					}
 
@@ -1827,6 +1838,8 @@ g2d.drawString(to, px-x, py-y);
 			return "switch";
 		case 'L':
 			return "liquid";
+		case 'I':
+			return "InvisibleWall";
 		default:
 			return "?";
 		}
