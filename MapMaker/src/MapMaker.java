@@ -50,8 +50,6 @@ public class MapMaker extends JFrame {
 	Files files;
 	JButton addMap;
 	JButton editMap;
-
-	JTextField nMapN;
 	JPanel drawPan;
 	JPanel bPanel;
 	JButton makeNMap;
@@ -231,7 +229,7 @@ public class MapMaker extends JFrame {
 					boolean b = false;
 					String[] s = new File("bin/projects/" + project).list();
 					for (int c = 0; c < s.length; c++) {
-						if (s[c].equalsIgnoreCase(nMapN.getText() + ".txt")) {
+						if (s[c].equalsIgnoreCase(project + ".txt")) {
 							b = true;
 							break;
 						}
@@ -239,9 +237,9 @@ public class MapMaker extends JFrame {
 					if (b == false
 							|| JOptionPane.showConfirmDialog(
 									mapMaker,
-									"The file"
-											+ nMapN.getText()
-											+ ".ser already exists. Do you want to override it?") == 0) {
+									"The file "
+											+ project
+											+ ".txt already exists. Do you want to override it? You may only have one map per pack.") == 0) {
 						if (Integer.parseInt(nMSize.getText()) <= 500) {
 							if (Integer.parseInt(nMheight.getText()) <= 500) {
 								// String[]arr=new
@@ -261,10 +259,12 @@ public class MapMaker extends JFrame {
 									}
 								}
 								try {
-									saveStrings(new String[0], nMapN.getText()
-											+ "E.txt", project);
-									saveStrings(arrB, nMapN.getText() + ".txt",
+									saveStrings(arrB, project + ".txt",
 											project);
+									saveStrings(new String[0], project
+											+ "E.txt", project);
+									saveStrings(new String[0], project
+											+ "P.txt", project);
 								} catch (Exception ex) {
 									JOptionPane.showMessageDialog(mapMaker,
 											ex.getMessage());
@@ -285,7 +285,7 @@ public class MapMaker extends JFrame {
 							"Side size must be a number");
 				}
 				updateNor();
-				mapMaker.remove(nMapN);
+			
 				mapMaker.revalidate();
 				bPanel.removeAll();
 
@@ -330,7 +330,7 @@ public class MapMaker extends JFrame {
 				mapMaker.revalidate();
 			}
 		});
-		nMapN = new JTextField("Enter Map Name(Do NOT end with E)");
+		
 		drawPan = new JPanel() {
 			/**
 			 * 
@@ -403,14 +403,15 @@ public class MapMaker extends JFrame {
 							if (returnVal == JFileChooser.APPROVE_OPTION) {
 								if (chooser.getSelectedFile().exists()) {
 									String[] options = { "yes", "no" };
-									boolean newFile = JOptionPane
-											.showOptionDialog(
-													mapMaker,
-													"Do you want to create a folder for your map(s)?",
-													"Create Folder?",
-													JOptionPane.DEFAULT_OPTION,
-													JOptionPane.INFORMATION_MESSAGE,
-													null, options, "no") == 0;
+									boolean newFile = true;
+//											JOptionPane
+//											.showOptionDialog(
+//													mapMaker,
+//													"Do you want to create a folder for your map(s)?",
+//													"Create Folder?",
+//													JOptionPane.DEFAULT_OPTION,
+//													JOptionPane.INFORMATION_MESSAGE,
+//													null, options, "no") == 0;
 
 									if (newFile) {
 										File nFile = new File(chooser
@@ -537,7 +538,7 @@ public class MapMaker extends JFrame {
 							public boolean accept(File dir, String name) {
 								// TODO Auto-generated method stub
 								return name.toLowerCase().endsWith(".txt")
-										&& !name.endsWith("E.txt");
+										&& !name.endsWith("E.txt")&& !name.endsWith("P.txt");
 							}
 						});
 				mLoadM.removeAllElements();
@@ -568,11 +569,11 @@ public class MapMaker extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				// mapMaker.remove(drawPan);
-				nMapN.setText("Enter Map Name");
+				//nMapN.setText("Enter Map Name");
 				nMSize.setText("Side");
 
 				nMheight.setText("Height");
-				mapMaker.add(nMapN, BorderLayout.NORTH);
+		
 
 				bPanel.removeAll();
 				JButton cancel = new JButton("Cancel");
@@ -581,7 +582,7 @@ public class MapMaker extends JFrame {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						// TODO Auto-generated method stub
-						mapMaker.remove(nMapN);
+						
 						// mapMaker.remove(nMSize);
 						mapMaker.revalidate();
 						bPanel.removeAll();
