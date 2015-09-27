@@ -299,13 +299,13 @@ public class MapEdit extends JFrame {
 
 							String returnVal = JOptionPane.showInputDialog(
 									mapEdit, "What is the name of the map");
-
+if(returnVal!=null){
 							portals.add(theX + "," + theY + ","
 									+ "images/icon.png" + "," + returnVal + ","
 									+ 0// Run.removeExtension(chooser.getSelectedFile().toString()+","+Integer.parseInt(JOptionPane.showInputDialog(mapEdit,
 										// "How many collectibles"))
 							);
-						}
+						}}
 					} else if (key == KeyEvent.VK_DOWN) {
 						selNum++;
 					} else if (key == KeyEvent.VK_UP) {
@@ -350,6 +350,32 @@ public class MapEdit extends JFrame {
 							}
 						}
 
+						
+						for (int c = 0; c < portals.size(); c++) {
+							ArrayList<String> stuff = new ArrayList<String>();// should
+																				// have
+																				// 5
+							String currentS = "";
+							for (int c2 = 0; c2 < portals.get(c).length(); c2++) {
+
+								if (portals.get(c).charAt(c2) == ',') {
+									stuff.add(currentS);
+									currentS = "";
+
+								} else {
+									currentS += portals.get(c).charAt(c2);
+								}
+							}
+							Image enImg = new ImageIcon(getClass().getResource(
+									stuff.get((2)))).getImage();
+							if (new Rectangle(Integer.parseInt(stuff.get(0)),
+									Integer.parseInt(stuff.get(1)),
+									enImg.getWidth(null), enImg.getHeight(null))
+									.contains(new Point(x + m.x, y + m.y))) {
+								portals.remove(c);
+								c--;
+							}
+						}
 					}
 				}
 			}
@@ -1011,6 +1037,14 @@ g2d.drawString(to, px-x, py-y);
 									((int) ((m.x + x) / 50) * 50 - x),
 									((int) ((m.y + y) / 50) * 50 - y));
 						}
+					}
+					else if(blocks==2){
+						g2d.setColor(PURPLE);
+						
+							g2d.drawString("Portal",
+									((int) ((m.x + x) / 100) * 100) + 50 - x,
+									((int) ((m.y + y) / 100) * 100) + 50 - y);
+						
 					}
 
 				}
@@ -1755,7 +1789,7 @@ g2d.drawString(to, px-x, py-y);
 		case 'D':
 			return "explosiveBox";
 		case 'I':
-			return "invisibleGhost";
+			return "invertedGhost";
 		default:
 			return "?";
 		}
