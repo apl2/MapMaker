@@ -310,7 +310,7 @@ public class MapEdit extends JFrame {
 									mapEdit, "What is the name of the map");
 if(returnVal!=null){
 							portals.add(theX + "," + theY + ","
-									+ "images/icon.png" + "," + returnVal + ","
+									+ "images/portal1.png" + "," + returnVal + ","
 									+ 0// Run.removeExtension(chooser.getSelectedFile().toString()+","+Integer.parseInt(JOptionPane.showInputDialog(mapEdit,
 										// "How many collectibles"))
 							);
