@@ -300,7 +300,9 @@ public class MapEdit extends JFrame {
 						} else if (blocks == 2) {
 							Point m = MouseInfo.getPointerInfo().getLocation();
 							int sen = 100;
-
+							if (!enPre) {
+								sen = 50;
+							}
 							int theX = ((int) ((m.x + x) / sen) * sen);
 							int theY = ((int) ((m.y + y) / sen) * sen);
 
@@ -1049,9 +1051,15 @@ g2d.drawString(to, px-x, py-y);
 					else if(blocks==2){
 						g2d.setColor(PURPLE);
 						
+						if (enPre) {
 							g2d.drawString("Portal",
 									((int) ((m.x + x) / 100) * 100) + 50 - x,
 									((int) ((m.y + y) / 100) * 100) + 50 - y);
+						} else {
+							g2d.drawString("Portal",
+									((int) ((m.x + x) / 50) * 50 - x),
+									((int) ((m.y + y) / 50) * 50 - y));
+						}
 						
 					}
 
