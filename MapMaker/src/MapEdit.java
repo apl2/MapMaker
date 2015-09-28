@@ -304,7 +304,7 @@ public class MapEdit extends JFrame {
 								sen = 50;
 							}
 							int theX = ((int) ((m.x + x) / sen) * sen);
-							int theY = ((int) ((m.y + y) / sen) * sen);
+							int theY = ((int) ((m.y + y) / sen) * sen)+100;
 
 							String returnVal = JOptionPane.showInputDialog(
 									mapEdit, "What is the name of the map");
@@ -353,7 +353,7 @@ if(returnVal!=null){
 							if (new Rectangle(Integer.parseInt(stuff.get(1)),
 									Integer.parseInt(stuff.get(2)),
 									enImg.getWidth(null), enImg.getHeight(null))
-									.contains(new Point(x + m.x, y + m.y))) {
+									.contains(new Point(x + m.x, y + m.y-100))) {
 								enemies.remove(c);
 								c--;
 							}
@@ -1012,8 +1012,10 @@ if(returnVal!=null){
 						Image pImg = new ImageIcon(getClass().getResource(
 								stuff.get(2))).getImage();
 						String to = "to " + stuff.get(3);
-g2d.drawImage(pImg, px-x, py-y, mapEdit);
-g2d.drawString(to, px-x, py-y);
+						g2d.setFont(MOUSE);
+						g2d.setColor(PURPLE);
+g2d.drawImage(pImg, px-x, py-y-100, mapEdit);
+g2d.drawString(to, px-x, py-y-100);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -1053,12 +1055,12 @@ g2d.drawString(to, px-x, py-y);
 						
 						if (enPre) {
 							g2d.drawString("Portal",
-									((int) ((m.x + x) / 100) * 100) + 50 - x,
-									((int) ((m.y + y) / 100) * 100) + 50 - y);
+									((int) ((m.x + x) / 100) * 100) + 25 - x,
+									((int) ((m.y + y) / 100) * 100) + 25 - y);
 						} else {
 							g2d.drawString("Portal",
-									((int) ((m.x + x) / 50) * 50 - x),
-									((int) ((m.y + y) / 50) * 50 - y));
+									((int) ((m.x + x) / 50) * 50+25 - x),
+									((int) ((m.y + y) / 50) * 50+25 - y));
 						}
 						
 					}
