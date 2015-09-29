@@ -274,7 +274,7 @@ int selEn;
 								}
 							}
 							Point m = MouseInfo.getPointerInfo().getLocation();
-							if((int) ((y + m.getY() - 10) / 100) >0&&(int) ((y + m.getY() - 10) / 100) + 2<strings.length&&(int) ((x + m.getX() + 10) / 100)>0&&(int) ((x + m.getX() + 10) / 100)+1<maxWidth)
+							if((int) ((y + m.getY() - 10) / 100)+1 >0&&(int) ((y + m.getY() - 10) / 100) + 2<strings.length-1&&(int) ((x + m.getX() + 10) / 100)>0&&(int) ((x + m.getX() + 10) / 100)+1<maxWidth)
 							{
 							String s = strings[(int) ((y + m.getY() - 10) / 100) + 2];
 							s = s.substring(0,
@@ -640,7 +640,10 @@ if(returnVal!=null){
 										&& ny > -100 && ny < this.getHeight())) {
 
 							char theChar = strings[cA].charAt(c);
-							if(theChar!='I')
+							if(theChar=='I'){
+								g2d.setColor(Color.white);
+								g2d.fill(new Rectangle(nx, ny, 100, 100));
+							}else
 							switch (getTexturePack()) {
 							case 'D':// Start desert
 								switch (theChar) {
@@ -1931,17 +1934,20 @@ case 'r'://security
 	public void addRowEnd() {
 		String[] nStrings = new String[strings.length + 1];
 		int ml = 0;
-		for (int c = 0; c < strings.length; c++) {
+		for (int c = 0; c < strings.length-1; c++) {
 			nStrings[c] = strings[c];
 			if (strings[c].length() > ml) {
 				ml = strings[c].length();
 			}
 		}
 		String addString = "";
-		for (int c = 0; c < ml; c++) {
+		addString += 'I';
+		for (int c = 1; c < ml-1; c++) {
 			addString += '1';
 		}
-		nStrings[strings.length] = addString;
+		addString += 'I';
+		nStrings[nStrings.length-2] = addString;
+		nStrings[nStrings.length-1]=strings[strings.length-1];
 		strings = nStrings;
 	}
 
@@ -1950,8 +1956,8 @@ case 'r'://security
 		int ml = 0;
 		int cA = 0;
 
-		int theRow = (int) ((y + (this.getHeight() / 2)) / 100);
-		for (int c = 0; c < strings.length; c++, cA++) {
+		int theRow = (int) ((y + (this.getHeight() / 2)) / 100)+2;
+		for (int c = 0; c < strings.length-0; c++, cA++) {
 
 			if (strings[c].length() > ml) {
 				ml = strings[c].length();
@@ -1964,39 +1970,50 @@ case 'r'://security
 
 		}
 		String addString = "";
-		for (int c = 0; c < ml; c++) {
+		addString += 'I';
+		for (int c = 1; c < ml-1; c++) {
 			addString += '1';
 		}
+		addString += 'I';
 		nStrings[theRow] += addString;
 
 		strings = nStrings;
 	}
 
 	public void addColEnd() {
-		for (int c = 0; c < strings.length; c++) {
-			strings[c] += '1';
+		strings[1] += 'I';
+		
+		for (int c = 2; c < strings.length-1; c++) {
+			strings[c] =strings[c].substring(0, strings[c].length()-1)+'1'+strings[c].substring(strings[c].length()-1);
 		}
-	}
+		strings[strings.length-1] +="I";
+				}
 
 	public void addColMid() {
 
-		int block = (int) ((x + (this.getWidth() / 2)) / 100) - 1;
-		for (int c = 0; c < strings.length; c++) {
+		int block = (int) ((x + (this.getWidth() / 2)) / 100);
+		strings[1]+="I";
+		for (int c = 2; c < strings.length-1; c++) {
 			strings[c] = strings[c].substring(0, block) + "1"
 					+ strings[c].substring(block);
 		}
+		strings[strings.length-1]+="I";
 	}
 
 	public void remRowEnd() {
 		String[] nStrings = new String[strings.length - 1];
 		int ml = 0;
-		for (int c = 0; c < nStrings.length; c++) {
+		for (int c = 0; c <nStrings.length-1; c++) {
+			
 			nStrings[c] = strings[c];
 			if (strings[c].length() > ml) {
 				ml = strings[c].length();
 			}
 		}
-
+nStrings[nStrings.length-1]="";
+for(int c=0;c<ml;c++){
+	nStrings[nStrings.length-1]+="I";
+}
 		strings = nStrings;
 	}
 
@@ -2004,7 +2021,7 @@ case 'r'://security
 		String[] nStrings = new String[strings.length - 1];
 
 		int cA = 0;
-		int theRow = (int) ((y - 1 + (this.getHeight() / 2)) / 100);
+		int theRow = (int) ((y - 1 + (this.getHeight() / 2)) / 100)+2;
 		for (int c = 0; c < strings.length; c++) {
 
 			if (theRow != c) {
@@ -2018,15 +2035,15 @@ case 'r'://security
 	}
 
 	public void remColEnd() {
-		for (int c = 0; c < strings.length; c++) {
-			strings[c] = strings[c].substring(0, strings[c].length() - 1);
+		for (int c = 1; c < strings.length; c++) {
+			strings[c] = strings[c].substring(0, strings[c].length() - 2)+"I";
 		}
 	}
 
 	public void remColMid() {
 
 		int block = (int) ((x + (this.getWidth() / 2)) / 100);
-		for (int c = 0; c < strings.length; c++) {
+		for (int c = 1; c < strings.length; c++) {
 			strings[c] = strings[c].substring(0, block - 1)
 					+ strings[c].substring(block);
 		}
