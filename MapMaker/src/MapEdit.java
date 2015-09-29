@@ -70,7 +70,7 @@ public class MapEdit extends JFrame {
 	boolean zoom = false;
 	boolean choosing = false;
 	final int MAXBLOCKS = 2;
-
+int selEn;
 	public MapEdit(String name, String project) {
 		// TODO Auto-generated constructor stub
 
@@ -88,7 +88,9 @@ public class MapEdit extends JFrame {
 				+ "Q/Middle Mouse Button: change enemy placement precision\n"
 				+ "R: delete enemy\n" + "Z: zoom out/back\n"
 				+ "X: remove (Opens Menu)\n" + "C: add (Opens Menu)\n"
-				+ "I: info\n" + "T: change texture pack");
+				+ "I: info\n" 
+				+ "T: change texture pack\n"
+				+ "P: Build/close paths");
 		loadS();
 
 		// TODO Auto-generated method stub
@@ -124,7 +126,8 @@ public class MapEdit extends JFrame {
 											+ "X: remove (Opens Menu)\n"
 											+ "C: add (Opens Menu)\n"
 											+ "I: info\n"
-											+ "T: change texture pack");
+											+ "T: change texture pack\n"
+											+ "P: Build/close paths");
 				} else if (key == KeyEvent.VK_T) {
 					String[] options = { "cancel", "Grassy", "Desert", "Snowy",
 							"Island", "Volcano" };
@@ -273,12 +276,12 @@ public class MapEdit extends JFrame {
 							Point m = MouseInfo.getPointerInfo().getLocation();
 							if((int) ((y + m.getY() - 10) / 100) >0&&(int) ((y + m.getY() - 10) / 100) + 2<strings.length&&(int) ((x + m.getX() + 10) / 100)>0&&(int) ((x + m.getX() + 10) / 100)+1<maxWidth)
 							{
-							String s = strings[(int) ((y + m.getY() - 10) / 100) + 1];
+							String s = strings[(int) ((y + m.getY() - 10) / 100) + 2];
 							s = s.substring(0,
 									(int) ((x + m.getX() + 10) / 100))
 									+ selChar
 									+ s.substring((int) ((x + m.getX() + 10) / 100) + 1);
-						strings[(int) ((y - 10 + m.getY()) / 100) + 1] = s;
+						strings[(int) ((y - 10 + m.getY()) / 100) + 2] = s;
 						}} else if (blocks == 1) {
 
 							Point m = MouseInfo.getPointerInfo().getLocation();
@@ -287,7 +290,7 @@ public class MapEdit extends JFrame {
 								sen = 50;
 							}
 							int theX = ((int) ((m.x + x) / sen) * sen);
-							int theY = ((int) ((m.y + y) / sen) * sen);
+							int theY = ((int) ((m.y + y) / sen) * sen)+200;
 							if (!enPre) {
 								theX -= 50;
 								theY -= 50;
@@ -296,7 +299,14 @@ public class MapEdit extends JFrame {
 									+ "," + getSelString() + "," + selFlying()
 									+ "," + selHealth() + (selDelay() != null ? ","
 									+ selDelay()
-									: "")));
+									: "")
+									+
+									  (selDelay2() != null ? ","
+									+ selDelay2()
+									: "")+
+									(selDelay3() != null ? ","
+											+ selDelay3()
+											: "")));
 						} else if (blocks == 2) {
 							Point m = MouseInfo.getPointerInfo().getLocation();
 							int sen = 100;
@@ -304,34 +314,113 @@ public class MapEdit extends JFrame {
 								sen = 50;
 							}
 							int theX = ((int) ((m.x + x) / sen) * sen);
-							int theY = ((int) ((m.y + y) / sen) * sen)+100;
+							int theY = ((int) ((m.y + y) / sen) * sen)+200;
 
 							String returnVal = JOptionPane.showInputDialog(
 									mapEdit, "What is the name of the map");
 if(returnVal!=null){
 							portals.add(theX + "," + theY + ","
-									+ "images/portal1.png" + "," + returnVal + ","
-									+ 0// Run.removeExtension(chooser.getSelectedFile().toString()+","+Integer.parseInt(JOptionPane.showInputDialog(mapEdit,
+ + returnVal + ","
+									+ 0
+									+","+"normal"// Run.removeExtension(chooser.getSelectedFile().toString()+","+Integer.parseInt(JOptionPane.showInputDialog(mapEdit,
 										// "How many collectibles"))
 							);
 						}}
+						
+						 else if (blocks == 3) {
+								Point m = MouseInfo.getPointerInfo().getLocation();
+								
+								ArrayList<String> stuff = new ArrayList<String>();// should
+								// have
+								// 5
+								String currentS = "";
+								for (int c2 = 0; c2 < enemies.get(selEn).length(); c2++) {
+
+									if (enemies.get(selEn).charAt(c2) == ',') {
+										stuff.add(currentS);
+										currentS = "";
+
+									} else {
+										currentS += enemies.get(selEn).charAt(c2);
+									}
+								}
+								if (currentS != "") {
+									stuff.add(currentS);
+								}
+								try {
+									int px = Integer.parseInt(stuff.get(1));
+									int py = Integer.parseInt(stuff.get(2));
+									Image pImg = new ImageIcon(getClass().getResource(
+											stuff.get(3))).getImage();
+									int stuffG=6;
+									if(cop(enemies.get(selEn).charAt(0))==true)
+										stuffG=7;
+									
+									//System.out.println(stuffG);
+									if(stuff.size()>stuffG){
+									int[][]points=createArray(stuff.get(stuffG));
+									if(points.length>0){
+									int theX = ((int) ((m.x + x) / 100));
+								int theY = ((int) ((m.y + y) / 100) )+2;
+							
+								int newX=((int) ((px) / 100) );
+								int newY=((int) ((py) / 100) );
+								
+								for(int c=0;c<points.length;c++){
+									newX+=points[c][0];
+									newY+=points[c][1];
+								}
+									if(//(newX!=theX&&newY!=theY)
+											//||
+											(newX==theX&&newY==theY)
+											){
+										//System.out.println("no");
+										//System.out.println(newX-theX);
+										//System.out.println(newY-theY);
+									}else{
+										theX-=newX;
+										theY-=newY;
+										if((theX<2&&theX>-2)&&(theY<2&&theY>-2)){
+										stuff.set(stuffG, stuff.get(stuffG)+"'"+theX+"'"+theY);
+										
+										String s="";
+										for(int c=0;c<stuff.size();c++){
+											if(c!=0)
+												s+=",";
+											s+=stuff.get(c);
+										}
+										enemies.set(selEn, s);
+									//System.out.println("yes");
+									}}
+									}}
+								} catch (Exception e2) {
+									e2.printStackTrace();
+								}
+								
+	
+								
+							}
 					} else if (key == KeyEvent.VK_DOWN) {
 						selNum++;
 					} else if (key == KeyEvent.VK_UP) {
 						selNum--;
 					} else if (key == KeyEvent.VK_E) {
+						if(blocks!=3){
 						blocks++;
 						if (blocks > MAXBLOCKS) {
 							blocks = 0;
 						}
 						selNum = 0;
-						selChar = 'S';
+						selChar = 'S';}
 					} else if (key == KeyEvent.VK_Q) {
 						enPre = !enPre;
 
 					}
 
 					else if (key == KeyEvent.VK_R) {
+						if(blocks==3){
+							blocks=1;
+						}
 						Point m = MouseInfo.getPointerInfo().getLocation();
 						for (int c = 0; c < enemies.size(); c++) {
 							ArrayList<String> stuff = new ArrayList<String>();// should
@@ -353,7 +442,7 @@ if(returnVal!=null){
 							if (new Rectangle(Integer.parseInt(stuff.get(1)),
 									Integer.parseInt(stuff.get(2)),
 									enImg.getWidth(null), enImg.getHeight(null))
-									.contains(new Point(x + m.x, y + m.y-100))) {
+									.contains(new Point(x + m.x, y + m.y+200))) {
 								enemies.remove(c);
 								c--;
 							}
@@ -374,18 +463,58 @@ if(returnVal!=null){
 								} else {
 									currentS += portals.get(c).charAt(c2);
 								}
+							}Image enImg;
+							if(stuff.get(3).equals("normal")){
+						 enImg = new ImageIcon(getClass().getResource(
+									"images/portal1.png")).getImage();}
+							else{
+								enImg = new ImageIcon(getClass().getResource(
+										"images/icon.png")).getImage();
 							}
-							Image enImg = new ImageIcon(getClass().getResource(
-									stuff.get((2)))).getImage();
 							if (new Rectangle(Integer.parseInt(stuff.get(0)),
 									Integer.parseInt(stuff.get(1)),
 									enImg.getWidth(null), enImg.getHeight(null))
-									.contains(new Point(x + m.x, y + m.y))) {
+									.contains(new Point(x + m.x, y + m.y+200))) {
 								portals.remove(c);
 								c--;
 							}
 						}
 					}
+					else if (key == KeyEvent.VK_P) {
+						if(blocks==3){
+							blocks=0;
+						}else{
+						Point m = MouseInfo.getPointerInfo().getLocation();
+						for (int c = 0; c < enemies.size(); c++) {
+							ArrayList<String> stuff = new ArrayList<String>();// should
+																				// have
+																				// 5
+							String currentS = "";
+							for (int c2 = 0; c2 < enemies.get(c).length(); c2++) {
+
+								if (enemies.get(c).charAt(c2) == ',') {
+									stuff.add(currentS);
+									currentS = "";
+
+								} else {
+									currentS += enemies.get(c).charAt(c2);
+								}
+							}
+							Image enImg = new ImageIcon(getClass().getResource(
+									stuff.get(3))).getImage();
+							if (new Rectangle(Integer.parseInt(stuff.get(1)),
+									Integer.parseInt(stuff.get(2)),
+									enImg.getWidth(null), enImg.getHeight(null))
+									.contains(new Point(x + m.x, y + m.y+200))) {
+								selEn=c;blocks=3;
+								break;
+								
+							}
+						}
+
+						
+						
+					}}
 				}
 			}
 
@@ -505,7 +634,7 @@ if(returnVal!=null){
 					for (int c = 0; c < strings[cA].length(); c++) {
 
 						int nx = c * 100 - x;
-						int ny = (cA - 1) * 100 - y;
+						int ny = (cA - 1) * 100 - y-100;
 						if (zoom
 								|| (nx > -100 && nx < this.getWidth()
 										&& ny > -100 && ny < this.getHeight())) {
@@ -976,7 +1105,24 @@ if(returnVal!=null){
 
 						Image enImg = new ImageIcon(getClass().getResource(
 								stuff.get(3))).getImage();
-						g2d.drawImage(enImg, enX - x, enY - y, mapEdit);
+						g2d.drawImage(enImg, enX - x, enY - y-200, mapEdit);
+						int stuffG=6;
+						if(cop(enemies.get(c).charAt(0))==true){
+							stuffG=7;
+							}
+					if((ch=='b'||ch=='p')&&stuff.size()>stuffG){
+						int addX=enX-x+50;
+						int addY=enY-y-150;
+						//System.out.println(stuff.get(stuffG));
+						int[][]points=createArray(stuff.get(stuffG));
+						//System.out.println(points.length);
+						g2d.setColor(Color.black);
+						for(int c3=0;c3<points.length;c3++){
+							g2d.drawLine(addX, addY, addX+(points[c3][0]*100), addY+(points[c3][1]*100));
+							addX+=(points[c3][0]*100);
+							addY+=(points[c3][1]*100);
+						}
+					}
 					} catch (IndexOutOfBoundsException ex) {
 						ex.printStackTrace();
 						enemies.remove(c);
@@ -1009,13 +1155,19 @@ if(returnVal!=null){
 					try {
 						int px = Integer.parseInt(stuff.get(0));
 						int py = Integer.parseInt(stuff.get(1));
-						Image pImg = new ImageIcon(getClass().getResource(
-								stuff.get(2))).getImage();
-						String to = "to " + stuff.get(3);
+						Image pImg;
+						if(stuff.get(4).equals("normal")){
+						pImg = new ImageIcon(getClass().getResource(
+								"images/portal1.png")).getImage();}
+						else{
+							pImg = new ImageIcon(getClass().getResource(
+									"images/icon.png")).getImage();
+						}
+						String to = "to " + stuff.get(2);
 						g2d.setFont(MOUSE);
 						g2d.setColor(PURPLE);
-g2d.drawImage(pImg, px-x, py-y-100, mapEdit);
-g2d.drawString(to, px-x, py-y-100);
+g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
+g2d.drawString(to, px-x, py-y-200);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -1056,15 +1208,24 @@ g2d.drawString(to, px-x, py-y-100);
 						if (enPre) {
 							g2d.drawString("Portal",
 									((int) ((m.x + x) / 100) * 100) + 25 - x,
-									((int) ((m.y + y) / 100) * 100) + 25 - y);
+									((int) ((m.y + y) / 100) * 100) + 50 - y);
 						} else {
 							g2d.drawString("Portal",
 									((int) ((m.x + x) / 50) * 50+25 - x),
-									((int) ((m.y + y) / 50) * 50+25 - y));
+									((int) ((m.y + y) / 50) * 50+50 - y));
 						}
 						
 					}
-
+					else if(blocks==3){
+						g2d.setColor(Color.black);
+						
+						
+							g2d.drawString("Path",
+									((int) ((m.x + x) / 100) * 100) + 25 - x,
+									((int) ((m.y + y) / 100) * 100) +50 - y);
+						
+						
+					}
 				}
 			}
 		};
@@ -1118,11 +1279,11 @@ g2d.drawString(to, px-x, py-y-100);
 					}
 
 				} else if (blocks == 1) {
-					if (selNum > 13) {
+					if (selNum > 17) {
 						selNum = 0;
 					}
 					if (selNum < 0) {
-						selNum = 13;
+						selNum = 17;
 					}
 					switch (selNum) {
 					case 0:
@@ -1168,6 +1329,18 @@ g2d.drawString(to, px-x, py-y-100);
 						break;
 					case 13:
 						selChar = 'I';
+						break;
+					case 14://backPath
+						selChar='R';
+						break;
+					case 15://security
+						selChar='r';
+						break;
+					case 16://Path
+						selChar='d';
+						break;
+					case 17://backSecurity
+						selChar='p';
 						break;
 					}
 				}
@@ -1565,6 +1738,14 @@ g2d.drawString(to, px-x, py-y-100);
 			return "images/enemies/unique/explosiveBox.png";
 		case 'I':
 			return "images/enemies/unique/invGhost.png";
+		case 'R'://backPath
+			return "images/enemies/unique/car1Right.png";
+		case 'r'://security
+			return "images/enemies/unique/paintRoller.png";
+		case 'd'://Path
+			return "images/enemies/unique/ducky.png";
+		case 'p'://backSecurity
+			return "images/enemies/unique/potato.png";
 		case 'B':
 		default:
 			return "images/enemies/unique/blob.png";
@@ -1609,12 +1790,36 @@ g2d.drawString(to, px-x, py-y-100);
 			return 'l';// SeeShootEnemy
 		case 'S':
 			return 's';// SecurityEnemy
+			
+		case 'R'://backPath
+			return'p';
+		case 'r'://security
+			return 'b';
+		case 'd'://Path
+			return 'p';
+		case 'p'://backSecurity
+			return 'b';
 		default:
 			return 'S';// StandEnemy
 		}
 
 	}
+	public boolean cop(char selChar) {
 
+		switch (selChar) {
+		
+case 'r'://security		
+case 'b':
+			return true;
+		
+		
+		
+
+		default:
+			return false;
+		}
+
+	}
 	public String selDelay() {
 
 		switch (selChar) {
@@ -1624,17 +1829,54 @@ g2d.drawString(to, px-x, py-y-100);
 		case '1':
 		case 'P':
 			return "75";
-
+case 'r'://security		
+		case 'p'://backSecurity
 		case 'S':
 			return "cop";
 		case 'D':
 			return "100";
+		
+		
+
 		default:
 			return null;
 		}
 
 	}
+	public String selDelay2(){
+		switch (selChar) {
+		
+		
+		
+		case 'r'://security
+		
+		case 'd'://Path
+			
+		case 'R'://backPath
+		case 'p'://backSecurity
+			return "0'0";
+		default:
+			return null;
+		}
+	}
+	public String selDelay3() {
 
+		switch (selChar) {
+		
+		
+			
+		case 'r'://security
+		
+		case 'd'://Path
+			return "F";
+		case 'R'://backPath
+		case 'p'://backSecurity
+			return "B";
+		default:
+			return null;
+		}
+
+	}
 	public char selFlying() {
 
 		switch (selChar) {
@@ -1663,6 +1905,14 @@ g2d.drawString(to, px-x, py-y-100);
 		case 'T':
 		case 'C':
 		case 'c':
+			case 'R'://backPath
+		
+		case 'r'://security
+		
+		case 'd'://Path
+		
+		case 'p'://backSecurity
+		
 			return 8;
 
 		case '1':
@@ -1671,6 +1921,8 @@ g2d.drawString(to, px-x, py-y-100);
 		case 'M':
 		case 'S':
 		case 'I':
+			
+	
 		default:
 			return 10;
 		}
@@ -1811,6 +2063,14 @@ g2d.drawString(to, px-x, py-y-100);
 			return "explosiveBox";
 		case 'I':
 			return "invertedGhost";
+		case 'R'://backPath
+			return "car1Right";
+		case 'r'://security
+			return "paintRoller";
+		case 'd'://Path
+			return "ducky";
+		case 'p'://backSecurity
+			return "potato";
 		default:
 			return "?";
 		}
@@ -1875,5 +2135,33 @@ g2d.drawString(to, px-x, py-y-100);
 	public char getTexturePack() {
 		return strings[0].charAt(0);
 
+	}
+	private int[][] createArray(String string) {
+		// TODO Auto-generated method stub
+
+		//System.out.println(string);
+		String[] split = string.split("\'");
+		int splitLength = split.length / 2;
+
+		int splitCounter = 0;
+		int p2;
+		int[][] toReturn = new int[splitLength][2];
+
+		for (int p1 = 0; p1 < splitLength; p1++) {
+
+			//System.out.println("In loop");
+			for (p2 = 0; p2 < toReturn[p1].length; p2++) {
+				toReturn[p1][p2] = Integer.parseInt(split[splitCounter]);
+				splitCounter++;
+			}
+		}
+
+//		for (int k = 0; k < toReturn.length; k++) {
+//			for (int c = 0; c < toReturn[k].length; c++)
+//				//System.out.print(toReturn[k][c] + " ");
+//			//System.out.println();
+//		}
+
+		return toReturn;
 	}
 }
