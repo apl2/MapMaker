@@ -357,14 +357,14 @@ public class MapMaker extends JFrame {
 				// Check bin for view
 				g2.drawImage(
 						new ImageIcon(getClass().getResource("images/view.png"))
-								.getImage(), 0, 0, this.getWidth(), this
+								.getImage(), 0, 0-mLoadL.getHeight(), mapMaker.getWidth(),mapMaker
 								.getHeight(), this);
 				g2.setColor(Color.BLACK);
 				int sizeForm = this.getWidth() / 25;
 				g2.setFont(new Font("sans", Font.PLAIN, sizeForm));
 				g2.drawString("Map Maker",
 						this.getWidth() / 2 - this.getWidth() / 10,
-						this.getHeight() / 2);
+						(mapMaker.getHeight() / 2)-mLoadL.getHeight());
 			}
 		};
 		this.add(drawPan, BorderLayout.CENTER);

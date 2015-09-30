@@ -166,16 +166,17 @@ public class Run extends JFrame {
 				Graphics2D g2 = (Graphics2D) g;
 				g2.clearRect(0, 0, this.getWidth(), this.getHeight());
 				// Check bin for view
+				
 				g2.drawImage(
 						new ImageIcon(getClass().getResource("images/view.png"))
-								.getImage(), 0, 0, this.getWidth(), this
+								.getImage(), 0, 0-list.getHeight(), run.getWidth(), run
 								.getHeight(), this);
 				g2.setColor(Color.BLACK);
 				int sizeForm = this.getWidth() / 25;
 				g2.setFont(new Font("sans", Font.PLAIN, sizeForm));
 				g2.drawString("Map Maker",
 						this.getWidth() / 2 - this.getWidth() / 10,
-						this.getHeight() / 2);
+						(run.getHeight() / 2)-list.getHeight());
 			}
 		};
 		drawPan.setFocusable(true);
