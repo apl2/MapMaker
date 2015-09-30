@@ -1325,9 +1325,9 @@ g2d.drawString(to, px-x, py-y-200);
 				// TODO Auto-generated method stub
 				if (blocks == 0) {
 					if (selNum < 0) {
-						selNum = 10;
+						selNum = 9;
 					}
-					if (selNum > 10) {
+					if (selNum > 9) {
 						selNum = 0;
 					}
 					switch (selNum) {
@@ -1352,16 +1352,14 @@ g2d.drawString(to, px-x, py-y-200);
 					case 6:
 						selChar = '*';
 						break;
+					
 					case 7:
-						selChar = '>';
-						break;
-					case 8:
 						selChar = '2';
 						break;
-					case 9:
+					case 8:
 						selChar = 'L';
 						break;
-					case 10:
+					case 9:
 						selChar = 'I';
 						break;
 					}
