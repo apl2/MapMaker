@@ -69,8 +69,9 @@ public class MapEdit extends JFrame {
 	ArrayList<String> enemies = new ArrayList<String>();
 	boolean zoom = false;
 	boolean choosing = false;
-	final int MAXBLOCKS = 2;
+	final int MAXBLOCKS = 3;
 int selEn;
+ArrayList<String>objects=new ArrayList<String>();
 	public MapEdit(String name, String project) {
 		// TODO Auto-generated constructor stub
 
@@ -112,6 +113,7 @@ int selEn;
 					MapMaker.saveStrings(strings, name, project);
 					MapMaker.saveStrings(enemies, nameWithE(), project);
 					MapMaker.saveStrings(portals, nameWithP(), project);
+					MapMaker.saveStrings(objects, nameWithO(), project);
 					mapEdit.dispose();
 				} else if (key == KeyEvent.VK_I) {
 					JOptionPane
@@ -326,8 +328,21 @@ if(returnVal!=null){
 										// "How many collectibles"))
 							);
 						}}
+						else if (blocks == 3) {
+							Point m = MouseInfo.getPointerInfo().getLocation();
+							int sen = 25;
+							if (!enPre) {
+								sen = 50;
+							}
+							int theX = ((int) ((m.x + x) / sen) * sen)+objectsAddX();
+							int theY = ((int) ((m.y + y) / sen) * sen)+200+objectsAddY();
+
 						
-						 else if (blocks == 3) {
+							objects.add(theX + "," + theY + ","+getSelStringO()+","+getObjectCollide()// Run.removeExtension(chooser.getSelectedFile().toString()+","+Integer.parseInt(JOptionPane.showInputDialog(mapEdit,
+										// "How many collectibles"))
+							);
+						}
+						 else if (blocks == MAXBLOCKS+1) {
 								Point m = MouseInfo.getPointerInfo().getLocation();
 								
 								ArrayList<String> stuff = new ArrayList<String>();// should
@@ -405,7 +420,7 @@ if(returnVal!=null){
 					} else if (key == KeyEvent.VK_UP) {
 						selNum--;
 					} else if (key == KeyEvent.VK_E) {
-						if(blocks!=3){
+						if(blocks!=MAXBLOCKS+1){
 						blocks++;
 						if (blocks > MAXBLOCKS) {
 							blocks = 0;
@@ -418,7 +433,7 @@ if(returnVal!=null){
 					}
 
 					else if (key == KeyEvent.VK_R) {
-						if(blocks==3){
+						if(blocks==MAXBLOCKS+1){
 							blocks=1;
 						}
 						Point m = MouseInfo.getPointerInfo().getLocation();
@@ -479,6 +494,32 @@ if(returnVal!=null){
 								c--;
 							}
 						}
+						for (int c = 0; c < objects.size(); c++) {
+							ArrayList<String> stuff = new ArrayList<String>();// should
+																				// have
+																				// 5
+							String currentS = "";
+							for (int c2 = 0; c2 <objects.get(c).length(); c2++) {
+
+								if (objects.get(c).charAt(c2) == ',') {
+									stuff.add(currentS);
+									currentS = "";
+
+								} else {
+									currentS += objects.get(c).charAt(c2);
+								}
+							}
+							stuff.add(currentS);
+							Image enImg=new ImageIcon(getClass().getResource(stuff.get(2))).getImage();
+							
+							if (new Rectangle(Integer.parseInt(stuff.get(0)),
+									Integer.parseInt(stuff.get(1)),
+									enImg.getWidth(null), enImg.getHeight(null))
+									.contains(new Point(x + m.x, y + m.y+200))) {
+								objects.remove(c);
+								c--;
+							}
+						}
 					}
 					else if (key == KeyEvent.VK_P) {
 						if(blocks==3){
@@ -506,7 +547,7 @@ if(returnVal!=null){
 									Integer.parseInt(stuff.get(2)),
 									enImg.getWidth(null), enImg.getHeight(null))
 									.contains(new Point(x + m.x, y + m.y+200))) {
-								selEn=c;blocks=3;
+								selEn=c;blocks=MAXBLOCKS+1;
 								break;
 								
 							}
@@ -589,6 +630,7 @@ if(returnVal!=null){
 				MapMaker.saveStrings(strings, name, project);
 				MapMaker.saveStrings(enemies, nameWithE(), project);
 				MapMaker.saveStrings(portals, nameWithP(), project);
+				MapMaker.saveStrings(objects, nameWithO(), project);
 			}
 
 			@Override
@@ -641,8 +683,8 @@ if(returnVal!=null){
 
 							char theChar = strings[cA].charAt(c);
 							if(theChar=='I'){
-								g2d.setColor(Color.white);
-								g2d.fill(new Rectangle(nx, ny, 100, 100));
+//								g2d.setColor(Color.white);
+//								g2d.fill(new Rectangle(nx, ny, 100, 100));
 							}else
 							switch (getTexturePack()) {
 							case 'D':// Start desert
@@ -1137,6 +1179,35 @@ if(returnVal!=null){
 						}
 					}
 				}
+				for(int c=0;c<objects.size();c++){
+					ArrayList<String> stuff = new ArrayList<String>();// should
+					// have
+					// 5
+					String currentS = "";
+					for (int c2 = 0; c2 < objects.get(c).length(); c2++) {
+
+						if (objects.get(c).charAt(c2) == ',') {
+							stuff.add(currentS);
+							currentS = "";
+
+						} else {
+							currentS += objects.get(c).charAt(c2);
+						}
+					}
+					if (currentS != "") {
+						stuff.add(currentS);
+					}
+					try {
+						int px = Integer.parseInt(stuff.get(0));
+						int py = Integer.parseInt(stuff.get(1));
+						Image pImg= new ImageIcon(getClass().getResource(
+								stuff.get(2))).getImage();
+g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
 				for (int c = 0; c < portals.size(); c++) {
 					ArrayList<String> stuff = new ArrayList<String>();// should
 					// have
@@ -1220,6 +1291,20 @@ g2d.drawString(to, px-x, py-y-200);
 						
 					}
 					else if(blocks==3){
+						g2d.setColor(Color.MAGENTA);
+						
+						if (enPre) {
+							g2d.drawString(getSelShowStringObjects(),
+									((int) ((m.x + x) / 25) * 25) + 25 - x,
+									((int) ((m.y + y) / 25) * 25) + 50 - y);
+						} else {
+							g2d.drawString(getSelShowStringObjects(),
+									((int) ((m.x + x) / 50) * 50+25 - x),
+									((int) ((m.y + y) / 50) * 50+50 - y));
+						}
+						
+					}
+					else if(blocks==MAXBLOCKS+1){
 						g2d.setColor(Color.black);
 						
 						
@@ -1344,6 +1429,28 @@ g2d.drawString(to, px-x, py-y-200);
 						break;
 					case 17://backSecurity
 						selChar='p';
+						break;
+					}
+				}
+				else if (blocks == 3) {
+					if (selNum > 3) {
+						selNum = 0;
+					}
+					if (selNum < 0) {
+						selNum = 3;
+					}
+					switch (selNum) {
+					case 0:
+						selChar='L';
+						break;
+					case 1:
+						selChar='l';
+						break;
+					case 2:
+						selChar='P';
+						break;
+					case 3:
+						selChar='W';
 						break;
 					}
 				}
@@ -1646,6 +1753,27 @@ g2d.drawString(to, px-x, py-y-200);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+		try {
+
+			File saveFile = new File("bin/projects/" + project + "/"
+					+ nameWithO());
+
+			if (saveFile.exists()) {
+
+				BufferedReader reader = new BufferedReader(new FileReader(
+						saveFile));
+				String line;
+
+				while ((line = reader.readLine()) != null) {
+					objects.add(line);
+
+				}
+				reader.close();
+
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	public String nameWithE() {
@@ -1687,7 +1815,25 @@ g2d.drawString(to, px-x, py-y-200);
 		fName += extension;
 		return fName;
 	}
+	public String nameWithO() {
+		// TODO Auto-generated method stub
+		String fName = "";
+		String extension = "";
+		boolean ext = false;
+		for (int c = 0; c < name.length(); c++) {
+			if (ext) {
+				extension += name.charAt(c);
+			} else if (name.charAt(c) == '.') {
+				ext = true;
+				fName += "O.";
+			} else {
+				fName += name.charAt(c);
+			}
+		}
 
+		fName += extension;
+		return fName;
+	}
 	public ImageIcon createImageIcon(String path, String description) {
 		java.net.URL imgURL = getClass().getResource(path);
 		if (imgURL != null) {
@@ -1755,7 +1901,21 @@ g2d.drawString(to, px-x, py-y-200);
 		}
 
 	}
+	private String getSelStringO() {
 
+		switch (selChar) {
+		case 'L':
+			return"images/objects/Leaves.png";
+		case 'l':
+			return"images/objects/LeavesSc.png";
+		case 'P':
+			return "images/objects/PTree0.png";
+		default:
+		case 'W':
+			return "images/objects/Wood.png";
+		}
+
+	}
 	private char getSelChar() {
 
 		switch (selChar) {
@@ -2132,7 +2292,22 @@ for(int c=0;c<ml;c++){
 		}
 
 	}
+	private String getSelShowStringObjects() {
 
+		switch (selChar) {
+		case 'L':
+			return "Leaves";
+		case 'l':
+			return "LeavesScattered";
+		case 'P':
+			return "PalmTree";
+		case 'W':
+			return "Wood";
+		default:
+			return "?";
+		}
+
+	}
 	public Color getTextureBack() {
 		switch (strings[0].charAt(0)) {
 		case 'D':
@@ -2180,5 +2355,45 @@ for(int c=0;c<ml;c++){
 //		}
 
 		return toReturn;
+	}
+	
+	public int objectsAddX(){
+		switch(selChar){
+		case 'L':
+			return 35;
+		case 'l':
+			return 10;
+		case 'W':
+			return 40;
+		
+		case 'P':
+		default:
+			return 0;
+		}
+	}
+	public int objectsAddY(){
+		switch(selChar){
+		case 'L':
+			return 35;
+		case 'l':
+			return 10;
+		case 'W':
+			return 40;
+		
+		case 'P':
+		default:
+			return 0;
+		}
+	}
+	public boolean getObjectCollide(){
+		switch(selChar){
+		case 'P':
+			return true;
+		case 'L':
+		case 'l':
+		case 'W':
+		default:
+			return false;
+		}
 	}
 }

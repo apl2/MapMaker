@@ -276,6 +276,8 @@ public class MapMaker extends JFrame {
 											+ "E.txt", project);
 									saveStrings(new String[0], project
 											+ "P.txt", project);
+									saveStrings(new String[0], project
+											+ "O.txt", project);
 								} catch (Exception ex) {
 									JOptionPane.showMessageDialog(mapMaker,
 											ex.getMessage());
@@ -551,7 +553,7 @@ public class MapMaker extends JFrame {
 							public boolean accept(File dir, String name) {
 								// TODO Auto-generated method stub
 								return name.toLowerCase().endsWith(".txt")
-										&& !name.endsWith("E.txt")&& !name.endsWith("P.txt");
+										&& !name.endsWith("E.txt")&& !name.endsWith("P.txt")&& !name.endsWith("O.txt");
 							}
 						});
 				mLoadM.removeAllElements();
