@@ -522,7 +522,7 @@ if(returnVal!=null){
 						}
 					}
 					else if (key == KeyEvent.VK_P) {
-						if(blocks==3){
+						if(blocks==MAXBLOCKS+1){
 							blocks=0;
 						}else{
 						Point m = MouseInfo.getPointerInfo().getLocation();
