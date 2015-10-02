@@ -30,6 +30,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+
+
 public class MapEdit extends JFrame {
 
 	public static final Color NIGHT_SKY = // new Color(24, 24, 61);
@@ -52,6 +54,13 @@ public class MapEdit extends JFrame {
 	public static final Color DESERT_BLUE = new Color(100, 200, 255);
 	public static final Color BLUE = new Color(50, 100, 255);
 	public static final Color LIGHT_BROWN = new Color(175, 75, 0);
+	
+	public static final Color DARK_GREEN = new Color(30, 72, 30);
+	public static final Color DRAB_BROWN = new Color(68, 21, 15);
+	public static final Color LIGHT_SAND_BLUE = new Color(63, 85, 116);
+	public static final Color SAND_BLUE = new Color(48, 65, 88);
+	public static final Color DARK_SAND_BLUE = new Color(32, 44, 60);
+	public static final Color SAND_RED = new Color(155, 36, 36);
 	String name;
 	MapEdit mapEdit = this;
 	JPanel drawPan;
@@ -132,12 +141,12 @@ ArrayList<String>objects=new ArrayList<String>();
 											+ "P: Build/close paths");
 				} else if (key == KeyEvent.VK_T) {
 					String[] options = { "cancel", "Grassy", "Desert", "Snowy",
-							"Island", "Volcano" };
+							"Island", "Volcano","Haunted" };
 					int sel = JOptionPane.showOptionDialog(mapEdit,
 							"Which texture pack do you want?", "Texture Pack",
 							JOptionPane.CANCEL_OPTION,
 							JOptionPane.DEFAULT_OPTION, null, options, 0);
-					if (sel != 0) {
+					if (sel > 0) {
 						strings[0] = options[sel];
 					}
 				} else if (key == KeyEvent.VK_C && zoom) {
@@ -1003,7 +1012,7 @@ if(returnVal!=null){
 								case 'C':
 									g2d.setColor(getColor(theChar));
 									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(Color.GRAY);
+									g2d.setColor(Color.LIGHT_GRAY);
 									g2d.drawLine(nx, ny, nx + 100, ny + 100);
 									g2d.drawLine(nx + 100, ny, nx, ny + 100);
 									g2d.drawLine(nx, ny + 100 / 2, nx + 100,
@@ -1038,7 +1047,106 @@ if(returnVal!=null){
 									break;
 								}
 								break;
+								// TODO Haunted Draw
+							case 'H':
+								switch (theChar) {
+								case 'O':
+									g2d.setColor(getColor(theChar));
+									g2d.fill(new Rectangle(nx, ny, 100, 100));
+									g2d.setColor(LIGHT_SAND_BLUE);
+									g2d.fill(new Rectangle(nx + 30, ny + 15, 4, 10));
+									g2d.fill(new Rectangle(nx + 80, ny + 20, 4, 10));
+									g2d.fill(new Rectangle(nx + 20, ny + 80, 4, 10));
+									g2d.setColor(DARK_SAND_BLUE);
+									g2d.fill(new Rectangle(nx + 70, ny + 30, 5, 5));
+									g2d.fill(new Rectangle(nx + 40, ny + 70, 5, 5));
+									g2d.fill(new Rectangle(nx + 10, ny + 15, 3, 3));
+									g2d.draw(new Rectangle(nx, ny, 100, 100));
+									g2d.setFont(MOUSE);
+									g2d.setColor(Color.BLACK);
+									g2d.drawString("spawn", nx + 30, ny + 40);
+									break;
+								case '1':
+									g2d.setColor(getColor(theChar));
+									g2d.fill(new Rectangle(nx, ny, 100, 100));
+									g2d.setColor(LIGHT_SAND_BLUE);
+									g2d.fill(new Rectangle(nx + 30, ny + 15, 4, 10));
+									g2d.fill(new Rectangle(nx + 80, ny + 20, 4, 10));
+									g2d.fill(new Rectangle(nx + 20, ny + 80, 4, 10));
+									g2d.setColor(DARK_SAND_BLUE);
+									g2d.fill(new Rectangle(nx + 70, ny + 30, 5, 5));
+									g2d.fill(new Rectangle(nx + 40, ny + 70, 5, 5));
+									g2d.fill(new Rectangle(nx + 10, ny + 15, 3, 3));
+									g2d.draw(new Rectangle(nx, ny, 100, 100));
+									break;
+								case 'L':
+									g2d.setColor(getColor(theChar));
+									g2d.fill(new Rectangle(nx, ny, 100, 100));
+									g2d.setColor(LIGHT_SAND_BLUE);
+									g2d.fill(new Rectangle(nx, ny + 30, 40, 4));
+									g2d.fill(new Rectangle(nx + 80, ny + 76, 20, 4));
+									g2d.fill(new Rectangle(nx, ny + 80, 80, 4));
+									g2d.fill(new Rectangle(nx + 40, ny + 26, 60, 4));
+									break;
+								case 'W':
+									g2d.setColor(getColor(theChar));
+									g2d.fill(new Rectangle(nx, ny, 100, 100));
+									g2d.setColor(LIGHT_SAND_BLUE);
+									g2d.draw(new Rectangle(nx, ny, 100, 100));
+									break;
 
+								case 'C':
+									g2d.setColor(getColor(theChar));
+									g2d.fill(new Rectangle(nx, ny, 100, 100));
+									g2d.setColor(Color.LIGHT_GRAY);
+									g2d.drawLine(nx, ny, nx + 100, ny + 100);
+									g2d.drawLine(nx + 100, ny, nx, ny + 100);
+									g2d.drawLine(nx, ny + 100 / 2, nx, ny + 100 / 2);
+									g2d.drawLine(nx + 100 / 2, ny, nx + 100 / 2, ny + 100);
+									break;
+
+								case '>':
+
+									g2d.setFont(BLOCK);
+									g2d.setColor(getColor(theChar));
+									g2d.fill(new Rectangle(nx, ny, 100, 100));
+									g2d.setColor(Color.BLUE);
+									g2d.drawString("<->", nx, ny + 70);
+									g2d.draw(getBounds());
+									break;
+								case '2':
+									g2d.setColor(getColor(theChar));
+									g2d.fill(new Rectangle(nx, ny, 100, 100));
+									g2d.setColor(SAND_BLUE);
+									g2d.fill(new Rectangle(nx + 70, ny + 65, 10, 10));
+									g2d.fill(new Rectangle(nx + 30, ny + 30, 15, 15));
+									g2d.fill(new Rectangle(nx + 65, ny + 20, 15, 15));
+									g2d.fill(new Rectangle(nx + 50, ny + 70, 20, 20));
+									g2d.draw(new Rectangle(nx, ny, 100, 100));
+									break;
+
+								case 'R':
+									g2d.setColor(getColor(theChar));
+									g2d.fill(new Rectangle(nx, ny, 100, 100));
+									g2d.setColor(Color.BLACK);
+
+									// Brick pattern
+									int i;
+									for (i = 0; i < 10; i++)
+										g2d.fill(new Rectangle(nx, ny + (10 * i) - (i != 0 ? 2 : 0), 100, i != 0 ? 5 : 3));
+									
+									g2d.fill(new Rectangle(nx, ny + 98, 100, 2));
+									
+									for (i = 0; i < 6; i++)
+										g2d.fill(new Rectangle(nx + (20 * i) - (i != 0 ? 2 : 0), ny, i != 0 ? 5 : 3, 100));
+									break;
+
+								default:
+									g2d.setColor(getColor(theChar));
+									g2d.fill(new Rectangle(nx, ny, 100, 100));
+									break;
+								}
+								break;
 							case 'G':
 							default:// Start grassy
 								switch (theChar) {
@@ -1529,6 +1637,7 @@ g2d.drawString(to, px-x, py-y-200);
 		case 'D':
 			switch (type) {
 			case '2':
+				return Color.BLACK;
 			case '1':
 			case 'O':
 				return OFF_TAN;
@@ -1623,9 +1732,10 @@ g2d.drawString(to, px-x, py-y-200);
 			case 'P':
 				return Color.BLACK;
 			case 'R':
+				case 'C':
 				return Color.GRAY;
 			case '>':
-			case 'C':
+			
 				return Color.LIGHT_GRAY;
 
 			case '*':
@@ -1634,6 +1744,33 @@ g2d.drawString(to, px-x, py-y-200);
 			default:
 				System.err.println("Type " + type
 						+ " does not have a color case");
+				return Color.RED;
+			}
+		case 'H':
+			switch (type) {
+			case '2':
+				return DRAB_BROWN;
+			case '1':
+			case 'O':
+				return SAND_BLUE;
+			case 'L':
+				return BLUE;
+			case 'W':
+				return DARK_SAND_BLUE;
+			case 'P':
+				return Color.BLACK;
+			case 'R':
+				return SAND_RED;
+			case '>':
+				return Color.LIGHT_GRAY;
+			case 'C':
+				return DARK_GREEN;
+
+			case '*':
+				return LIGHT_BLUE;
+
+			default:
+				System.err.println("Type " + type + " does not have a color case");
 				return Color.RED;
 			}
 		case 'G':
@@ -2064,9 +2201,9 @@ case 'r'://security
 			return 6;
 
 		case 'T':
-		case 'C':
+		
 		case 'c':
-			case 'R'://backPath
+			//backPath
 		
 		case 'r'://security
 		
@@ -2075,7 +2212,10 @@ case 'r'://security
 		case 'p'://backSecurity
 		
 			return 8;
-
+case 'R':
+case 'C':
+	return -10;
+	
 		case '1':
 		case 'B':
 		case 'G':
@@ -2316,6 +2456,8 @@ for(int c=0;c<ml;c++){
 			return Color.WHITE;
 		case 'V':
 			return Color.DARK_GRAY;
+		case 'H':
+			return SAND_BLUE;
 		case 'G':
 		default:
 			return OFF_GREEN;
