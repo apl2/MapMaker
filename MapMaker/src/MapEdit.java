@@ -78,9 +78,10 @@ public class MapEdit extends JFrame {
 	int blocks = 0;
 	boolean enPre = false;
 	ArrayList<String> enemies = new ArrayList<String>();
+	ArrayList<String> npcs = new ArrayList<String>();
 	boolean zoom = false;
 	boolean choosing = false;
-	final int MAXBLOCKS = 3;
+	final int MAXBLOCKS = 4;
 int selEn;
 ArrayList<String>objects=new ArrayList<String>();
 	public MapEdit(String name, String project) {
@@ -125,6 +126,7 @@ ArrayList<String>objects=new ArrayList<String>();
 					MapMaker.saveStrings(enemies, nameWithE(), project);
 					MapMaker.saveStrings(portals, nameWithP(), project);
 					MapMaker.saveStrings(objects, nameWithO(), project);
+					MapMaker.saveStrings(npcs, nameWithN(), project);
 					mapEdit.dispose();
 				} else if (key == KeyEvent.VK_I) {
 					JOptionPane
@@ -353,6 +355,18 @@ if(returnVal!=null){
 										// "How many collectibles"))
 							);
 						}
+						else if (blocks == 4) {
+							Point m = MouseInfo.getPointerInfo().getLocation();
+							int sen = 100;
+							if (enPre) {
+								sen = 50;
+							}
+							int theX = ((int) ((m.x + x) / sen) * sen)+npcX();
+							int theY = ((int) ((m.y + y) / sen) * sen)+200+npcY();
+
+
+							npcs.add(theX + "," + theY + ","+getNpcName());
+						}
 						 else if (blocks == MAXBLOCKS+1) {
 								Point m = MouseInfo.getPointerInfo().getLocation();
 								
@@ -474,7 +488,33 @@ if(returnVal!=null){
 							}
 						}
 
-						
+						for (int c = 0; c < npcs.size(); c++) {
+							ArrayList<String> stuff = new ArrayList<String>();// should
+																				// have
+																				// 5
+							String currentS = "";
+							for (int c2 = 0; c2 < npcs.get(c).length(); c2++) {
+
+								if (npcs.get(c).charAt(c2) == ',') {
+									stuff.add(currentS);
+									currentS = "";
+
+								} else {
+									currentS += npcs.get(c).charAt(c2);
+								}
+							}
+							if(currentS!="")
+								stuff.add(currentS);
+							Image enImg = new ImageIcon(getClass().getResource(
+									getImageChar(nameToChar(stuff.get(2))))).getImage();
+							if (new Rectangle(Integer.parseInt(stuff.get(0)),
+									Integer.parseInt(stuff.get(1)),
+									enImg.getWidth(null), enImg.getHeight(null))
+									.contains(new Point(x + m.x, y + m.y+200))) {
+								npcs.remove(c);
+								c--;
+							}
+						}
 						for (int c = 0; c < portals.size(); c++) {
 							ArrayList<String> stuff = new ArrayList<String>();// should
 																				// have
@@ -642,6 +682,7 @@ if(returnVal!=null){
 				MapMaker.saveStrings(enemies, nameWithE(), project);
 				MapMaker.saveStrings(portals, nameWithP(), project);
 				MapMaker.saveStrings(objects, nameWithO(), project);
+				MapMaker.saveStrings(npcs, nameWithN(), project);
 			}
 
 			@Override
@@ -1382,6 +1423,35 @@ g2d.drawString(to, px-x, py-y-200);
 					}
 
 				}
+				
+				for (int c = 0; c < npcs.size(); c++) {
+					ArrayList<String> stuff = new ArrayList<String>();// should
+					// have
+					// 5
+					String currentS = "";
+					for (int c2 = 0; c2 < npcs.get(c).length(); c2++) {
+
+						if (npcs.get(c).charAt(c2) == ',') {
+							stuff.add(currentS);
+							currentS = "";
+
+						} else {
+							currentS += npcs.get(c).charAt(c2);
+						}
+					}
+					if (currentS != "") {
+						stuff.add(currentS);
+					}
+					try {
+						int px = Integer.parseInt(stuff.get(0));
+						int py = Integer.parseInt(stuff.get(1));
+							Image pImg=new ImageIcon(getClass().getResource(getImageChar(nameToChar(stuff.get(2))))).getImage();
+g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+				}
 				Point m = MouseInfo.getPointerInfo().getLocation();
 				if (choosing && !zoom) {
 
@@ -1436,6 +1506,20 @@ g2d.drawString(to, px-x, py-y-200);
 							g2d.drawString(getSelShowStringObjects(),
 									((int) ((m.x + x) / 50) * 50+25 - x),
 									((int) ((m.y + y) / 50) * 50+50 - y));
+						}
+						
+					}
+					else if(blocks==4){
+						g2d.setColor(Color.ORANGE);
+						
+						if (enPre) {
+							g2d.drawString(getNpcName(),
+									((int) ((m.x + x) / 50) * 50) + 25 - x,
+									((int) ((m.y + y) / 50) * 50) + 50 - y);
+						} else {
+							g2d.drawString(getNpcName(),
+									((int) ((m.x + x) / 100) * 100+25 - x),
+									((int) ((m.y + y) / 100) * 100+50 - y));
 						}
 						
 					}
@@ -1584,6 +1668,28 @@ g2d.drawString(to, px-x, py-y-200);
 						break;
 					case 3:
 						selChar='W';
+						break;
+					}
+				}
+				else if (blocks == 4) {
+					if (selNum > 3) {
+						selNum = 0;
+					}
+					if (selNum < 0) {
+						selNum = 3;
+					}
+					switch (selNum) {
+					case 0:
+						selChar='K';
+						break;
+					case 1:
+						selChar='W';
+						break;
+					case 2:
+						selChar='C';
+						break;
+					case 3:
+						selChar='S';
 						break;
 					}
 				}
@@ -1917,6 +2023,27 @@ g2d.drawString(to, px-x, py-y-200);
 		try {
 
 			File saveFile = new File("bin/projects/" + project + "/"
+					+ nameWithN());
+
+			if (saveFile.exists()) {
+
+				BufferedReader reader = new BufferedReader(new FileReader(
+						saveFile));
+				String line;
+
+				while ((line = reader.readLine()) != null) {
+					npcs.add(line);
+
+				}
+				reader.close();
+
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		try {
+
+			File saveFile = new File("bin/projects/" + project + "/"
 					+ nameWithO());
 
 			if (saveFile.exists()) {
@@ -1987,6 +2114,25 @@ g2d.drawString(to, px-x, py-y-200);
 			} else if (name.charAt(c) == '.') {
 				ext = true;
 				fName += "O.";
+			} else {
+				fName += name.charAt(c);
+			}
+		}
+
+		fName += extension;
+		return fName;
+	}
+	public String nameWithN() {
+		// TODO Auto-generated method stub
+		String fName = "";
+		String extension = "";
+		boolean ext = false;
+		for (int c = 0; c < name.length(); c++) {
+			if (ext) {
+				extension += name.charAt(c);
+			} else if (name.charAt(c) == '.') {
+				ext = true;
+				fName += "N.";
 			} else {
 				fName += name.charAt(c);
 			}
@@ -2560,6 +2706,82 @@ for(int c=0;c<ml;c++){
 		case 'W':
 		default:
 			return false;
+		}
+	}
+	public String getNpcName(){
+		switch(selChar){
+		case 'K':
+			return "kepler";
+		case 'C':
+			return "sirCobalt";
+		case 'W':
+			return "wizard";
+		case 'S':
+			return "shopkeep";
+		default:
+			return"?";
+		}
+	}
+	public char nameToChar(String name){
+		switch(name){
+		case "wizard":
+		return 'W';
+		
+		case "kepler":
+			return 'K';
+		case "sirCobalt":
+		return 'C';
+		case "shopkeep":
+		return 'S';
+		default:
+			return ' ';
+		}
+	}
+	public String getImageChar(){
+		switch(selChar){
+		case 'K':
+		return	"images/npcs/map/stationary/kepler.png";
+		case 'C':
+			return "images/npcs/map/stationary/sirCobalt.png";
+		case 'W':
+		return	"images/npcs/map/stationary/wizard.png";
+		case 'S':
+			return "images/npcs/map/stationary/shopkeep.png";
+		
+		
+		default:
+			return null;
+		}
+	}
+	public String getImageChar(char selChar){
+		switch(selChar){
+		case 'K':
+		return	"images/npcs/map/stationary/kepler.png";
+		case 'C':
+			return "images/npcs/map/stationary/sirCobalt.png";
+		case 'W':
+		return	"images/npcs/map/stationary/wizard.png";
+		case 'S':
+			return "images/npcs/map/stationary/shopkeep.png";
+		
+		
+		default:
+			return null;
+		}
+	}
+	public int npcX(){
+		switch(selChar){
+		
+		default:
+			return 0;
+		}
+	}
+	public int npcY(){
+		switch(selChar){
+		case 'C':
+			return -6;
+		default:
+			return 0;
 		}
 	}
 }
