@@ -32,8 +32,10 @@ import javax.swing.Timer;
 
 
 
-public class MapEdit extends JFrame {
 
+
+public class MapEdit extends JFrame {
+	public static final Color MED_GRAY = new Color(150, 150, 160);
 	public static final Color NIGHT_SKY = // new Color(24, 24, 61);
 	Color.black;
 	public static final Color DAY_SKY = new Color(67, 67, 103);
@@ -1013,12 +1015,10 @@ if(returnVal!=null){
 									g2d.setColor(getColor(theChar));
 									g2d.fill(new Rectangle(nx, ny, 100, 100));
 									g2d.setColor(Color.LIGHT_GRAY);
-									g2d.drawLine(nx, ny, nx + 100, ny + 100);
-									g2d.drawLine(nx + 100, ny, nx, ny + 100);
-									g2d.drawLine(nx, ny + 100 / 2, nx + 100,
-											ny + 100 / 2);
-									g2d.drawLine(nx + 100 / 2, ny,
-											nx + 100 / 2, ny + 100);
+									g2d.drawLine(nx, ny + 15, nx + 100, ny + 15);
+									g2d.drawLine(nx, ny + 100 - 14, nx + 100, ny + 100 - 14);
+									g2d.drawLine(nx, ny + 100 / 2, nx + 100, ny + 100 / 2);
+									g2d.drawLine(nx + 100 / 2, ny, nx + 100 / 2, ny +100);
 									break;
 
 								case '>':
@@ -1041,6 +1041,14 @@ if(returnVal!=null){
 									g2d.setColor(Color.DARK_GRAY);
 									g2d.draw(new Rectangle(nx, ny, 100, 100));
 									break;
+									
+								case 'R':
+									g2d.setColor(getColor(theChar));
+									g2d.fill(new Rectangle(nx, ny, 100, 100));
+									g2d.setColor(MED_GRAY);
+									g2d.fill(new Rectangle(nx, ny + 30, 4, 4));
+									g2d.fill(new Rectangle(nx + 60, ny + 26, 4, 4));
+									g2d.fill(new Rectangle(nx, ny + 80, 4, 4));
 								default:
 									g2d.setColor(getColor(theChar));
 									g2d.fill(new Rectangle(nx, ny, 100, 100));
@@ -1220,7 +1228,26 @@ if(returnVal!=null){
 									g2d.drawString("<->", nx, ny + 70);
 									g2d.draw(new Rectangle(nx, ny, 100, 100));
 									break;
-
+								case '2':
+									g2d.setColor(getColor(theChar));
+									g2d.fill(new Rectangle(nx, ny, 100, 100));
+									g2d.setColor(DRAB_BROWN);
+									//g2d.fillRect(x + 70, y + 10, 20, 20);
+									g2d.fillRect(nx + 10, ny + 70, 5, 5);
+									g2d.fillRect(nx + 50, ny + 30, 10, 10);
+									g2d.fillRect(nx + 80, ny + 80, 10, 10);
+									//g2d.draw(getBounds());
+									break;
+									
+								case 'R':
+									g2d.setColor(getColor(theChar));
+									g2d.fill(new Rectangle(nx, ny, 100, 100));
+									g2d.setColor(MED_GRAY);
+									g2d.fill(new Rectangle(nx, ny + 30, 4, 4));
+									g2d.fill(new Rectangle(nx + 60, ny + 26, 4, 4));
+									g2d.fill(new Rectangle(nx, ny + 80, 4, 4));
+									//g2d.draw(getBounds());
+									break;
 								default:
 									g2d.setColor(getColor(theChar));
 									g2d.fill(new Rectangle(nx, ny, 100, 100));
@@ -1637,7 +1664,6 @@ g2d.drawString(to, px-x, py-y-200);
 		case 'D':
 			switch (type) {
 			case '2':
-				return Color.BLACK;
 			case '1':
 			case 'O':
 				return OFF_TAN;
@@ -1646,7 +1672,7 @@ g2d.drawString(to, px-x, py-y-200);
 			case 'W':
 				return SAND_STONE;
 			case 'P':
-				return LIGHT_OFF_TAN;
+				return Color.BLACK;
 			case 'R':
 				return TAN;
 			case '>':
