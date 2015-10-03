@@ -351,8 +351,7 @@ if(returnVal!=null){
 							int theY = ((int) ((m.y + y) / sen) * sen)+200+objectsAddY();
 
 						
-							objects.add(theX + "," + theY + ","+getSelStringO()+","+getObjectCollide()// Run.removeExtension(chooser.getSelectedFile().toString()+","+Integer.parseInt(JOptionPane.showInputDialog(mapEdit,
-										// "How many collectibles"))
+							objects.add(theX + "," + theY + ","+getSelStringO()+","+getObjectCollide()+","+getObjectsVal()
 							);
 						}
 						else if (blocks == 4) {
@@ -1650,11 +1649,11 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
 					}
 				}
 				else if (blocks == 3) {
-					if (selNum > 3) {
+					if (selNum > 5) {
 						selNum = 0;
 					}
 					if (selNum < 0) {
-						selNum = 3;
+						selNum = 5;
 					}
 					switch (selNum) {
 					case 0:
@@ -1668,6 +1667,12 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
 						break;
 					case 3:
 						selChar='W';
+						break;
+					case 4:
+						selChar='0';
+						break;
+					case 5:
+						selChar='1';
 						break;
 					}
 				}
@@ -2217,6 +2222,10 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
 			return"images/objects/LeavesSc.png";
 		case 'P':
 			return "images/objects/PTree0.png";
+		case '0':
+			return"images/objects/collectibles/coin0.png";
+		case '1':
+			return "images/objects/collectibles/coin1.png";
 		default:
 		case 'W':
 			return "images/objects/Wood.png";
@@ -2613,6 +2622,10 @@ for(int c=0;c<ml;c++){
 			return "PalmTree";
 		case 'W':
 			return "Wood";
+		case '0':
+			return "coin $1";
+		case '1':
+			return "coin $5";
 		default:
 			return "?";
 		}
@@ -2676,6 +2689,8 @@ for(int c=0;c<ml;c++){
 		case 'l':
 			return 10;
 		case 'W':
+		case '0':
+		case '1':
 			return 40;
 		
 		case 'P':
@@ -2690,6 +2705,8 @@ for(int c=0;c<ml;c++){
 		case 'l':
 			return 10;
 		case 'W':
+		case '0':
+		case '1':
 			return 40;
 		
 		case 'P':
@@ -2701,11 +2718,23 @@ for(int c=0;c<ml;c++){
 		switch(selChar){
 		case 'P':
 			return true;
+		case '0':
+		case '1':
 		case 'L':
 		case 'l':
 		case 'W':
 		default:
 			return false;
+		}
+	}
+	public int getObjectsVal(){
+		switch(selChar){
+		case '0':
+			return 1;
+		case '1':
+			return 5;
+			default:
+				return 0;
 		}
 	}
 	public String getNpcName(){
