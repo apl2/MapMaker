@@ -1649,11 +1649,11 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
 					}
 				}
 				else if (blocks == 3) {
-					if (selNum > 5) {
+					if (selNum > 6) {
 						selNum = 0;
 					}
 					if (selNum < 0) {
-						selNum = 5;
+						selNum = 6;
 					}
 					switch (selNum) {
 					case 0:
@@ -1673,6 +1673,9 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
 						break;
 					case 5:
 						selChar='1';
+						break;
+					case 6:
+						selChar='S';
 						break;
 					}
 				}
@@ -2226,6 +2229,8 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
 			return"images/objects/collectibles/coin0.png";
 		case '1':
 			return "images/objects/collectibles/coin1.png";
+		case 'S':
+			return "images/objects/collectibles/special.png";
 		default:
 		case 'W':
 			return "images/objects/Wood.png";
@@ -2626,6 +2631,8 @@ for(int c=0;c<ml;c++){
 			return "coin $1";
 		case '1':
 			return "coin $5";
+		case 'S':
+			return "Special Collectible";
 		default:
 			return "?";
 		}
@@ -2689,9 +2696,11 @@ for(int c=0;c<ml;c++){
 		case 'l':
 			return 10;
 		case 'W':
+			return 40;
 		case '0':
 		case '1':
-			return 40;
+		case 'S':	
+			return 25;
 		
 		case 'P':
 		default:
@@ -2705,9 +2714,11 @@ for(int c=0;c<ml;c++){
 		case 'l':
 			return 10;
 		case 'W':
+			return 40;
 		case '0':
 		case '1':
-			return 40;
+		case 'S':
+			return 25;
 		
 		case 'P':
 		default:
@@ -2723,6 +2734,7 @@ for(int c=0;c<ml;c++){
 		case 'L':
 		case 'l':
 		case 'W':
+		case 'S':
 		default:
 			return false;
 		}
@@ -2733,6 +2745,8 @@ for(int c=0;c<ml;c++){
 			return 1;
 		case '1':
 			return 5;
+		case 'S':
+			return -1;
 			default:
 				return 0;
 		}
