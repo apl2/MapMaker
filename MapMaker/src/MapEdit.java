@@ -145,7 +145,7 @@ ArrayList<String>objects=new ArrayList<String>();
 											+ "P: Build/close paths");
 				} else if (key == KeyEvent.VK_T) {
 					String[] options = { "cancel", "Grassy", "Desert", "Snowy",
-							"Island", "Volcano","Haunted" };
+							"Island", "Volcano","Haunted","Lab" };
 					int sel = JOptionPane.showOptionDialog(mapEdit,
 							"Which texture pack do you want?", "Texture Pack",
 							JOptionPane.CANCEL_OPTION,
@@ -1195,6 +1195,121 @@ if(returnVal!=null){
 									break;
 								}
 								break;
+								// TODO Lab Draw
+							case 'L':
+								switch (theChar) {
+								case 'O':
+									g2d.setColor(getColor(theChar));
+									g2d.fill(new Rectangle(nx, ny, 100, 100));
+									g2d.setColor(DRAB_BROWN);
+									g2d.fillRect(nx + 10, ny + 70, 5, 5);
+									g2d.fillRect(nx + 50, ny + 30, 10, 10);
+									g2d.fillRect(nx + 80, ny + 80, 10, 10);
+
+									g2d.setColor(Color.WHITE);
+									g2d.fillRect(nx + 85, ny + 85, 5, 10);
+									g2d.setColor(Color.RED);
+									g2d.fillOval(nx + 80, ny + 80, 15, 10);
+
+									g2d.setColor(Color.WHITE);
+									g2d.fillRect(nx + 75, ny + 35, 5, 10);
+									g2d.setColor(Color.RED);
+									g2d.fillOval(nx + 70, ny + 30, 15, 10);
+
+									g2d.setColor(Color.WHITE);
+									g2d.fillRect(nx + 45, ny + 45, 5, 10);
+									g2d.setColor(Color.RED);
+									g2d.fillOval(nx + 40, ny + 40, 15, 10);
+									g2d.setFont(MOUSE);
+									g2d.setColor(Color.BLACK);
+									g2d.drawString("spawn", nx + 30, ny + 40);
+									break;
+								case '1':
+									g2d.setColor(getColor(theChar));
+									g2d.fill(new Rectangle(nx, ny, 100, 100));
+									g2d.setColor(DRAB_BROWN);
+									g2d.fillRect(nx + 10, ny + 70, 5, 5);
+									g2d.fillRect(nx + 50, ny + 30, 10, 10);
+									g2d.fillRect(nx + 80, ny + 80, 10, 10);
+
+									g2d.setColor(Color.WHITE);
+									g2d.fillRect(nx + 85, ny + 85, 5, 10);
+									g2d.setColor(Color.RED);
+									g2d.fillOval(nx + 80, ny + 80, 15, 10);
+
+									g2d.setColor(Color.WHITE);
+									g2d.fillRect(nx + 75, ny + 35, 5, 10);
+									g2d.setColor(Color.RED);
+									g2d.fillOval(nx + 70, ny + 30, 15, 10);
+
+									g2d.setColor(Color.WHITE);
+									g2d.fillRect(nx + 45, ny + 45, 5, 10);
+									g2d.setColor(Color.RED);
+									g2d.fillOval(nx + 40, ny + 40, 15, 10);
+									break;
+
+								case 'L':
+									g2d.setColor(getColor(theChar));
+									g2d.fill((new Rectangle(nx, ny, 100, 100)));
+
+									g2d.setColor(Color.GREEN);
+									g2d.fillOval(nx + 70, ny + 10, 5, 5);
+									g2d.fillOval(nx + 30, ny + 50, 10, 10);
+									g2d.fillOval(nx + 80, ny + 80, 10, 10);
+
+									break;
+
+								case 'W':
+									g2d.setColor(getColor(theChar));
+									g2d.fill((new Rectangle(nx, ny, 100, 100)));
+									g2d.setColor(Color.BLACK);
+									g2d.draw((new Rectangle(nx, ny, 100, 100)));
+									break;
+
+								case 'R':
+									g2d.setColor(getColor(theChar));
+									g2d.fill((new Rectangle(nx, ny, 100, 100)));
+									g2d.setColor(Color.BLACK);
+
+									int i;
+									for (i = 0; i < 5; i++)
+										g2d.drawLine(nx, ny + (20 * i), nx + 100 - 1, ny + (20 * i));
+									
+									for (i = 0; i < 5; i++)
+										for (int cB = 0; cB < 5; cB++)
+											g2d.fillRect(nx + (20 * cB) + 8, ny + (20 * i) + 2, 2, 2);
+
+									break;
+
+								case '2':
+									g2d.setColor(getColor(theChar));
+									g2d.fill((new Rectangle(nx, ny, 100, 100)));
+									g2d.setColor(DRAB_BROWN);
+									g2d.fillRect(nx + 10, ny + 70, 5, 5);
+									g2d.fillRect(nx + 50, ny + 30, 10, 10);
+									g2d.fillRect(nx + 80, ny + 80, 10, 10);
+									break;
+
+								case 'C':
+									g2d.setColor(getColor(theChar));
+									g2d.fill((new Rectangle(nx, ny, 100, 100)));
+									g2d.setColor(Color.GRAY);
+									g2d.drawLine(nx, ny, nx + 100, ny + 100);
+									g2d.drawLine(nx + 100, ny, nx, ny + 100);
+									g2d.drawLine(nx, ny + 100 / 2, nx + 100, ny + 100 / 2);
+									g2d.drawLine(nx + 100 / 2, ny, nx + 100 / 2, ny + 100);
+									break;
+
+								default:
+									g2d.setColor(getColor(theChar));
+									g2d.fill((new Rectangle(nx, ny, 100, 100)));
+									break;
+								}
+								break;// End Grassy
+								
+								
+								
+								
 							case 'G':
 							default:// Start grassy
 								switch (theChar) {
@@ -1909,6 +2024,28 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
 			case '*':
 				return LIGHT_BLUE;
 
+			default:
+				System.err.println("Type " + type + " does not have a color case");
+				return Color.RED;
+			}
+		case 'L':
+			switch (type) {
+			case '1':
+			case '2':
+			case 'O':
+				return BROWN;
+			case 'L':
+				return BLUE;
+			case 'W':
+				return Color.DARK_GRAY;
+			case 'P':
+				return Color.BLACK;
+			case 'R':
+				return Color.GRAY;
+			case 'C':
+				return Color.WHITE;
+			case '*':
+				return LIGHT_BLUE;
 			default:
 				System.err.println("Type " + type + " does not have a color case");
 				return Color.RED;
@@ -2650,6 +2787,8 @@ for(int c=0;c<ml;c++){
 			return Color.DARK_GRAY;
 		case 'H':
 			return SAND_BLUE;
+		case 'L':
+			return Color.WHITE;
 		case 'G':
 		default:
 			return OFF_GREEN;
