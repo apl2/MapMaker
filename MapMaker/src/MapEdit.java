@@ -1698,11 +1698,11 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
 					}
 
 				} else if (blocks == 1) {
-					if (selNum > 17) {
+					if (selNum > 19) {
 						selNum = 0;
 					}
 					if (selNum < 0) {
-						selNum = 17;
+						selNum = 19;
 					}
 					switch (selNum) {
 					case 0:
@@ -1760,6 +1760,11 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
 						break;
 					case 17://backSecurity
 						selChar='p';
+					case 18://Path
+						selChar='X';
+						break;
+					case 19://backSecurity
+						selChar='x';
 						break;
 					}
 				}
@@ -2347,6 +2352,10 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
 			return "images/enemies/unique/ducky.png";
 		case 'p'://backSecurity
 			return "images/enemies/unique/potato.png";
+		case 'X'://backSecurity
+			return "images/enemies/unique/birdH.png";
+		case 'x'://backSecurity
+			return "images/enemies/unique/birdV.png";
 		case 'B':
 		default:
 			return "images/enemies/unique/blob.png";
@@ -2420,6 +2429,9 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
 			return 'p';
 		case 'p'://backSecurity
 			return 'b';
+		case 'X':
+		case 'x':
+			return 't';
 		default:
 			return 'S';// StandEnemy
 		}
@@ -2503,8 +2515,10 @@ case 'r'://security
 		switch (selChar) {
 		case 'G':
 		case 'I':
+		
+		case 'X':
 			return 't';
-
+		case 'x':
 		default:
 			return 'f';
 		}
@@ -2537,6 +2551,8 @@ case 'r'://security
 			return 8;
 case 'R':
 case 'C':
+case 'X':
+case 'x':	
 	return -10;
 	
 		case '1':
@@ -2709,6 +2725,10 @@ for(int c=0;c<ml;c++){
 			return "ducky";
 		case 'p'://backSecurity
 			return "potato";
+		case 'X':
+			return "axis-X bird";
+		case 'x':
+			return "axis-Y bird";
 		default:
 			return "?";
 		}
