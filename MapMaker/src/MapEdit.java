@@ -1490,9 +1490,15 @@ if(returnVal!=null){
 					try {
 						int px = Integer.parseInt(stuff.get(0));
 						int py = Integer.parseInt(stuff.get(1));
-						Image pImg= new ImageIcon(getClass().getResource(
+						int val = stuff.size() > 4 ? Integer.parseInt(stuff.get(4)) : 0;
+						if(val==-3){
+							g2d.setColor(Color.BLACK);
+							g2d.setFont(MOUSE);
+							g2d.drawString("Spawn", px-x+20, py-y-150);
+							}
+						else{Image pImg= new ImageIcon(getClass().getResource(
 								stuff.get(2))).getImage();
-g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
+g2d.drawImage(pImg, px-x, py-y-200, mapEdit);}
 
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -1657,16 +1663,14 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				if (blocks == 0) {
-					if (selNum < 0) {
+					if (selNum < 1) {
 						selNum = 9;
 					}
 					if (selNum > 9) {
-						selNum = 0;
+						selNum = 1;
 					}
 					switch (selNum) {
-					case 0:
-						selChar = 'O';
-						break;
+					
 					case 1:
 						selChar = '1';
 						break;
@@ -1769,11 +1773,11 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
 					}
 				}
 				else if (blocks == 3) {
-					if (selNum > 6) {
+					if (selNum > 7) {
 						selNum = 0;
 					}
 					if (selNum < 0) {
-						selNum = 6;
+						selNum = 7;
 					}
 					switch (selNum) {
 					case 0:
@@ -1795,6 +1799,9 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
 						selChar='1';
 						break;
 					case 6:
+						selChar='s';
+						break;
+					case 7:
 						selChar='S';
 						break;
 					}
@@ -2375,8 +2382,10 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
 			return"images/objects/collectibles/coin0.png";
 		case '1':
 			return "images/objects/collectibles/coin1.png";
-		case 'S':
+		case 's':
 			return "images/objects/collectibles/special.png";
+		case 'S':
+			return "images/dummy.png";
 		default:
 		case 'W':
 			return "images/objects/Wood.png";
@@ -2788,8 +2797,10 @@ for(int c=0;c<ml;c++){
 			return "coin $1";
 		case '1':
 			return "coin $5";
-		case 'S':
+		case 's':
 			return "Special Collectible";
+		case 'S':
+			return "Spawn";
 		default:
 			return "?";
 		}
@@ -2858,7 +2869,7 @@ for(int c=0;c<ml;c++){
 			return 40;
 		case '0':
 		case '1':
-		case 'S':	
+		case 's':	
 			return 25;
 		
 		case 'P':
@@ -2876,7 +2887,7 @@ for(int c=0;c<ml;c++){
 			return 40;
 		case '0':
 		case '1':
-		case 'S':
+		case 's':
 			return 25;
 		
 		case 'P':
@@ -2904,8 +2915,10 @@ for(int c=0;c<ml;c++){
 			return 1;
 		case '1':
 			return 5;
-		case 'S':
+		case 's':
 			return -1;
+		case 'S':
+			return -3;
 			default:
 				return 0;
 		}
