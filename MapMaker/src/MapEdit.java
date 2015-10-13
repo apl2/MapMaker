@@ -2360,9 +2360,8 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
 		case 'p'://backSecurity
 			return "images/enemies/unique/potato.png";
 		case 'X'://backSecurity
-			return "images/enemies/unique/birdH.png";
 		case 'x'://backSecurity
-			return "images/enemies/unique/birdH.png";
+			return "images/enemies/unique/birdy.png";
 		case 'B':
 		default:
 			return "images/enemies/unique/blob.png";
