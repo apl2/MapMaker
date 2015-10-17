@@ -334,10 +334,13 @@ ArrayList<String>objects=new ArrayList<String>();
 							String returnVal = JOptionPane.showInputDialog(
 									mapEdit, "What is the name of the map");
 if(returnVal!=null){
+	String pS="normal";
+	if(selChar=='B')
+		pS="boss";
 							portals.add(theX + "," + theY + ","
  + returnVal + ","
 									+ 0
-									+","+"normal"// Run.removeExtension(chooser.getSelectedFile().toString()+","+Integer.parseInt(JOptionPane.showInputDialog(mapEdit,
+									+","+pS// Run.removeExtension(chooser.getSelectedFile().toString()+","+Integer.parseInt(JOptionPane.showInputDialog(mapEdit,
 										// "How many collectibles"))
 							);
 						}}
@@ -532,6 +535,10 @@ if(returnVal!=null){
 							if(stuff.get(3).equals("normal")){
 						 enImg = new ImageIcon(getClass().getResource(
 									"images/portal1.png")).getImage();}
+						
+							else if(stuff.get(3).equals("boss")){
+								 enImg = new ImageIcon(getClass().getResource(
+											"images/portal2.png")).getImage();}
 							else{
 								enImg = new ImageIcon(getClass().getResource(
 										"images/icon.png")).getImage();
@@ -1529,6 +1536,9 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);}
 						if(stuff.get(4).equals("normal")){
 						pImg = new ImageIcon(getClass().getResource(
 								"images/portal1.png")).getImage();}
+						else if(stuff.get(4).equals("boss")){
+							pImg = new ImageIcon(getClass().getResource(
+									"images/portal2.png")).getImage();}
 						else{
 							pImg = new ImageIcon(getClass().getResource(
 									"images/icon.png")).getImage();
@@ -1603,13 +1613,15 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
 					}
 					else if(blocks==2){
 						g2d.setColor(PURPLE);
-						
+						String portalS="NPortal";
+						if(selChar=='B')
+							portalS="BPortal";
 						if (enPre) {
-							g2d.drawString("Portal",
+							g2d.drawString(portalS,
 									((int) ((m.x + x) / 100) * 100) + 25 - x,
 									((int) ((m.y + y) / 100) * 100) + 50 - y);
 						} else {
-							g2d.drawString("Portal",
+							g2d.drawString(portalS,
 									((int) ((m.x + x) / 50) * 50+25 - x),
 									((int) ((m.y + y) / 50) * 50+50 - y));
 						}
@@ -1771,6 +1783,21 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
 						selChar='x';
 						break;
 					}
+				}
+				else if(blocks==2){
+					if (selNum > 1) {
+						selNum = 0;
+					}
+					if (selNum < 0) {
+						selNum = 1;
+					}
+					switch (selNum) {
+					case 0:
+						selChar='N';
+						break;
+					case 1:
+						selChar='B';
+						break;}
 				}
 				else if (blocks == 3) {
 					if (selNum > 7) {
