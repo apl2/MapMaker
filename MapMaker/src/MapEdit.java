@@ -2539,11 +2539,11 @@ case 'r'://security
 		case 'P':
 		case 'F':
 		case 'D':
-			return 5;
+			return 50;
 
 		case 't':
 		case '0':
-			return 6;
+			return 60;
 
 		case 'T':
 		
@@ -2556,7 +2556,7 @@ case 'r'://security
 		
 		case 'p'://backSecurity
 		
-			return 8;
+			return 80;
 case 'R':
 case 'C':
 case 'X':
@@ -2572,7 +2572,8 @@ case 'x':
 			
 	
 		default:
-			return 10;
+			return 100;
+		
 		}
 	}
 
