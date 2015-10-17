@@ -367,7 +367,7 @@ if(returnVal!=null){
 							int theY = ((int) ((m.y + y) / sen) * sen)+200+npcY();
 
 
-							npcs.add(theX + "," + theY + ","+getNpcName());
+							npcs.add(theX + "," + theY + ","+getNpcName()+(getNPC3()!=null?","+getNPC3():""));
 						}
 						 else if (blocks == MAXBLOCKS+1) {
 								Point m = MouseInfo.getPointerInfo().getLocation();
@@ -1840,11 +1840,11 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
 					}
 				}
 				else if (blocks == 4) {
-					if (selNum > 3) {
+					if (selNum > 6) {
 						selNum = 0;
 					}
 					if (selNum < 0) {
-						selNum = 3;
+						selNum = 6;
 					}
 					switch (selNum) {
 					case 0:
@@ -1858,6 +1858,15 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
 						break;
 					case 3:
 						selChar='S';
+						break;
+					case 4:
+						selChar='P';
+						break;
+					case 5:
+						selChar='p';
+						break;
+					case 6:
+						selChar='m';
 						break;
 					}
 				}
@@ -2982,6 +2991,12 @@ for(int c=0;c<ml;c++){
 			return "wizard";
 		case 'S':
 			return "shopkeep";
+		case 'P':
+			return "PLATO";
+		case 'p':
+			return "policeMan";
+		case 'm':
+			return "gatekeeper";
 		default:
 			return"?";
 		}
@@ -2997,8 +3012,22 @@ for(int c=0;c<ml;c++){
 		return 'C';
 		case "shopkeep":
 		return 'S';
+		case "PLATO":
+			return 'P';
+		case "policeMan":
+			return 'p';
+		case "gatekeeper":
+			return 'm';
 		default:
 			return ' ';
+		}
+	}
+	public String getNPC3(){
+		switch(selChar){
+		case 'm':
+		return "3";
+		default:
+			return null;
 		}
 	}
 	public String getImageChar(){
@@ -3011,7 +3040,12 @@ for(int c=0;c<ml;c++){
 		return	"images/npcs/map/stationary/wizard.png";
 		case 'S':
 			return "images/npcs/map/stationary/shopkeep.png";
-		
+		case 'P':
+			return "images/npcs/map/stationary/plato.png";
+		case 'p':
+			return "images/npcs/map/stationary/policeman.png";
+		case 'm':
+			return "images/npcs/map/stationary/gatekeeper.png";
 		
 		default:
 			return null;
@@ -3027,7 +3061,12 @@ for(int c=0;c<ml;c++){
 		return	"images/npcs/map/stationary/wizard.png";
 		case 'S':
 			return "images/npcs/map/stationary/shopkeep.png";
-		
+		case 'P':
+			return "images/npcs/map/stationary/plato.png";
+		case 'p':
+			return "images/npcs/map/stationary/policeman.png";
+		case 'm':
+			return "images/npcs/map/stationary/gatekeeper.png";
 		
 		default:
 			return null;
