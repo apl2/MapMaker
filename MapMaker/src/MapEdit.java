@@ -479,8 +479,17 @@ if(returnVal!=null){
 									currentS += enemies.get(c).charAt(c2);
 								}
 							}
-							Image enImg = new ImageIcon(getClass().getResource(
-									stuff.get(3))).getImage();
+							char ch=stuff.get(0).charAt(0);
+							Image enImg;if(ch=='B'){
+								String sB="images/icon.png";
+							if(stuff.get(3).equals("Lizard-Man")){
+								sB= "images/Lizard.png";}
+							else if(stuff.get(3).equals("Head")){
+								sB= "images/enemies/unique/Head.png";}
+								enImg=new ImageIcon(getClass().getResource(sB)).getImage();
+							}else{
+													enImg = new ImageIcon(getClass().getResource(
+															stuff.get(3))).getImage();}
 							if (new Rectangle(Integer.parseInt(stuff.get(1)),
 									Integer.parseInt(stuff.get(2)),
 									enImg.getWidth(null), enImg.getHeight(null))
@@ -1444,9 +1453,16 @@ if(returnVal!=null){
 						int enX = Integer.parseInt(stuff.get(1));
 						int enY = Integer.parseInt(stuff.get(2));
 						char ch = stuff.get(0).charAt(0);
-
-						Image enImg = new ImageIcon(getClass().getResource(
-								stuff.get(3))).getImage();
+Image enImg;if(ch=='B'){
+	String sB="images/icon.png";
+if(stuff.get(3).equals("Lizard-Man")){
+	sB= "images/Lizard.png";}
+else if(stuff.get(3).equals("Head")){
+	sB= "images/enemies/unique/Head.png";}
+	enImg=new ImageIcon(getClass().getResource(sB)).getImage();
+}else{
+						enImg = new ImageIcon(getClass().getResource(
+								stuff.get(3))).getImage();}
 						g2d.drawImage(enImg, enX - x, enY - y-200, mapEdit);
 						int stuffG=6;
 						if(cop(enemies.get(c).charAt(0))==true){
@@ -2405,9 +2421,9 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
 		case 'x'://backSecurity
 			return "images/enemies/unique/birdy.png";
 		case 'H'://backSecurity
-			return "images/enemies/unique/Head.png";
+			return "Head";
 		case 'L'://backSecurity
-			return "images/enemies/unique/jello-O.png";
+			return "Lizard-Man";
 		case 'B':
 		default:
 			return "images/enemies/unique/blob.png";
