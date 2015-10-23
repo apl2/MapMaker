@@ -1453,7 +1453,9 @@ if(returnVal!=null){
 						int enX = Integer.parseInt(stuff.get(1));
 						int enY = Integer.parseInt(stuff.get(2));
 						char ch = stuff.get(0).charAt(0);
-Image enImg;if(ch=='B'){
+Image enImg;if (zoom
+			|| (enX-x> -100 &&enX-x< this.getWidth()
+					&& enY-y > -100 && enY-y < this.getHeight()+200)){if(ch=='B'){
 	String sB="images/icon.png";
 if(stuff.get(3).equals("Lizard-Man")){
 	sB= "images/Lizard.png";}
@@ -1461,10 +1463,11 @@ else if(stuff.get(3).equals("Head")){
 	sB= "images/enemies/unique/Head.png";}
 	enImg=new ImageIcon(getClass().getResource(sB)).getImage();
 }else{
+	
 						enImg = new ImageIcon(getClass().getResource(
-								stuff.get(3))).getImage();}
-						g2d.drawImage(enImg, enX - x, enY - y-200, mapEdit);
-						int stuffG=6;
+								stuff.get(3))).getImage();
+						g2d.drawImage(enImg, enX - x, enY - y-200, mapEdit);}
+						}int stuffG=6;
 						if(cop(enemies.get(c).charAt(0))==true){
 							stuffG=7;
 							}
@@ -1514,6 +1517,9 @@ else if(stuff.get(3).equals("Head")){
 						int px = Integer.parseInt(stuff.get(0));
 						int py = Integer.parseInt(stuff.get(1));
 						int val = stuff.size() > 4 ? Integer.parseInt(stuff.get(4)) : 0;
+						if (zoom
+								|| (px-x > -100 && px-x < this.getWidth()
+										&& py-y > -100 && py-y < this.getHeight()+200))
 						if(val==-3){
 							g2d.setColor(Color.BLACK);
 							g2d.setFont(MOUSE);
@@ -1549,6 +1555,9 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);}
 						int px = Integer.parseInt(stuff.get(0));
 						int py = Integer.parseInt(stuff.get(1));
 						Image pImg;
+						if (zoom
+								|| (px-x > -100 && px-x < this.getWidth()
+										&& py-y > -100 && py -y< this.getHeight()+200)){
 						if(stuff.get(4).equals("normal")){
 						pImg = new ImageIcon(getClass().getResource(
 								"images/portal1.png")).getImage();}
@@ -1563,7 +1572,7 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);}
 						g2d.setFont(MOUSE);
 						g2d.setColor(PURPLE);
 g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
-g2d.drawString(to, px-x, py-y-200);
+g2d.drawString(to, px-x, py-y-200);}
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -1591,8 +1600,12 @@ g2d.drawString(to, px-x, py-y-200);
 					try {
 						int px = Integer.parseInt(stuff.get(0));
 						int py = Integer.parseInt(stuff.get(1));
-							Image pImg=new ImageIcon(getClass().getResource(getImageChar(nameToChar(stuff.get(2))))).getImage();
-g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
+						if (zoom
+								|| (px-x > -100 && px-x < this.getWidth()
+										&& py-y > -100 && py-y < this.getHeight()+200)){
+								Image pImg=new ImageIcon(getClass().getResource(getImageChar(nameToChar(stuff.get(2))))).getImage();
+
+							g2d.drawImage(pImg, px-x, py-y-200, mapEdit);}
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -1856,11 +1869,11 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
 					}
 				}
 				else if (blocks == 4) {
-					if (selNum > 6) {
+					if (selNum > 7) {
 						selNum = 0;
 					}
 					if (selNum < 0) {
-						selNum = 6;
+						selNum = 7;
 					}
 					switch (selNum) {
 					case 0:
@@ -1883,6 +1896,9 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
 						break;
 					case 6:
 						selChar='m';
+						break;
+					case 7:
+						selChar='M';
 						break;
 					}
 				}
@@ -3013,6 +3029,8 @@ for(int c=0;c<ml;c++){
 			return "policeMan";
 		case 'm':
 			return "gatekeeper";
+		case 'M':
+			return "macaroni";
 		default:
 			return"?";
 		}
@@ -3034,6 +3052,8 @@ for(int c=0;c<ml;c++){
 			return 'p';
 		case "gatekeeper":
 			return 'm';
+		case "macaroni":
+	return 'M';
 		default:
 			return ' ';
 		}
@@ -3062,7 +3082,8 @@ for(int c=0;c<ml;c++){
 			return "images/npcs/map/stationary/policeman.png";
 		case 'm':
 			return "images/npcs/map/stationary/gatekeeper.png";
-		
+		case 'M':
+			return "images/npcs/map/stationary/macaroni.png";
 		default:
 			return null;
 		}
@@ -3083,7 +3104,8 @@ for(int c=0;c<ml;c++){
 			return "images/npcs/map/stationary/policeman.png";
 		case 'm':
 			return "images/npcs/map/stationary/gatekeeper.png";
-		
+		case 'M':
+			return "images/npcs/map/stationary/macaroni.png";
 		default:
 			return null;
 		}
