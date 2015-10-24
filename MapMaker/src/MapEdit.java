@@ -1461,12 +1461,15 @@ if(stuff.get(3).equals("Lizard-Man")){
 	sB= "images/Lizard.png";}
 else if(stuff.get(3).equals("Head")){
 	sB= "images/enemies/unique/Head.png";}
+else if(stuff.get(3).equals("Pod")){
+	System.out.println("Pod");
+	sB= "images/podAll.png";}
 	enImg=new ImageIcon(getClass().getResource(sB)).getImage();
 }else{
 	
 						enImg = new ImageIcon(getClass().getResource(
-								stuff.get(3))).getImage();
-						g2d.drawImage(enImg, enX - x, enY - y-200, mapEdit);}
+								stuff.get(3))).getImage();}
+						g2d.drawImage(enImg, enX - x, enY - y-200, mapEdit);
 						}int stuffG=6;
 						if(cop(enemies.get(c).charAt(0))==true){
 							stuffG=7;
@@ -1743,11 +1746,11 @@ g2d.drawString(to, px-x, py-y-200);}
 					}
 
 				} else if (blocks == 1) {
-					if (selNum > 21) {
+					if (selNum > 22) {
 						selNum = 0;
 					}
 					if (selNum < 0) {
-						selNum = 21;
+						selNum = 22;
 					}
 					switch (selNum) {
 					case 0:
@@ -1816,6 +1819,9 @@ g2d.drawString(to, px-x, py-y-200);}
 						break;
 					case 21://backSecurity
 						selChar='L';
+						break;
+					case 22://backSecurity
+						selChar='s';
 						break;
 					}
 				}
@@ -2440,6 +2446,8 @@ g2d.drawString(to, px-x, py-y-200);}
 			return "Head";
 		case 'L'://backSecurity
 			return "Lizard-Man";
+		case 's'://backSecurity
+			return "Pod";
 		case 'B':
 		default:
 			return "images/enemies/unique/blob.png";
@@ -2520,6 +2528,7 @@ g2d.drawString(to, px-x, py-y-200);}
 			return 't';
 		case 'H':
 		case 'L':
+		case 's':
 			return 'B';
 		default:
 			return 'S';// StandEnemy
@@ -2828,6 +2837,8 @@ for(int c=0;c<ml;c++){
 			return "HeadOfDoom";
 		case 'L':
 			return "LizardMan";
+		case 's':
+			return "pod";
 		default:
 			return "?";
 		}
