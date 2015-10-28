@@ -1841,11 +1841,11 @@ g2d.drawString(to, px-x, py-y-200);}
 						break;}
 				}
 				else if (blocks == 3) {
-					if (selNum > 7) {
+					if (selNum > 8) {
 						selNum = 0;
 					}
 					if (selNum < 0) {
-						selNum = 7;
+						selNum = 8;
 					}
 					switch (selNum) {
 					case 0:
@@ -1871,6 +1871,9 @@ g2d.drawString(to, px-x, py-y-200);}
 						break;
 					case 7:
 						selChar='S';
+						break;
+					case 8:
+						selChar='B';
 						break;
 					}
 				}
@@ -2471,6 +2474,8 @@ g2d.drawString(to, px-x, py-y-200);}
 			return "images/objects/collectibles/special.png";
 		case 'S':
 			return "images/dummy.png";
+		case 'B':
+			return "images/objects/Wood.png";
 		default:
 		case 'W':
 			return "images/objects/Wood.png";
@@ -2878,6 +2883,7 @@ for(int c=0;c<ml;c++){
 			return "liquid";
 		case 'I':
 			return "InvisibleWall";
+		
 		default:
 			return "?";
 		}
@@ -2902,6 +2908,8 @@ for(int c=0;c<ml;c++){
 			return "Special Collectible";
 		case 'S':
 			return "Spawn";
+		case 'B':
+			return "BossWall";
 		default:
 			return "?";
 		}
@@ -2999,6 +3007,7 @@ for(int c=0;c<ml;c++){
 	public boolean getObjectCollide(){
 		switch(selChar){
 		case 'P':
+		case 'B':
 			return true;
 		case '0':
 		case '1':
@@ -3020,6 +3029,8 @@ for(int c=0;c<ml;c++){
 			return -1;
 		case 'S':
 			return -3;
+		case 'B':
+			return -4;
 			default:
 				return 0;
 		}
