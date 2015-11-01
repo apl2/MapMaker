@@ -24,7 +24,6 @@ import java.io.FileReader;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -1105,6 +1104,7 @@ if(returnVal!=null){
 									g2d.fill(new Rectangle(nx, ny + 30, 4, 4));
 									g2d.fill(new Rectangle(nx + 60, ny + 26, 4, 4));
 									g2d.fill(new Rectangle(nx, ny + 80, 4, 4));
+									break;
 								default:
 									g2d.setColor(getColor(theChar));
 									g2d.fill(new Rectangle(nx, ny, 100, 100));
