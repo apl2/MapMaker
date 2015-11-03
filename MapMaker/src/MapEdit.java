@@ -2475,7 +2475,7 @@ g2d.drawString(to, px-x, py-y-200);}
 		case 'S':
 			return "images/dummy.png";
 		case 'B':
-			return "images/objects/Wood.png";
+			return "images/bossWall.png";
 		default:
 		case 'W':
 			return "images/objects/Wood.png";
