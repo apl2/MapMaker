@@ -1462,7 +1462,6 @@ if(stuff.get(3).equals("Lizard-Man")){
 else if(stuff.get(3).equals("Head")){
 	sB= "images/enemies/unique/Head.png";}
 else if(stuff.get(3).equals("Pod")){
-	System.out.println("Pod");
 	sB= "images/podAll.png";}
 	enImg=new ImageIcon(getClass().getResource(sB)).getImage();
 }else{
