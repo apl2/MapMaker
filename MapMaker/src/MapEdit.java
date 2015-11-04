@@ -1840,11 +1840,11 @@ g2d.drawString(to, px-x, py-y-200);}
 						break;}
 				}
 				else if (blocks == 3) {
-					if (selNum > 8) {
+					if (selNum > 9) {
 						selNum = 0;
 					}
 					if (selNum < 0) {
-						selNum = 8;
+						selNum = 9;
 					}
 					switch (selNum) {
 					case 0:
@@ -1874,6 +1874,10 @@ g2d.drawString(to, px-x, py-y-200);}
 					case 8:
 						selChar='B';
 						break;
+				case 9:
+							selChar='H';
+							break;
+						
 					}
 				}
 				else if (blocks == 4) {
@@ -2475,6 +2479,8 @@ g2d.drawString(to, px-x, py-y-200);}
 			return "images/dummy.png";
 		case 'B':
 			return "images/bossWall.png";
+		case 'H':
+			return "images/objects/HookObject.png";
 		default:
 		case 'W':
 			return "images/objects/Wood.png";
@@ -2909,6 +2915,8 @@ for(int c=0;c<ml;c++){
 			return "Spawn";
 		case 'B':
 			return "BossWall";
+		case 'H':
+			return "Hook";
 		default:
 			return "?";
 		}
@@ -3030,6 +3038,8 @@ for(int c=0;c<ml;c++){
 			return -3;
 		case 'B':
 			return -4;
+		case 'H':
+			return -5;
 			default:
 				return 0;
 		}
