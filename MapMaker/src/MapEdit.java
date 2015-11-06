@@ -3055,7 +3055,7 @@ for(int c=0;c<ml;c++){
 		case 'S':
 			return "shopkeep";
 		case 'P':
-			return "PLATO";
+			return "plato";
 		case 'p':
 			return "policeMan";
 		case 'm':
@@ -3077,7 +3077,7 @@ for(int c=0;c<ml;c++){
 		return 'C';
 		case "shopkeep":
 		return 'S';
-		case "PLATO":
+		case "plato":
 			return 'P';
 		case "policeMan":
 			return 'p';
