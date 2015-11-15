@@ -364,9 +364,11 @@ if(returnVal!=null){
 							}
 							int theX = ((int) ((m.x + x) / sen) * sen)+npcX();
 							int theY = ((int) ((m.y + y) / sen) * sen)+200+npcY();
-
-
-							npcs.add(theX + "," + theY + ","+getNpcName()+(getNPC3()!=null?","+getNPC3():""));
+							String answer=null;
+							if(selChar=='C')
+						 answer	=JOptionPane.showInputDialog("Option to join player? y/n");
+								String s=getNPC3(answer);
+							npcs.add(theX + "," + theY + ","+getNpcName()+(s!=null?","+s:""));
 						}
 						 else if (blocks == MAXBLOCKS+1) {
 								Point m = MouseInfo.getPointerInfo().getLocation();
@@ -1745,11 +1747,11 @@ g2d.drawString(to, px-x, py-y-200);}
 					}
 
 				} else if (blocks == 1) {
-					if (selNum > 22) {
+					if (selNum > 23) {
 						selNum = 0;
 					}
 					if (selNum < 0) {
-						selNum = 22;
+						selNum = 23;
 					}
 					switch (selNum) {
 					case 0:
@@ -1821,6 +1823,9 @@ g2d.drawString(to, px-x, py-y-200);}
 						break;
 					case 22://backSecurity
 						selChar='s';
+						break;
+					case 23://backSecurity
+						selChar='~';
 						break;
 					}
 				}
@@ -2454,6 +2459,8 @@ g2d.drawString(to, px-x, py-y-200);}
 			return "Lizard-Man";
 		case 's'://backSecurity
 			return "Pod";
+		case '~'://backSecurity
+			return "images/enemies/unique/birdy.png";
 		case 'B':
 		default:
 			return "images/enemies/unique/blob.png";
@@ -2574,6 +2581,8 @@ case 'r'://security
 		case 'p'://backSecurity
 		case 'S':
 			return "cop";
+		case '~':
+			return ""+3;
 		case 'D':
 			return "100";
 		
@@ -2849,6 +2858,8 @@ for(int c=0;c<ml;c++){
 			return "LizardMan";
 		case 's':
 			return "pod";
+		case '~':
+			return "chain";
 		default:
 			return "?";
 		}
@@ -3089,10 +3100,12 @@ for(int c=0;c<ml;c++){
 			return ' ';
 		}
 	}
-	public String getNPC3(){
+	public String getNPC3(String answer){
 		switch(selChar){
 		case 'm':
 		return "3";
+		case'C':
+			return answer.equalsIgnoreCase("y")?"t":"f";
 		default:
 			return null;
 		}
