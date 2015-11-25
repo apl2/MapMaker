@@ -1,4 +1,5 @@
 import java.awt.AWTException;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -21,19 +22,24 @@ import java.awt.event.WindowListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.Timer;
-
-
-
-
+import javax.swing.filechooser.FileFilter;
 
 public class MapEdit extends JFrame {
+
 	public static final Color MED_GRAY = new Color(150, 150, 160);
 	public static final Color NIGHT_SKY = // new Color(24, 24, 61);
 	Color.black;
@@ -55,7 +61,7 @@ public class MapEdit extends JFrame {
 	public static final Color DESERT_BLUE = new Color(100, 200, 255);
 	public static final Color BLUE = new Color(50, 100, 255);
 	public static final Color LIGHT_BROWN = new Color(175, 75, 0);
-	
+
 	public static final Color DARK_GREEN = new Color(30, 72, 30);
 	public static final Color DRAB_BROWN = new Color(68, 21, 15);
 	public static final Color LIGHT_SAND_BLUE = new Color(63, 85, 116);
@@ -71,7 +77,14 @@ public class MapEdit extends JFrame {
 	String[] strings;
 	int xd = 0;
 	int yd = 0;
-	char selChar = 'W';
+	char selChar = 'W';// Blocks
+
+	String[] typesOfEnemies = { "Standing", "Tracking", "Head Boss" };
+	String type = typesOfEnemies[0];// enemies/objects/NPCs
+	String imageString = "images/enemies/unique/blob.png";// enemies
+	boolean flying;// enemies
+	int baseHealth = 100;// enemies
+
 	ArrayList<String> portals = new ArrayList<String>();
 	int selNum = 2;
 	int blocks = 0;
@@ -81,8 +94,9 @@ public class MapEdit extends JFrame {
 	boolean zoom = false;
 	boolean choosing = false;
 	final int MAXBLOCKS = 4;
-int selEn;
-ArrayList<String>objects=new ArrayList<String>();
+	int selEn;
+	ArrayList<String> objects = new ArrayList<String>();
+
 	public MapEdit(String name, String project) {
 		// TODO Auto-generated constructor stub
 
@@ -100,8 +114,7 @@ ArrayList<String>objects=new ArrayList<String>();
 				+ "Q/Middle Mouse Button: change enemy placement precision\n"
 				+ "R: delete enemy\n" + "Z: zoom out/back\n"
 				+ "X: remove (Opens Menu)\n" + "C: add (Opens Menu)\n"
-				+ "I: info\n" 
-				+ "T: change texture pack\n"
+				+ "I: info\n" + "T: change texture pack\n"
 				+ "P: Build/close paths");
 		loadS();
 
@@ -119,6 +132,7 @@ ArrayList<String>objects=new ArrayList<String>();
 			public void keyPressed(KeyEvent e) {
 				// TODO Auto-generated method stub
 				int key = e.getKeyCode();
+
 				if (key == KeyEvent.VK_ESCAPE) {
 
 					MapMaker.saveStrings(strings, name, project);
@@ -127,6 +141,10 @@ ArrayList<String>objects=new ArrayList<String>();
 					MapMaker.saveStrings(objects, nameWithO(), project);
 					MapMaker.saveStrings(npcs, nameWithN(), project);
 					mapEdit.dispose();
+				} else if (key == KeyEvent.VK_C) {
+					if (blocks == 1) {
+						openEnemyChoser();
+					}
 				} else if (key == KeyEvent.VK_I) {
 					JOptionPane
 							.showMessageDialog(
@@ -144,13 +162,23 @@ ArrayList<String>objects=new ArrayList<String>();
 											+ "P: Build/close paths");
 				} else if (key == KeyEvent.VK_T) {
 					String[] options = { "cancel", "Grassy", "Desert", "Snowy",
-							"Island", "Volcano","Haunted","Lab" };
+							"Island", "Volcano", "Haunted", "Lab" };
 					int sel = JOptionPane.showOptionDialog(mapEdit,
 							"Which texture pack do you want?", "Texture Pack",
 							JOptionPane.CANCEL_OPTION,
 							JOptionPane.DEFAULT_OPTION, null, options, 0);
-					if (sel > 0) {
-						strings[0] = options[sel];
+					String[] options2 = { "cancel", "none", "rain", "snow",
+							"fog", "sandstorm"};
+					int sel2 = JOptionPane.showOptionDialog(mapEdit,
+							"What weather do you want?", "Weather",
+							JOptionPane.CANCEL_OPTION,
+							JOptionPane.DEFAULT_OPTION, null, options2, 0);
+					if (sel > 0&&sel2>0) {
+						try{
+						strings[0] = options[sel]+","+options2[sel2]+","+Integer.parseInt(JOptionPane.showInputDialog(mapEdit, "What level do you want the Map to be?", "1"));}
+						catch(Exception ex){
+							JOptionPane.showMessageDialog(mapEdit, "Level must be a number.");
+						}
 					}
 				} else if (key == KeyEvent.VK_C && zoom) {
 
@@ -281,22 +309,25 @@ ArrayList<String>objects=new ArrayList<String>();
 					} else if (key == KeyEvent.VK_SPACE) {
 
 						if (blocks == 0) {
-							int maxWidth=0;
-							for(int c=0;c<strings.length;c++){
-								if(strings[c].length()>maxWidth){
-									maxWidth=strings[c].length();
+							int maxWidth = 0;
+							for (int c = 0; c < strings.length; c++) {
+								if (strings[c].length() > maxWidth) {
+									maxWidth = strings[c].length();
 								}
 							}
 							Point m = MouseInfo.getPointerInfo().getLocation();
-							if((int) ((y + m.getY() - 10) / 100)+1 >0&&(int) ((y + m.getY() - 10) / 100) + 2<strings.length-1&&(int) ((x + m.getX() + 10) / 100)>0&&(int) ((x + m.getX() + 10) / 100)+1<maxWidth)
-							{
-							String s = strings[(int) ((y + m.getY() - 10) / 100) + 2];
-							s = s.substring(0,
-									(int) ((x + m.getX() + 10) / 100))
-									+ selChar
-									+ s.substring((int) ((x + m.getX() + 10) / 100) + 1);
-						strings[(int) ((y - 10 + m.getY()) / 100) + 2] = s;
-						}} else if (blocks == 1) {
+							if ((int) ((y + m.getY() - 10) / 100) + 1 > 0
+									&& (int) ((y + m.getY() - 10) / 100) + 2 < strings.length - 1
+									&& (int) ((x + m.getX() + 10) / 100) > 0
+									&& (int) ((x + m.getX() + 10) / 100) + 1 < maxWidth) {
+								String s = strings[(int) ((y + m.getY() - 10) / 100) + 2];
+								s = s.substring(0,
+										(int) ((x + m.getX() + 10) / 100))
+										+ selChar
+										+ s.substring((int) ((x + m.getX() + 10) / 100) + 1);
+								strings[(int) ((y - 10 + m.getY()) / 100) + 2] = s;
+							}
+						} else if (blocks == 1) {
 
 							Point m = MouseInfo.getPointerInfo().getLocation();
 							int sen = 100;
@@ -304,23 +335,13 @@ ArrayList<String>objects=new ArrayList<String>();
 								sen = 50;
 							}
 							int theX = ((int) ((m.x + x) / sen) * sen);
-							int theY = ((int) ((m.y + y) / sen) * sen)+200;
+							int theY = ((int) ((m.y + y) / sen) * sen) + 200;
 							if (!enPre) {
 								theX -= 50;
 								theY -= 50;
 							}
-							enemies.add((getSelChar() + "," + theX + "," + theY
-									+ "," + getSelString() + "," + selFlying()
-									+ "," + selHealth() + (selDelay() != null ? ","
-									+ selDelay()
-									: "")
-									+
-									  (selDelay2() != null ? ","
-									+ selDelay2()
-									: "")+
-									(selDelay3() != null ? ","
-											+ selDelay3()
-											: "")));
+							enemies.add((type + "," + theX + "," + theY + ","
+									+ imageString + "," + flying + "," + baseHealth));
 						} else if (blocks == 2) {
 							Point m = MouseInfo.getPointerInfo().getLocation();
 							int sen = 100;
@@ -328,141 +349,143 @@ ArrayList<String>objects=new ArrayList<String>();
 								sen = 50;
 							}
 							int theX = ((int) ((m.x + x) / sen) * sen);
-							int theY = ((int) ((m.y + y) / sen) * sen)+200;
+							int theY = ((int) ((m.y + y) / sen) * sen) + 200;
 
 							String returnVal = JOptionPane.showInputDialog(
 									mapEdit, "What is the name of the map");
-if(returnVal!=null){
-	String pS="normal";
-	if(selChar=='B')
-		pS="boss";
-							portals.add(theX + "," + theY + ","
- + returnVal + ","
-									+ 0
-									+","+pS// Run.removeExtension(chooser.getSelectedFile().toString()+","+Integer.parseInt(JOptionPane.showInputDialog(mapEdit,
-										// "How many collectibles"))
-							);
-						}}
-						else if (blocks == 3) {
+							if (returnVal != null) {
+								String pS = "normal";
+								if (selChar == 'B')
+									pS = "boss";
+								portals.add(theX + "," + theY + "," + returnVal
+										+ "," + 0 + "," + pS// Run.removeExtension(chooser.getSelectedFile().toString()+","+Integer.parseInt(JOptionPane.showInputDialog(mapEdit,
+															// "How many collectibles"))
+								);
+							}
+						} else if (blocks == 3) {
 							Point m = MouseInfo.getPointerInfo().getLocation();
 							int sen = 25;
 							if (!enPre) {
 								sen = 50;
 							}
-							int theX = ((int) ((m.x + x) / sen) * sen)+objectsAddX();
-							int theY = ((int) ((m.y + y) / sen) * sen)+200+objectsAddY();
+							int theX = ((int) ((m.x + x) / sen) * sen)
+									+ objectsAddX();
+							int theY = ((int) ((m.y + y) / sen) * sen) + 200
+									+ objectsAddY();
 
-						
-							objects.add(theX + "," + theY + ","+getSelStringO()+","+getObjectCollide()+","+getObjectsVal()
-							);
-						}
-						else if (blocks == 4) {
+							objects.add(theX + "," + theY + ","
+									+ getSelStringO() + ","
+									+ getObjectCollide() + ","
+									+ getObjectsVal());
+						} else if (blocks == 4) {
 							Point m = MouseInfo.getPointerInfo().getLocation();
 							int sen = 100;
 							if (enPre) {
 								sen = 50;
 							}
-							int theX = ((int) ((m.x + x) / sen) * sen)+npcX();
-							int theY = ((int) ((m.y + y) / sen) * sen)+200+npcY();
-							String answer=null;
-							if(selChar=='C')
-						 answer	=JOptionPane.showInputDialog("Option to join player? y/n");
-								String s=getNPC3(answer);
-							npcs.add(theX + "," + theY + ","+getNpcName()+(s!=null?","+s:""));
-						}
-						 else if (blocks == MAXBLOCKS+1) {
-								Point m = MouseInfo.getPointerInfo().getLocation();
-								
-								ArrayList<String> stuff = new ArrayList<String>();// should
-								// have
-								// 5
-								String currentS = "";
-								for (int c2 = 0; c2 < enemies.get(selEn).length(); c2++) {
+							int theX = ((int) ((m.x + x) / sen) * sen) + npcX();
+							int theY = ((int) ((m.y + y) / sen) * sen) + 200
+									+ npcY();
+							String answer = null;
+							if (selChar == 'C')
+								answer = JOptionPane
+										.showInputDialog("Option to join player? y/n");
+							String s = getNPC3(answer);
+							npcs.add(theX + "," + theY + "," + getNpcName()
+									+ (s != null ? "," + s : ""));
+						} else if (blocks == MAXBLOCKS + 1) {
+							Point m = MouseInfo.getPointerInfo().getLocation();
 
-									if (enemies.get(selEn).charAt(c2) == ',') {
-										stuff.add(currentS);
-										currentS = "";
+							ArrayList<String> stuff = new ArrayList<String>();// should
+							// have
+							// 5
+							String currentS = "";
+							for (int c2 = 0; c2 < enemies.get(selEn).length(); c2++) {
 
-									} else {
-										currentS += enemies.get(selEn).charAt(c2);
-									}
-								}
-								if (currentS != "") {
+								if (enemies.get(selEn).charAt(c2) == ',') {
 									stuff.add(currentS);
+									currentS = "";
+
+								} else {
+									currentS += enemies.get(selEn).charAt(c2);
 								}
-								try {
-									int px = Integer.parseInt(stuff.get(1));
-									int py = Integer.parseInt(stuff.get(2));
-									Image pImg = new ImageIcon(getClass().getResource(
-											stuff.get(3))).getImage();
-									int stuffG=6;
-									if(cop(enemies.get(selEn).charAt(0))==true)
-										stuffG=7;
-									
-									//System.out.println(stuffG);
-									if(stuff.size()>stuffG){
-									int[][]points=createArray(stuff.get(stuffG));
-									if(points.length>0){
-									int theX = ((int) ((m.x + x) / 100));
-								int theY = ((int) ((m.y + y) / 100) )+2;
-							
-								int newX=((int) ((px) / 100) );
-								int newY=((int) ((py) / 100) );
-								
-								for(int c=0;c<points.length;c++){
-									newX+=points[c][0];
-									newY+=points[c][1];
-								}
-									if(//(newX!=theX&&newY!=theY)
-											//||
-											(newX==theX&&newY==theY)
-											){
-										//System.out.println("no");
-										//System.out.println(newX-theX);
-										//System.out.println(newY-theY);
-									}else{
-										theX-=newX;
-										theY-=newY;
-										if((theX<2&&theX>-2)&&(theY<2&&theY>-2)){
-										stuff.set(stuffG, stuff.get(stuffG)+"'"+theX+"'"+theY);
-										
-										String s="";
-										for(int c=0;c<stuff.size();c++){
-											if(c!=0)
-												s+=",";
-											s+=stuff.get(c);
-										}
-										enemies.set(selEn, s);
-									//System.out.println("yes");
-									}}
-									}}
-								} catch (Exception e2) {
-									e2.printStackTrace();
-								}
-								
-	
-								
 							}
+							if (currentS != "") {
+								stuff.add(currentS);
+							}
+							try {
+								int px = Integer.parseInt(stuff.get(1));
+								int py = Integer.parseInt(stuff.get(2));
+								Image pImg = new ImageIcon(getClass()
+										.getResource(stuff.get(3))).getImage();
+								// int stuffG=6;
+								// if(cop(enemies.get(selEn).charAt(0))==true)
+								// stuffG=7;
+
+								// System.out.println(stuffG);
+								// if(stuff.size()>stuffG){
+								// int[][]points=createArray(stuff.get(stuffG));
+								// if(points.length>0){
+								// int theX = ((int) ((m.x + x) / 100));
+								// int theY = ((int) ((m.y + y) / 100) )+2;
+								//
+								// int newX=((int) ((px) / 100) );
+								// int newY=((int) ((py) / 100) );
+								//
+								// for(int c=0;c<points.length;c++){
+								// newX+=points[c][0];
+								// newY+=points[c][1];
+								// }
+								// if(//(newX!=theX&&newY!=theY)
+								// //||
+								// (newX==theX&&newY==theY)
+								// ){
+								// //System.out.println("no");
+								// //System.out.println(newX-theX);
+								// //System.out.println(newY-theY);
+								// }else{
+								// theX-=newX;
+								// theY-=newY;
+								// if((theX<2&&theX>-2)&&(theY<2&&theY>-2)){
+								// stuff.set(stuffG,
+								// stuff.get(stuffG)+"'"+theX+"'"+theY);
+								//
+								// String s="";
+								// for(int c=0;c<stuff.size();c++){
+								// if(c!=0)
+								// s+=",";
+								// s+=stuff.get(c);
+								// }
+								// enemies.set(selEn, s);
+								// //System.out.println("yes");
+								// }}
+								// }}
+							} catch (Exception e2) {
+								e2.printStackTrace();
+							}
+
+						}
 					} else if (key == KeyEvent.VK_DOWN) {
 						selNum++;
 					} else if (key == KeyEvent.VK_UP) {
 						selNum--;
 					} else if (key == KeyEvent.VK_E) {
-						if(blocks!=MAXBLOCKS+1){
-						blocks++;
-						if (blocks > MAXBLOCKS) {
-							blocks = 0;
+						if (blocks != MAXBLOCKS + 1) {
+							blocks++;
+							if (blocks > MAXBLOCKS) {
+								blocks = 0;
+							}
+							selNum = 0;
+							selChar = 'S';
 						}
-						selNum = 0;
-						selChar = 'S';}
 					} else if (key == KeyEvent.VK_Q) {
 						enPre = !enPre;
 
 					}
 
 					else if (key == KeyEvent.VK_R) {
-						if(blocks==MAXBLOCKS+1){
-							blocks=1;
+						if (blocks == MAXBLOCKS + 1) {
+							blocks = 1;
 						}
 						Point m = MouseInfo.getPointerInfo().getLocation();
 						for (int c = 0; c < enemies.size(); c++) {
@@ -480,21 +503,25 @@ if(returnVal!=null){
 									currentS += enemies.get(c).charAt(c2);
 								}
 							}
-							char ch=stuff.get(0).charAt(0);
-							Image enImg;if(ch=='B'){
-								String sB="images/icon.png";
-							if(stuff.get(3).equals("Lizard-Man")){
-								sB= "images/Lizard.png";}
-							else if(stuff.get(3).equals("Head")){
-								sB= "images/enemies/unique/Head.png";}
-								enImg=new ImageIcon(getClass().getResource(sB)).getImage();
-							}else{
-													enImg = new ImageIcon(getClass().getResource(
-															stuff.get(3))).getImage();}
+							char ch = stuff.get(0).charAt(0);
+							Image enImg;
+							if (ch == 'B') {
+								String sB = "images/icon.png";
+								if (stuff.get(3).equals("Lizard-Man")) {
+									sB = "images/Lizard.png";
+								} else if (stuff.get(3).equals("Head")) {
+									sB = "images/enemies/unique/Head.png";
+								}
+								enImg = new ImageIcon(getClass()
+										.getResource(sB)).getImage();
+							} else {
+								enImg = new ImageIcon(getClass().getResource(
+										stuff.get(3))).getImage();
+							}
 							if (new Rectangle(Integer.parseInt(stuff.get(1)),
 									Integer.parseInt(stuff.get(2)),
 									enImg.getWidth(null), enImg.getHeight(null))
-									.contains(new Point(x + m.x, y + m.y+200))) {
+									.contains(new Point(x + m.x, y + m.y + 200))) {
 								enemies.remove(c);
 								c--;
 							}
@@ -515,14 +542,15 @@ if(returnVal!=null){
 									currentS += npcs.get(c).charAt(c2);
 								}
 							}
-							if(currentS!="")
+							if (currentS != "")
 								stuff.add(currentS);
 							Image enImg = new ImageIcon(getClass().getResource(
-									getImageChar(nameToChar(stuff.get(2))))).getImage();
+									getImageChar(nameToChar(stuff.get(2)))))
+									.getImage();
 							if (new Rectangle(Integer.parseInt(stuff.get(0)),
 									Integer.parseInt(stuff.get(1)),
 									enImg.getWidth(null), enImg.getHeight(null))
-									.contains(new Point(x + m.x, y + m.y+200))) {
+									.contains(new Point(x + m.x, y + m.y + 200))) {
 								npcs.remove(c);
 								c--;
 							}
@@ -541,22 +569,24 @@ if(returnVal!=null){
 								} else {
 									currentS += portals.get(c).charAt(c2);
 								}
-							}Image enImg;
-							if(stuff.get(3).equals("normal")){
-						 enImg = new ImageIcon(getClass().getResource(
-									"images/portal1.png")).getImage();}
-						
-							else if(stuff.get(3).equals("boss")){
-								 enImg = new ImageIcon(getClass().getResource(
-											"images/portal2.png")).getImage();}
-							else{
+							}
+							Image enImg;
+							if (stuff.get(3).equals("normal")) {
+								enImg = new ImageIcon(getClass().getResource(
+										"images/portal1.png")).getImage();
+							}
+
+							else if (stuff.get(3).equals("boss")) {
+								enImg = new ImageIcon(getClass().getResource(
+										"images/portal2.png")).getImage();
+							} else {
 								enImg = new ImageIcon(getClass().getResource(
 										"images/icon.png")).getImage();
 							}
 							if (new Rectangle(Integer.parseInt(stuff.get(0)),
 									Integer.parseInt(stuff.get(1)),
 									enImg.getWidth(null), enImg.getHeight(null))
-									.contains(new Point(x + m.x, y + m.y+200))) {
+									.contains(new Point(x + m.x, y + m.y + 200))) {
 								portals.remove(c);
 								c--;
 							}
@@ -566,7 +596,7 @@ if(returnVal!=null){
 																				// have
 																				// 5
 							String currentS = "";
-							for (int c2 = 0; c2 <objects.get(c).length(); c2++) {
+							for (int c2 = 0; c2 < objects.get(c).length(); c2++) {
 
 								if (objects.get(c).charAt(c2) == ',') {
 									stuff.add(currentS);
@@ -577,52 +607,55 @@ if(returnVal!=null){
 								}
 							}
 							stuff.add(currentS);
-							Image enImg=new ImageIcon(getClass().getResource(stuff.get(2))).getImage();
-							
+							Image enImg = new ImageIcon(getClass().getResource(
+									stuff.get(2))).getImage();
+
 							if (new Rectangle(Integer.parseInt(stuff.get(0)),
 									Integer.parseInt(stuff.get(1)),
 									enImg.getWidth(null), enImg.getHeight(null))
-									.contains(new Point(x + m.x, y + m.y+200))) {
+									.contains(new Point(x + m.x, y + m.y + 200))) {
 								objects.remove(c);
 								c--;
 							}
 						}
-					}
-					else if (key == KeyEvent.VK_P) {
-						if(blocks==MAXBLOCKS+1){
-							blocks=0;
-						}else{
-						Point m = MouseInfo.getPointerInfo().getLocation();
-						for (int c = 0; c < enemies.size(); c++) {
-							ArrayList<String> stuff = new ArrayList<String>();// should
-																				// have
-																				// 5
-							String currentS = "";
-							for (int c2 = 0; c2 < enemies.get(c).length(); c2++) {
+					} else if (key == KeyEvent.VK_P) {
+						if (blocks == MAXBLOCKS + 1) {
+							blocks = 0;
+						} else {
+							Point m = MouseInfo.getPointerInfo().getLocation();
+							for (int c = 0; c < enemies.size(); c++) {
+								ArrayList<String> stuff = new ArrayList<String>();// should
+																					// have
+																					// 5
+								String currentS = "";
+								for (int c2 = 0; c2 < enemies.get(c).length(); c2++) {
 
-								if (enemies.get(c).charAt(c2) == ',') {
-									stuff.add(currentS);
-									currentS = "";
+									if (enemies.get(c).charAt(c2) == ',') {
+										stuff.add(currentS);
+										currentS = "";
 
-								} else {
-									currentS += enemies.get(c).charAt(c2);
+									} else {
+										currentS += enemies.get(c).charAt(c2);
+									}
+								}
+								Image enImg = new ImageIcon(getClass()
+										.getResource(stuff.get(3))).getImage();
+								if (new Rectangle(
+										Integer.parseInt(stuff.get(1)),
+										Integer.parseInt(stuff.get(2)),
+										enImg.getWidth(null),
+										enImg.getHeight(null))
+										.contains(new Point(x + m.x, y + m.y
+												+ 200))) {
+									selEn = c;
+									blocks = MAXBLOCKS + 1;
+									break;
+
 								}
 							}
-							Image enImg = new ImageIcon(getClass().getResource(
-									stuff.get(3))).getImage();
-							if (new Rectangle(Integer.parseInt(stuff.get(1)),
-									Integer.parseInt(stuff.get(2)),
-									enImg.getWidth(null), enImg.getHeight(null))
-									.contains(new Point(x + m.x, y + m.y+200))) {
-								selEn=c;blocks=MAXBLOCKS+1;
-								break;
-								
-							}
-						}
 
-						
-						
-					}}
+						}
+					}
 				}
 			}
 
@@ -744,691 +777,768 @@ if(returnVal!=null){
 					for (int c = 0; c < strings[cA].length(); c++) {
 
 						int nx = c * 100 - x;
-						int ny = (cA - 1) * 100 - y-100;
+						int ny = (cA - 1) * 100 - y - 100;
 						if (zoom
 								|| (nx > -100 && nx < this.getWidth()
 										&& ny > -100 && ny < this.getHeight())) {
 
 							char theChar = strings[cA].charAt(c);
-							if(theChar=='I'){
-//								g2d.setColor(Color.white);
-//								g2d.fill(new Rectangle(nx, ny, 100, 100));
-							}else
-							switch (getTexturePack()) {
-							case 'D':// Start desert
-								switch (theChar) {
-								case 'O':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(LIGHT_OFF_TAN);
-									g2d.fill(new Rectangle(nx, ny + 30, 60, 4));
-									g2d.fill(new Rectangle(nx + 60, ny + 26,
-											40, 4));
-									g2d.fill(new Rectangle(nx, ny + 80, 30, 4));
-									g2d.fill(new Rectangle(nx + 30, ny + 76,
-											70, 4));
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
-									g2d.setFont(MOUSE);
-									g2d.setColor(Color.BLACK);
-									g2d.drawString("spawn", nx + 30, ny + 40);
+							if (theChar == 'I') {
+								// g2d.setColor(Color.white);
+								// g2d.fill(new Rectangle(nx, ny, 100, 100));
+							} else
+								switch (getTexturePack()) {
+								case 'D':// Start desert
+									switch (theChar) {
+									case 'O':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(LIGHT_OFF_TAN);
+										g2d.fill(new Rectangle(nx, ny + 30, 60,
+												4));
+										g2d.fill(new Rectangle(nx + 60,
+												ny + 26, 40, 4));
+										g2d.fill(new Rectangle(nx, ny + 80, 30,
+												4));
+										g2d.fill(new Rectangle(nx + 30,
+												ny + 76, 70, 4));
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										g2d.setFont(MOUSE);
+										g2d.setColor(Color.BLACK);
+										g2d.drawString("spawn", nx + 30,
+												ny + 40);
+										break;
+									case '1':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(LIGHT_OFF_TAN);
+										g2d.fill(new Rectangle(nx, ny + 30, 60,
+												4));
+										g2d.fill(new Rectangle(nx + 60,
+												ny + 26, 40, 4));
+										g2d.fill(new Rectangle(nx, ny + 80, 30,
+												4));
+										g2d.fill(new Rectangle(nx + 30,
+												ny + 76, 70, 4));
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										break;
+									case 'L':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(LIGHT_BLUE);
+										g2d.fill(new Rectangle(nx + 60,
+												ny + 67, 40, 3));
+										g2d.fill(new Rectangle(nx, ny + 70, 60,
+												3));
+										break;
+									case 'W':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(Color.BLACK);
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										break;
+
+									case 'C':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(LIGHT_OFF_TAN);
+										g2d.drawLine(nx, ny, nx + 100, ny + 100);
+										g2d.drawLine(nx + 100, ny, nx, ny + 100);
+										g2d.drawLine(nx, ny + 100 / 2,
+												nx + 100, ny + 100 / 2);
+										g2d.drawLine(nx + 100 / 2, ny,
+												nx + 100 / 2, ny + 100);
+										break;
+
+									case '>':
+
+										g2d.setFont(BLOCK);
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(Color.BLUE);
+										g2d.drawString("<->", nx, ny + 70);
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										break;
+
+									default:
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										break;
+									}
 									break;
-								case '1':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(LIGHT_OFF_TAN);
-									g2d.fill(new Rectangle(nx, ny + 30, 60, 4));
-									g2d.fill(new Rectangle(nx + 60, ny + 26,
-											40, 4));
-									g2d.fill(new Rectangle(nx, ny + 80, 30, 4));
-									g2d.fill(new Rectangle(nx + 30, ny + 76,
-											70, 4));
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
+								case 'S':// Start snowy
+									switch (theChar) {
+									case 'O':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(Color.LIGHT_GRAY);
+										g2d.fill(new Rectangle(nx + 60,
+												ny + 40, 4, 4));
+										g2d.fill(new Rectangle(nx + 30,
+												ny + 80, 3, 3));
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										g2d.setFont(MOUSE);
+										g2d.setColor(Color.BLACK);
+										g2d.drawString("spawn", nx + 30,
+												ny + 40);
+										break;
+									case '1':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(Color.LIGHT_GRAY);
+										g2d.fill(new Rectangle(nx + 60,
+												ny + 40, 4, 4));
+										g2d.fill(new Rectangle(nx + 30,
+												ny + 80, 3, 3));
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										break;
+									case 'L':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(LIGHT_BLUE);
+										g2d.fill(new Rectangle(nx + 70,
+												ny + 65, 10, 10));
+										g2d.fill(new Rectangle(nx + 30,
+												ny + 30, 15, 15));
+										break;
+									case 'W':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(BROWN);
+										g2d.fill(new Rectangle(nx, ny + 20,
+												100, 10));
+										g2d.fill(new Rectangle(nx, ny + 70,
+												100, 10));
+										g2d.setColor(Color.BLACK);
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										break;
+
+									case 'C':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(LIGHT_BROWN);
+										g2d.fill(new Rectangle(nx, ny + 20,
+												100, 10));
+										g2d.fill(new Rectangle(nx, ny + 70,
+												100, 10));
+										break;
+
+									case '>':
+
+										g2d.setFont(BLOCK);
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(Color.BLUE);
+										g2d.drawString("<->", nx, ny + 70);
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										break;
+									case '2':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(Color.WHITE);
+										g2d.fill(new Rectangle(nx + 70,
+												ny + 30, 5, 5));
+										g2d.fill(new Rectangle(nx + 40,
+												ny + 70, 5, 5));
+										g2d.fill(new Rectangle(nx + 10,
+												ny + 15, 3, 3));
+										g2d.setColor(Color.LIGHT_GRAY);
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										break;
+									default:
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										break;
+									}
 									break;
-								case 'L':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(LIGHT_BLUE);
-									g2d.fill(new Rectangle(nx + 60, ny + 67,
-											40, 3));
-									g2d.fill(new Rectangle(nx, ny + 70, 60, 3));
-									break;
-								case 'W':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(Color.BLACK);
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
+								case 'I':// Start tropic
+									switch (theChar) {
+									case 'O':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(OFF_TAN);
+										g2d.fill(new Rectangle(nx + 70,
+												ny + 30, 5, 5));
+										g2d.fill(new Rectangle(nx + 40,
+												ny + 70, 5, 5));
+										g2d.fill(new Rectangle(nx + 10,
+												ny + 15, 3, 3));
+										g2d.setColor(LIGHT_OFF_GREEN);
+										g2d.fill(new Rectangle(nx + 30,
+												ny + 15, 4, 10));
+										g2d.fill(new Rectangle(nx + 80,
+												ny + 20, 4, 10));
+										g2d.fill(new Rectangle(nx + 20,
+												ny + 80, 4, 10));
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										g2d.setFont(MOUSE);
+										g2d.setColor(Color.BLACK);
+										g2d.drawString("spawn", nx + 30,
+												ny + 40);
+										break;
+									case '1':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(OFF_TAN);
+										g2d.fill(new Rectangle(nx + 70,
+												ny + 30, 5, 5));
+										g2d.fill(new Rectangle(nx + 40,
+												ny + 70, 5, 5));
+										g2d.fill(new Rectangle(nx + 10,
+												ny + 15, 3, 3));
+										g2d.setColor(LIGHT_OFF_GREEN);
+										g2d.fill(new Rectangle(nx + 30,
+												ny + 15, 4, 10));
+										g2d.fill(new Rectangle(nx + 80,
+												ny + 20, 4, 10));
+										g2d.fill(new Rectangle(nx + 20,
+												ny + 80, 4, 10));
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										break;
+									case 'L':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(BLUE);
+										g2d.fill(new Rectangle(nx + 70,
+												ny + 65, 30, 5));
+										g2d.fill(new Rectangle(nx, ny + 70, 70,
+												5));
+										g2d.fill(new Rectangle(nx + 40,
+												ny + 25, 60, 5));
+										g2d.fill(new Rectangle(nx, ny + 30, 40,
+												5));
+										break;
+									case 'W':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(BROWN);
+										g2d.fill(new Rectangle(nx, ny + 20,
+												100, 10));
+										g2d.fill(new Rectangle(nx, ny + 70,
+												100, 10));
+										g2d.setColor(Color.BLACK);
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										break;
+
+									case 'C':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(LIGHT_BROWN);
+										g2d.fill(new Rectangle(nx, ny + 20,
+												100, 10));
+										g2d.fill(new Rectangle(nx, ny + 70,
+												100, 10));
+										break;
+
+									case '>':
+
+										g2d.setFont(BLOCK);
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(Color.BLUE);
+										g2d.drawString("<->", nx, ny + 70);
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										break;
+									case '2':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(LIGHT_OFF_TAN);
+										g2d.fill(new Rectangle(nx, ny + 30, 60,
+												4));
+										g2d.fill(new Rectangle(nx + 60,
+												ny + 26, 40, 4));
+										g2d.fill(new Rectangle(nx, ny + 80, 30,
+												4));
+										g2d.fill(new Rectangle(nx + 30,
+												ny + 76, 70, 4));
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										break;
+									default:
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										break;
+									}
 									break;
 
-								case 'C':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(LIGHT_OFF_TAN);
-									g2d.drawLine(nx, ny, nx + 100, ny + 100);
-									g2d.drawLine(nx + 100, ny, nx, ny + 100);
-									g2d.drawLine(nx, ny + 100 / 2, nx + 100,
-											ny + 100 / 2);
-									g2d.drawLine(nx + 100 / 2, ny,
-											nx + 100 / 2, ny + 100);
-									break;
+								case 'V':// Start volcano
+									switch (theChar) {
+									case 'O':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(OFF_GREEN);
+										g2d.fill(new Rectangle(nx + 30,
+												ny + 15, 4, 10));
+										g2d.fill(new Rectangle(nx + 80,
+												ny + 20, 4, 10));
+										g2d.fill(new Rectangle(nx + 20,
+												ny + 80, 4, 10));
+										g2d.setColor(Color.GRAY);
+										g2d.fill(new Rectangle(nx + 70,
+												ny + 30, 5, 5));
+										g2d.fill(new Rectangle(nx + 40,
+												ny + 70, 5, 5));
+										g2d.fill(new Rectangle(nx + 10,
+												ny + 15, 3, 3));
+										g2d.setColor(Color.DARK_GRAY);
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										g2d.setFont(MOUSE);
+										g2d.setColor(Color.BLACK);
+										g2d.drawString("spawn", nx + 30,
+												ny + 40);
+										break;
+									case '1':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(OFF_GREEN);
+										g2d.fill(new Rectangle(nx + 30,
+												ny + 15, 4, 10));
+										g2d.fill(new Rectangle(nx + 80,
+												ny + 20, 4, 10));
+										g2d.fill(new Rectangle(nx + 20,
+												ny + 80, 4, 10));
+										g2d.setColor(Color.GRAY);
+										g2d.fill(new Rectangle(nx + 70,
+												ny + 30, 5, 5));
+										g2d.fill(new Rectangle(nx + 40,
+												ny + 70, 5, 5));
+										g2d.fill(new Rectangle(nx + 10,
+												ny + 15, 3, 3));
+										g2d.setColor(Color.DARK_GRAY);
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										break;
+									case 'L':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(Color.ORANGE);
+										g2d.fill(new Rectangle(nx + 70,
+												ny + 65, 10, 10));
+										g2d.fill(new Rectangle(nx + 30,
+												ny + 30, 15, 15));
+										break;
+									case 'W':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(Color.BLACK);
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										break;
 
-								case '>':
+									case 'C':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(Color.LIGHT_GRAY);
+										g2d.drawLine(nx, ny + 15, nx + 100,
+												ny + 15);
+										g2d.drawLine(nx, ny + 100 - 14,
+												nx + 100, ny + 100 - 14);
+										g2d.drawLine(nx, ny + 100 / 2,
+												nx + 100, ny + 100 / 2);
+										g2d.drawLine(nx + 100 / 2, ny,
+												nx + 100 / 2, ny + 100);
+										break;
 
-									g2d.setFont(BLOCK);
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(Color.BLUE);
-									g2d.drawString("<->", nx, ny + 70);
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
-									break;
+									case '>':
 
-								default:
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									break;
-								}
-								break;
-							case 'S':// Start snowy
-								switch (theChar) {
-								case 'O':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(Color.LIGHT_GRAY);
-									g2d.fill(new Rectangle(nx + 60, ny + 40, 4,
-											4));
-									g2d.fill(new Rectangle(nx + 30, ny + 80, 3,
-											3));
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
-									g2d.setFont(MOUSE);
-									g2d.setColor(Color.BLACK);
-									g2d.drawString("spawn", nx + 30, ny + 40);
-									break;
-								case '1':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(Color.LIGHT_GRAY);
-									g2d.fill(new Rectangle(nx + 60, ny + 40, 4,
-											4));
-									g2d.fill(new Rectangle(nx + 30, ny + 80, 3,
-											3));
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
-									break;
-								case 'L':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(LIGHT_BLUE);
-									g2d.fill(new Rectangle(nx + 70, ny + 65,
-											10, 10));
-									g2d.fill(new Rectangle(nx + 30, ny + 30,
-											15, 15));
-									break;
-								case 'W':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(BROWN);
-									g2d.fill(new Rectangle(nx, ny + 20, 100, 10));
-									g2d.fill(new Rectangle(nx, ny + 70, 100, 10));
-									g2d.setColor(Color.BLACK);
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
-									break;
+										g2d.setFont(BLOCK);
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(Color.BLUE);
+										g2d.drawString("<->", nx, ny + 70);
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										break;
+									case '2':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(Color.GRAY);
+										g2d.fill(new Rectangle(nx, ny + 30, 4,
+												4));
+										g2d.fill(new Rectangle(nx + 60,
+												ny + 26, 4, 4));
+										g2d.fill(new Rectangle(nx, ny + 80, 4,
+												4));
+										g2d.setColor(Color.DARK_GRAY);
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										break;
 
-								case 'C':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(LIGHT_BROWN);
-									g2d.fill(new Rectangle(nx, ny + 20, 100, 10));
-									g2d.fill(new Rectangle(nx, ny + 70, 100, 10));
+									case 'R':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(MED_GRAY);
+										g2d.fill(new Rectangle(nx, ny + 30, 4,
+												4));
+										g2d.fill(new Rectangle(nx + 60,
+												ny + 26, 4, 4));
+										g2d.fill(new Rectangle(nx, ny + 80, 4,
+												4));
+										break;
+									default:
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										break;
+									}
 									break;
-
-								case '>':
-
-									g2d.setFont(BLOCK);
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(Color.BLUE);
-									g2d.drawString("<->", nx, ny + 70);
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
-									break;
-								case '2':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(Color.WHITE);
-									g2d.fill(new Rectangle(nx + 70, ny + 30, 5,
-											5));
-									g2d.fill(new Rectangle(nx + 40, ny + 70, 5,
-											5));
-									g2d.fill(new Rectangle(nx + 10, ny + 15, 3,
-											3));
-									g2d.setColor(Color.LIGHT_GRAY);
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
-									break;
-								default:
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									break;
-								}
-								break;
-							case 'I':// Start tropic
-								switch (theChar) {
-								case 'O':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(OFF_TAN);
-									g2d.fill(new Rectangle(nx + 70, ny + 30, 5,
-											5));
-									g2d.fill(new Rectangle(nx + 40, ny + 70, 5,
-											5));
-									g2d.fill(new Rectangle(nx + 10, ny + 15, 3,
-											3));
-									g2d.setColor(LIGHT_OFF_GREEN);
-									g2d.fill(new Rectangle(nx + 30, ny + 15, 4,
-											10));
-									g2d.fill(new Rectangle(nx + 80, ny + 20, 4,
-											10));
-									g2d.fill(new Rectangle(nx + 20, ny + 80, 4,
-											10));
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
-									g2d.setFont(MOUSE);
-									g2d.setColor(Color.BLACK);
-									g2d.drawString("spawn", nx + 30, ny + 40);
-									break;
-								case '1':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(OFF_TAN);
-									g2d.fill(new Rectangle(nx + 70, ny + 30, 5,
-											5));
-									g2d.fill(new Rectangle(nx + 40, ny + 70, 5,
-											5));
-									g2d.fill(new Rectangle(nx + 10, ny + 15, 3,
-											3));
-									g2d.setColor(LIGHT_OFF_GREEN);
-									g2d.fill(new Rectangle(nx + 30, ny + 15, 4,
-											10));
-									g2d.fill(new Rectangle(nx + 80, ny + 20, 4,
-											10));
-									g2d.fill(new Rectangle(nx + 20, ny + 80, 4,
-											10));
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
-									break;
-								case 'L':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(BLUE);
-									g2d.fill(new Rectangle(nx + 70, ny + 65,
-											30, 5));
-									g2d.fill(new Rectangle(nx, ny + 70, 70, 5));
-									g2d.fill(new Rectangle(nx + 40, ny + 25,
-											60, 5));
-									g2d.fill(new Rectangle(nx, ny + 30, 40, 5));
-									break;
-								case 'W':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(BROWN);
-									g2d.fill(new Rectangle(nx, ny + 20, 100, 10));
-									g2d.fill(new Rectangle(nx, ny + 70, 100, 10));
-									g2d.setColor(Color.BLACK);
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
-									break;
-
-								case 'C':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(LIGHT_BROWN);
-									g2d.fill(new Rectangle(nx, ny + 20, 100, 10));
-									g2d.fill(new Rectangle(nx, ny + 70, 100, 10));
-									break;
-
-								case '>':
-
-									g2d.setFont(BLOCK);
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(Color.BLUE);
-									g2d.drawString("<->", nx, ny + 70);
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
-									break;
-								case '2':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(LIGHT_OFF_TAN);
-									g2d.fill(new Rectangle(nx, ny + 30, 60, 4));
-									g2d.fill(new Rectangle(nx + 60, ny + 26,
-											40, 4));
-									g2d.fill(new Rectangle(nx, ny + 80, 30, 4));
-									g2d.fill(new Rectangle(nx + 30, ny + 76,
-											70, 4));
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
-									break;
-								default:
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									break;
-								}
-								break;
-
-							case 'V':// Start volcano
-								switch (theChar) {
-								case 'O':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(OFF_GREEN);
-									g2d.fill(new Rectangle(nx + 30, ny + 15, 4,
-											10));
-									g2d.fill(new Rectangle(nx + 80, ny + 20, 4,
-											10));
-									g2d.fill(new Rectangle(nx + 20, ny + 80, 4,
-											10));
-									g2d.setColor(Color.GRAY);
-									g2d.fill(new Rectangle(nx + 70, ny + 30, 5,
-											5));
-									g2d.fill(new Rectangle(nx + 40, ny + 70, 5,
-											5));
-									g2d.fill(new Rectangle(nx + 10, ny + 15, 3,
-											3));
-									g2d.setColor(Color.DARK_GRAY);
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
-									g2d.setFont(MOUSE);
-									g2d.setColor(Color.BLACK);
-									g2d.drawString("spawn", nx + 30, ny + 40);
-									break;
-								case '1':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(OFF_GREEN);
-									g2d.fill(new Rectangle(nx + 30, ny + 15, 4,
-											10));
-									g2d.fill(new Rectangle(nx + 80, ny + 20, 4,
-											10));
-									g2d.fill(new Rectangle(nx + 20, ny + 80, 4,
-											10));
-									g2d.setColor(Color.GRAY);
-									g2d.fill(new Rectangle(nx + 70, ny + 30, 5,
-											5));
-									g2d.fill(new Rectangle(nx + 40, ny + 70, 5,
-											5));
-									g2d.fill(new Rectangle(nx + 10, ny + 15, 3,
-											3));
-									g2d.setColor(Color.DARK_GRAY);
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
-									break;
-								case 'L':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(Color.ORANGE);
-									g2d.fill(new Rectangle(nx + 70, ny + 65,
-											10, 10));
-									g2d.fill(new Rectangle(nx + 30, ny + 30,
-											15, 15));
-									break;
-								case 'W':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(Color.BLACK);
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
-									break;
-
-								case 'C':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(Color.LIGHT_GRAY);
-									g2d.drawLine(nx, ny + 15, nx + 100, ny + 15);
-									g2d.drawLine(nx, ny + 100 - 14, nx + 100, ny + 100 - 14);
-									g2d.drawLine(nx, ny + 100 / 2, nx + 100, ny + 100 / 2);
-									g2d.drawLine(nx + 100 / 2, ny, nx + 100 / 2, ny +100);
-									break;
-
-								case '>':
-
-									g2d.setFont(BLOCK);
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(Color.BLUE);
-									g2d.drawString("<->", nx, ny + 70);
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
-									break;
-								case '2':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(Color.GRAY);
-									g2d.fill(new Rectangle(nx, ny + 30, 4, 4));
-									g2d.fill(new Rectangle(nx + 60, ny + 26, 4,
-											4));
-									g2d.fill(new Rectangle(nx, ny + 80, 4, 4));
-									g2d.setColor(Color.DARK_GRAY);
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
-									break;
-									
-								case 'R':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(MED_GRAY);
-									g2d.fill(new Rectangle(nx, ny + 30, 4, 4));
-									g2d.fill(new Rectangle(nx + 60, ny + 26, 4, 4));
-									g2d.fill(new Rectangle(nx, ny + 80, 4, 4));
-									break;
-								default:
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									break;
-								}
-								break;
 								// TODO Haunted Draw
-							case 'H':
-								switch (theChar) {
-								case 'O':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(LIGHT_SAND_BLUE);
-									g2d.fill(new Rectangle(nx + 30, ny + 15, 4, 10));
-									g2d.fill(new Rectangle(nx + 80, ny + 20, 4, 10));
-									g2d.fill(new Rectangle(nx + 20, ny + 80, 4, 10));
-									g2d.setColor(DARK_SAND_BLUE);
-									g2d.fill(new Rectangle(nx + 70, ny + 30, 5, 5));
-									g2d.fill(new Rectangle(nx + 40, ny + 70, 5, 5));
-									g2d.fill(new Rectangle(nx + 10, ny + 15, 3, 3));
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
-									g2d.setFont(MOUSE);
-									g2d.setColor(Color.BLACK);
-									g2d.drawString("spawn", nx + 30, ny + 40);
-									break;
-								case '1':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(LIGHT_SAND_BLUE);
-									g2d.fill(new Rectangle(nx + 30, ny + 15, 4, 10));
-									g2d.fill(new Rectangle(nx + 80, ny + 20, 4, 10));
-									g2d.fill(new Rectangle(nx + 20, ny + 80, 4, 10));
-									g2d.setColor(DARK_SAND_BLUE);
-									g2d.fill(new Rectangle(nx + 70, ny + 30, 5, 5));
-									g2d.fill(new Rectangle(nx + 40, ny + 70, 5, 5));
-									g2d.fill(new Rectangle(nx + 10, ny + 15, 3, 3));
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
-									break;
-								case 'L':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(LIGHT_SAND_BLUE);
-									g2d.fill(new Rectangle(nx, ny + 30, 40, 4));
-									g2d.fill(new Rectangle(nx + 80, ny + 76, 20, 4));
-									g2d.fill(new Rectangle(nx, ny + 80, 80, 4));
-									g2d.fill(new Rectangle(nx + 40, ny + 26, 60, 4));
-									break;
-								case 'W':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(LIGHT_SAND_BLUE);
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
-									break;
+								case 'H':
+									switch (theChar) {
+									case 'O':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(LIGHT_SAND_BLUE);
+										g2d.fill(new Rectangle(nx + 30,
+												ny + 15, 4, 10));
+										g2d.fill(new Rectangle(nx + 80,
+												ny + 20, 4, 10));
+										g2d.fill(new Rectangle(nx + 20,
+												ny + 80, 4, 10));
+										g2d.setColor(DARK_SAND_BLUE);
+										g2d.fill(new Rectangle(nx + 70,
+												ny + 30, 5, 5));
+										g2d.fill(new Rectangle(nx + 40,
+												ny + 70, 5, 5));
+										g2d.fill(new Rectangle(nx + 10,
+												ny + 15, 3, 3));
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										g2d.setFont(MOUSE);
+										g2d.setColor(Color.BLACK);
+										g2d.drawString("spawn", nx + 30,
+												ny + 40);
+										break;
+									case '1':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(LIGHT_SAND_BLUE);
+										g2d.fill(new Rectangle(nx + 30,
+												ny + 15, 4, 10));
+										g2d.fill(new Rectangle(nx + 80,
+												ny + 20, 4, 10));
+										g2d.fill(new Rectangle(nx + 20,
+												ny + 80, 4, 10));
+										g2d.setColor(DARK_SAND_BLUE);
+										g2d.fill(new Rectangle(nx + 70,
+												ny + 30, 5, 5));
+										g2d.fill(new Rectangle(nx + 40,
+												ny + 70, 5, 5));
+										g2d.fill(new Rectangle(nx + 10,
+												ny + 15, 3, 3));
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										break;
+									case 'L':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(LIGHT_SAND_BLUE);
+										g2d.fill(new Rectangle(nx, ny + 30, 40,
+												4));
+										g2d.fill(new Rectangle(nx + 80,
+												ny + 76, 20, 4));
+										g2d.fill(new Rectangle(nx, ny + 80, 80,
+												4));
+										g2d.fill(new Rectangle(nx + 40,
+												ny + 26, 60, 4));
+										break;
+									case 'W':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(LIGHT_SAND_BLUE);
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										break;
 
-								case 'C':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(Color.LIGHT_GRAY);
-									g2d.drawLine(nx, ny, nx + 100, ny + 100);
-									g2d.drawLine(nx + 100, ny, nx, ny + 100);
-									g2d.drawLine(nx, ny + 100 / 2, nx, ny + 100 / 2);
-									g2d.drawLine(nx + 100 / 2, ny, nx + 100 / 2, ny + 100);
-									break;
+									case 'C':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(Color.LIGHT_GRAY);
+										g2d.drawLine(nx, ny, nx + 100, ny + 100);
+										g2d.drawLine(nx + 100, ny, nx, ny + 100);
+										g2d.drawLine(nx, ny + 100 / 2, nx,
+												ny + 100 / 2);
+										g2d.drawLine(nx + 100 / 2, ny,
+												nx + 100 / 2, ny + 100);
+										break;
 
-								case '>':
+									case '>':
 
-									g2d.setFont(BLOCK);
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(Color.BLUE);
-									g2d.drawString("<->", nx, ny + 70);
-									g2d.draw(getBounds());
-									break;
-								case '2':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(SAND_BLUE);
-									g2d.fill(new Rectangle(nx + 70, ny + 65, 10, 10));
-									g2d.fill(new Rectangle(nx + 30, ny + 30, 15, 15));
-									g2d.fill(new Rectangle(nx + 65, ny + 20, 15, 15));
-									g2d.fill(new Rectangle(nx + 50, ny + 70, 20, 20));
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
-									break;
+										g2d.setFont(BLOCK);
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(Color.BLUE);
+										g2d.drawString("<->", nx, ny + 70);
+										g2d.draw(getBounds());
+										break;
+									case '2':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(SAND_BLUE);
+										g2d.fill(new Rectangle(nx + 70,
+												ny + 65, 10, 10));
+										g2d.fill(new Rectangle(nx + 30,
+												ny + 30, 15, 15));
+										g2d.fill(new Rectangle(nx + 65,
+												ny + 20, 15, 15));
+										g2d.fill(new Rectangle(nx + 50,
+												ny + 70, 20, 20));
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										break;
 
-								case 'R':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(Color.BLACK);
+									case 'R':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(Color.BLACK);
 
-									// Brick pattern
-									int i;
-									for (i = 0; i < 10; i++)
-										g2d.fill(new Rectangle(nx, ny + (10 * i) - (i != 0 ? 2 : 0), 100, i != 0 ? 5 : 3));
-									
-									g2d.fill(new Rectangle(nx, ny + 98, 100, 2));
-									
-									for (i = 0; i < 6; i++)
-										g2d.fill(new Rectangle(nx + (20 * i) - (i != 0 ? 2 : 0), ny, i != 0 ? 5 : 3, 100));
-									break;
+										// Brick pattern
+										int i;
+										for (i = 0; i < 10; i++)
+											g2d.fill(new Rectangle(nx, ny
+													+ (10 * i)
+													- (i != 0 ? 2 : 0), 100,
+													i != 0 ? 5 : 3));
 
-								default:
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.fill(new Rectangle(nx, ny + 98,
+												100, 2));
+
+										for (i = 0; i < 6; i++)
+											g2d.fill(new Rectangle(nx
+													+ (20 * i)
+													- (i != 0 ? 2 : 0), ny,
+													i != 0 ? 5 : 3, 100));
+										break;
+
+									default:
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										break;
+									}
 									break;
-								}
-								break;
 								// TODO Lab Draw
-							case 'L':
-								switch (theChar) {
-								case 'O':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(DRAB_BROWN);
-									g2d.fillRect(nx + 10, ny + 70, 5, 5);
-									g2d.fillRect(nx + 50, ny + 30, 10, 10);
-									g2d.fillRect(nx + 80, ny + 80, 10, 10);
-
-									g2d.setColor(Color.WHITE);
-									g2d.fillRect(nx + 85, ny + 85, 5, 10);
-									g2d.setColor(Color.RED);
-									g2d.fillOval(nx + 80, ny + 80, 15, 10);
-
-									g2d.setColor(Color.WHITE);
-									g2d.fillRect(nx + 75, ny + 35, 5, 10);
-									g2d.setColor(Color.RED);
-									g2d.fillOval(nx + 70, ny + 30, 15, 10);
-
-									g2d.setColor(Color.WHITE);
-									g2d.fillRect(nx + 45, ny + 45, 5, 10);
-									g2d.setColor(Color.RED);
-									g2d.fillOval(nx + 40, ny + 40, 15, 10);
-									g2d.setFont(MOUSE);
-									g2d.setColor(Color.BLACK);
-									g2d.drawString("spawn", nx + 30, ny + 40);
-									break;
-								case '1':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(DRAB_BROWN);
-									g2d.fillRect(nx + 10, ny + 70, 5, 5);
-									g2d.fillRect(nx + 50, ny + 30, 10, 10);
-									g2d.fillRect(nx + 80, ny + 80, 10, 10);
-
-									g2d.setColor(Color.WHITE);
-									g2d.fillRect(nx + 85, ny + 85, 5, 10);
-									g2d.setColor(Color.RED);
-									g2d.fillOval(nx + 80, ny + 80, 15, 10);
-
-									g2d.setColor(Color.WHITE);
-									g2d.fillRect(nx + 75, ny + 35, 5, 10);
-									g2d.setColor(Color.RED);
-									g2d.fillOval(nx + 70, ny + 30, 15, 10);
-
-									g2d.setColor(Color.WHITE);
-									g2d.fillRect(nx + 45, ny + 45, 5, 10);
-									g2d.setColor(Color.RED);
-									g2d.fillOval(nx + 40, ny + 40, 15, 10);
-									break;
-
 								case 'L':
-									g2d.setColor(getColor(theChar));
-									g2d.fill((new Rectangle(nx, ny, 100, 100)));
+									switch (theChar) {
+									case 'O':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(DRAB_BROWN);
+										g2d.fillRect(nx + 10, ny + 70, 5, 5);
+										g2d.fillRect(nx + 50, ny + 30, 10, 10);
+										g2d.fillRect(nx + 80, ny + 80, 10, 10);
 
-									g2d.setColor(Color.GREEN);
-									g2d.fillOval(nx + 70, ny + 10, 5, 5);
-									g2d.fillOval(nx + 30, ny + 50, 10, 10);
-									g2d.fillOval(nx + 80, ny + 80, 10, 10);
+										g2d.setColor(Color.WHITE);
+										g2d.fillRect(nx + 85, ny + 85, 5, 10);
+										g2d.setColor(Color.RED);
+										g2d.fillOval(nx + 80, ny + 80, 15, 10);
 
-									break;
+										g2d.setColor(Color.WHITE);
+										g2d.fillRect(nx + 75, ny + 35, 5, 10);
+										g2d.setColor(Color.RED);
+										g2d.fillOval(nx + 70, ny + 30, 15, 10);
 
-								case 'W':
-									g2d.setColor(getColor(theChar));
-									g2d.fill((new Rectangle(nx, ny, 100, 100)));
-									g2d.setColor(Color.BLACK);
-									g2d.draw((new Rectangle(nx, ny, 100, 100)));
-									break;
+										g2d.setColor(Color.WHITE);
+										g2d.fillRect(nx + 45, ny + 45, 5, 10);
+										g2d.setColor(Color.RED);
+										g2d.fillOval(nx + 40, ny + 40, 15, 10);
+										g2d.setFont(MOUSE);
+										g2d.setColor(Color.BLACK);
+										g2d.drawString("spawn", nx + 30,
+												ny + 40);
+										break;
+									case '1':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(DRAB_BROWN);
+										g2d.fillRect(nx + 10, ny + 70, 5, 5);
+										g2d.fillRect(nx + 50, ny + 30, 10, 10);
+										g2d.fillRect(nx + 80, ny + 80, 10, 10);
 
-								case 'R':
-									g2d.setColor(getColor(theChar));
-									g2d.fill((new Rectangle(nx, ny, 100, 100)));
-									g2d.setColor(Color.BLACK);
+										g2d.setColor(Color.WHITE);
+										g2d.fillRect(nx + 85, ny + 85, 5, 10);
+										g2d.setColor(Color.RED);
+										g2d.fillOval(nx + 80, ny + 80, 15, 10);
 
-									int i;
-									for (i = 0; i < 5; i++)
-										g2d.drawLine(nx, ny + (20 * i), nx + 100 - 1, ny + (20 * i));
-									
-									for (i = 0; i < 5; i++)
-										for (int cB = 0; cB < 5; cB++)
-											g2d.fillRect(nx + (20 * cB) + 8, ny + (20 * i) + 2, 2, 2);
+										g2d.setColor(Color.WHITE);
+										g2d.fillRect(nx + 75, ny + 35, 5, 10);
+										g2d.setColor(Color.RED);
+										g2d.fillOval(nx + 70, ny + 30, 15, 10);
 
-									break;
+										g2d.setColor(Color.WHITE);
+										g2d.fillRect(nx + 45, ny + 45, 5, 10);
+										g2d.setColor(Color.RED);
+										g2d.fillOval(nx + 40, ny + 40, 15, 10);
+										break;
 
-								case '2':
-									g2d.setColor(getColor(theChar));
-									g2d.fill((new Rectangle(nx, ny, 100, 100)));
-									g2d.setColor(DRAB_BROWN);
-									g2d.fillRect(nx + 10, ny + 70, 5, 5);
-									g2d.fillRect(nx + 50, ny + 30, 10, 10);
-									g2d.fillRect(nx + 80, ny + 80, 10, 10);
-									break;
+									case 'L':
+										g2d.setColor(getColor(theChar));
+										g2d.fill((new Rectangle(nx, ny, 100,
+												100)));
 
-								case 'C':
-									g2d.setColor(getColor(theChar));
-									g2d.fill((new Rectangle(nx, ny, 100, 100)));
-									g2d.setColor(Color.GRAY);
-									g2d.drawLine(nx, ny, nx + 100, ny + 100);
-									g2d.drawLine(nx + 100, ny, nx, ny + 100);
-									g2d.drawLine(nx, ny + 100 / 2, nx + 100, ny + 100 / 2);
-									g2d.drawLine(nx + 100 / 2, ny, nx + 100 / 2, ny + 100);
-									break;
+										g2d.setColor(Color.GREEN);
+										g2d.fillOval(nx + 70, ny + 10, 5, 5);
+										g2d.fillOval(nx + 30, ny + 50, 10, 10);
+										g2d.fillOval(nx + 80, ny + 80, 10, 10);
 
-								default:
-									g2d.setColor(getColor(theChar));
-									g2d.fill((new Rectangle(nx, ny, 100, 100)));
-									break;
+										break;
+
+									case 'W':
+										g2d.setColor(getColor(theChar));
+										g2d.fill((new Rectangle(nx, ny, 100,
+												100)));
+										g2d.setColor(Color.BLACK);
+										g2d.draw((new Rectangle(nx, ny, 100,
+												100)));
+										break;
+
+									case 'R':
+										g2d.setColor(getColor(theChar));
+										g2d.fill((new Rectangle(nx, ny, 100,
+												100)));
+										g2d.setColor(Color.BLACK);
+
+										int i;
+										for (i = 0; i < 5; i++)
+											g2d.drawLine(nx, ny + (20 * i),
+													nx + 100 - 1, ny + (20 * i));
+
+										for (i = 0; i < 5; i++)
+											for (int cB = 0; cB < 5; cB++)
+												g2d.fillRect(
+														nx + (20 * cB) + 8, ny
+																+ (20 * i) + 2,
+														2, 2);
+
+										break;
+
+									case '2':
+										g2d.setColor(getColor(theChar));
+										g2d.fill((new Rectangle(nx, ny, 100,
+												100)));
+										g2d.setColor(DRAB_BROWN);
+										g2d.fillRect(nx + 10, ny + 70, 5, 5);
+										g2d.fillRect(nx + 50, ny + 30, 10, 10);
+										g2d.fillRect(nx + 80, ny + 80, 10, 10);
+										break;
+
+									case 'C':
+										g2d.setColor(getColor(theChar));
+										g2d.fill((new Rectangle(nx, ny, 100,
+												100)));
+										g2d.setColor(Color.GRAY);
+										g2d.drawLine(nx, ny, nx + 100, ny + 100);
+										g2d.drawLine(nx + 100, ny, nx, ny + 100);
+										g2d.drawLine(nx, ny + 100 / 2,
+												nx + 100, ny + 100 / 2);
+										g2d.drawLine(nx + 100 / 2, ny,
+												nx + 100 / 2, ny + 100);
+										break;
+
+									default:
+										g2d.setColor(getColor(theChar));
+										g2d.fill((new Rectangle(nx, ny, 100,
+												100)));
+										break;
+									}
+									break;// End Grassy
+
+								case 'G':
+								default:// Start grassy
+									switch (theChar) {
+									case 'O':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(LIGHT_OFF_GREEN);
+										g2d.fill(new Rectangle(nx + 30,
+												ny + 15, 4, 10));
+										g2d.fill(new Rectangle(nx + 80,
+												ny + 20, 4, 10));
+										g2d.fill(new Rectangle(nx + 20,
+												ny + 80, 4, 10));
+										g2d.fill(new Rectangle(nx + 60,
+												ny + 60, 4, 10));
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										g2d.setFont(MOUSE);
+										g2d.setColor(Color.BLACK);
+										g2d.drawString("spawn", nx + 30,
+												ny + 40);
+										break;
+									case '1':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(LIGHT_OFF_GREEN);
+										g2d.fill(new Rectangle(nx + 30,
+												ny + 15, 4, 10));
+										g2d.fill(new Rectangle(nx + 80,
+												ny + 20, 4, 10));
+										g2d.fill(new Rectangle(nx + 20,
+												ny + 80, 4, 10));
+										g2d.fill(new Rectangle(nx + 60,
+												ny + 60, 4, 10));
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										break;
+									case 'L':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(LIGHT_BLUE);
+										g2d.fill(new Rectangle(nx, ny + 30, 40,
+												4));
+										g2d.fill(new Rectangle(nx + 80,
+												ny + 76, 20, 4));
+										g2d.fill(new Rectangle(nx, ny + 80, 80,
+												4));
+										g2d.fill(new Rectangle(nx + 40,
+												ny + 26, 60, 4));
+										break;
+									case 'W':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(Color.BLACK);
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										break;
+
+									case 'C':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(Color.RED);
+										g2d.drawLine(nx, ny, nx + 100, ny + 100);
+										g2d.drawLine(nx + 100, ny, nx, ny + 100);
+										g2d.drawLine(nx, ny + 100 / 2,
+												nx + 100, ny + 100 / 2);
+										g2d.drawLine(nx + 100 / 2, ny,
+												nx + 100 / 2, ny + 100);
+										break;
+
+									case '>':
+
+										g2d.setFont(BLOCK);
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(Color.BLUE);
+										g2d.drawString("<->", nx, ny + 70);
+										g2d.draw(new Rectangle(nx, ny, 100, 100));
+										break;
+									case '2':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(DRAB_BROWN);
+										// g2d.fillRect(x + 70, y + 10, 20, 20);
+										g2d.fillRect(nx + 10, ny + 70, 5, 5);
+										g2d.fillRect(nx + 50, ny + 30, 10, 10);
+										g2d.fillRect(nx + 80, ny + 80, 10, 10);
+										// g2d.draw(getBounds());
+										break;
+
+									case 'R':
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										g2d.setColor(MED_GRAY);
+										g2d.fill(new Rectangle(nx, ny + 30, 4,
+												4));
+										g2d.fill(new Rectangle(nx + 60,
+												ny + 26, 4, 4));
+										g2d.fill(new Rectangle(nx, ny + 80, 4,
+												4));
+										// g2d.draw(getBounds());
+										break;
+									default:
+										g2d.setColor(getColor(theChar));
+										g2d.fill(new Rectangle(nx, ny, 100, 100));
+										break;
+									}
+									break;// End Grassy
+
 								}
-								break;// End Grassy
-								
-								
-								
-								
-							case 'G':
-							default:// Start grassy
-								switch (theChar) {
-								case 'O':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(LIGHT_OFF_GREEN);
-									g2d.fill(new Rectangle(nx + 30, ny + 15, 4,
-											10));
-									g2d.fill(new Rectangle(nx + 80, ny + 20, 4,
-											10));
-									g2d.fill(new Rectangle(nx + 20, ny + 80, 4,
-											10));
-									g2d.fill(new Rectangle(nx + 60, ny + 60, 4,
-											10));
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
-									g2d.setFont(MOUSE);
-									g2d.setColor(Color.BLACK);
-									g2d.drawString("spawn", nx + 30, ny + 40);
-									break;
-								case '1':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(LIGHT_OFF_GREEN);
-									g2d.fill(new Rectangle(nx + 30, ny + 15, 4,
-											10));
-									g2d.fill(new Rectangle(nx + 80, ny + 20, 4,
-											10));
-									g2d.fill(new Rectangle(nx + 20, ny + 80, 4,
-											10));
-									g2d.fill(new Rectangle(nx + 60, ny + 60, 4,
-											10));
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
-									break;
-								case 'L':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(LIGHT_BLUE);
-									g2d.fill(new Rectangle(nx, ny + 30, 40, 4));
-									g2d.fill(new Rectangle(nx + 80, ny + 76,
-											20, 4));
-									g2d.fill(new Rectangle(nx, ny + 80, 80, 4));
-									g2d.fill(new Rectangle(nx + 40, ny + 26,
-											60, 4));
-									break;
-								case 'W':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(Color.BLACK);
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
-									break;
-
-								case 'C':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(Color.RED);
-									g2d.drawLine(nx, ny, nx + 100, ny + 100);
-									g2d.drawLine(nx + 100, ny, nx, ny + 100);
-									g2d.drawLine(nx, ny + 100 / 2, nx + 100,
-											ny + 100 / 2);
-									g2d.drawLine(nx + 100 / 2, ny,
-											nx + 100 / 2, ny + 100);
-									break;
-
-								case '>':
-
-									g2d.setFont(BLOCK);
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(Color.BLUE);
-									g2d.drawString("<->", nx, ny + 70);
-									g2d.draw(new Rectangle(nx, ny, 100, 100));
-									break;
-								case '2':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(DRAB_BROWN);
-									//g2d.fillRect(x + 70, y + 10, 20, 20);
-									g2d.fillRect(nx + 10, ny + 70, 5, 5);
-									g2d.fillRect(nx + 50, ny + 30, 10, 10);
-									g2d.fillRect(nx + 80, ny + 80, 10, 10);
-									//g2d.draw(getBounds());
-									break;
-									
-								case 'R':
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									g2d.setColor(MED_GRAY);
-									g2d.fill(new Rectangle(nx, ny + 30, 4, 4));
-									g2d.fill(new Rectangle(nx + 60, ny + 26, 4, 4));
-									g2d.fill(new Rectangle(nx, ny + 80, 4, 4));
-									//g2d.draw(getBounds());
-									break;
-								default:
-									g2d.setColor(getColor(theChar));
-									g2d.fill(new Rectangle(nx, ny, 100, 100));
-									break;
-								}
-								break;// End Grassy
-
-							}
 						}
 					}
 				}
@@ -1454,40 +1564,53 @@ if(returnVal!=null){
 					try {
 						int enX = Integer.parseInt(stuff.get(1));
 						int enY = Integer.parseInt(stuff.get(2));
-						char ch = stuff.get(0).charAt(0);
-Image enImg;if (zoom
-			|| (enX-x> -100 &&enX-x< this.getWidth()
-					&& enY-y > -100 && enY-y < this.getHeight()+200)){if(ch=='B'){
-	String sB="images/icon.png";
-if(stuff.get(3).equals("Lizard-Man")){
-	sB= "images/Lizard.png";}
-else if(stuff.get(3).equals("Head")){
-	sB= "images/enemies/unique/Head.png";}
-else if(stuff.get(3).equals("Pod")){
-	sB= "images/podAll.png";}
-	enImg=new ImageIcon(getClass().getResource(sB)).getImage();
-}else{
-	
-						enImg = new ImageIcon(getClass().getResource(
-								stuff.get(3))).getImage();}
-						g2d.drawImage(enImg, enX - x, enY - y-200, mapEdit);
-						}int stuffG=6;
-						if(cop(enemies.get(c).charAt(0))==true){
-							stuffG=7;
+						String type = stuff.get(0);
+						Image enImg;
+						
+						if (zoom
+								|| (enX - x > -100 && enX - x < this.getWidth()
+										&& enY - y > -100 && enY - y < this
+										.getHeight() + 200)) {
+							String sB = "images/icon.png";
+							if (type.equals("Head Boss")) {
+								sB = "images/enemies/bosses/Head.png";
+								enImg = new ImageIcon(getClass()
+										.getResource(sB)).getImage();}
+							else if (type.equals("Lizard Man")) {
+								sB = "images/enemies/bosses/LizardMan/front/w.png";
+								enImg = new ImageIcon(getClass()
+										.getResource(sB)).getImage();}
+							else if (type.equals("Pod")) {
+								sB = "images/podAll.png";
+								enImg = new ImageIcon(getClass()
+										.getResource(sB)).getImage();}	
+							
+							 else {
+
+								enImg = new ImageIcon(getClass().getResource(
+										stuff.get(3))).getImage();
 							}
-					if((ch=='b'||ch=='p')&&stuff.size()>stuffG){
-						int addX=enX-x+50;
-						int addY=enY-y-150;
-						//System.out.println(stuff.get(stuffG));
-						int[][]points=createArray(stuff.get(stuffG));
-						//System.out.println(points.length);
-						g2d.setColor(Color.black);
-						for(int c3=0;c3<points.length;c3++){
-							g2d.drawLine(addX, addY, addX+(points[c3][0]*100), addY+(points[c3][1]*100));
-							addX+=(points[c3][0]*100);
-							addY+=(points[c3][1]*100);
+							g2d.drawImage(enImg, enX - x, enY - y - 200,
+									mapEdit);
 						}
-					}
+						// int stuffG=6;
+						// if(cop(enemies.get(c).charAt(0))==true){
+						// stuffG=7;
+						// }
+						// if((ch=='b'||ch=='p')&&stuff.size()>stuffG){
+						// int addX=enX-x+50;
+						// int addY=enY-y-150;
+						// //System.out.println(stuff.get(stuffG));
+						// int[][]points=createArray(stuff.get(stuffG));
+						// //System.out.println(points.length);
+						// g2d.setColor(Color.black);
+						// for(int c3=0;c3<points.length;c3++){
+						// g2d.drawLine(addX, addY, addX+(points[c3][0]*100),
+						// addY+(points[c3][1]*100));
+						// addX+=(points[c3][0]*100);
+						// addY+=(points[c3][1]*100);
+						// }
+						// }
 					} catch (IndexOutOfBoundsException ex) {
 						ex.printStackTrace();
 						enemies.remove(c);
@@ -1499,7 +1622,7 @@ else if(stuff.get(3).equals("Pod")){
 						}
 					}
 				}
-				for(int c=0;c<objects.size();c++){
+				for (int c = 0; c < objects.size(); c++) {
 					ArrayList<String> stuff = new ArrayList<String>();// should
 					// have
 					// 5
@@ -1520,18 +1643,23 @@ else if(stuff.get(3).equals("Pod")){
 					try {
 						int px = Integer.parseInt(stuff.get(0));
 						int py = Integer.parseInt(stuff.get(1));
-						int val = stuff.size() > 4 ? Integer.parseInt(stuff.get(4)) : 0;
+						int val = stuff.size() > 4 ? Integer.parseInt(stuff
+								.get(4)) : 0;
 						if (zoom
-								|| (px-x > -100 && px-x < this.getWidth()
-										&& py-y > -100 && py-y < this.getHeight()+200))
-						if(val==-3){
-							g2d.setColor(Color.BLACK);
-							g2d.setFont(MOUSE);
-							g2d.drawString("Spawn", px-x+20, py-y-150);
+								|| (px - x > -100 && px - x < this.getWidth()
+										&& py - y > -100 && py - y < this
+										.getHeight() + 200))
+							if (val == -3) {
+								g2d.setColor(Color.BLACK);
+								g2d.setFont(MOUSE);
+								g2d.drawString("Spawn", px - x + 20, py - y
+										- 150);
+							} else {
+								Image pImg = new ImageIcon(getClass()
+										.getResource(stuff.get(2))).getImage();
+								g2d.drawImage(pImg, px - x, py - y - 200,
+										mapEdit);
 							}
-						else{Image pImg= new ImageIcon(getClass().getResource(
-								stuff.get(2))).getImage();
-g2d.drawImage(pImg, px-x, py-y-200, mapEdit);}
 
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -1560,29 +1688,31 @@ g2d.drawImage(pImg, px-x, py-y-200, mapEdit);}
 						int py = Integer.parseInt(stuff.get(1));
 						Image pImg;
 						if (zoom
-								|| (px-x > -100 && px-x < this.getWidth()
-										&& py-y > -100 && py -y< this.getHeight()+200)){
-						if(stuff.get(4).equals("normal")){
-						pImg = new ImageIcon(getClass().getResource(
-								"images/portal1.png")).getImage();}
-						else if(stuff.get(4).equals("boss")){
-							pImg = new ImageIcon(getClass().getResource(
-									"images/portal2.png")).getImage();}
-						else{
-							pImg = new ImageIcon(getClass().getResource(
-									"images/icon.png")).getImage();
+								|| (px - x > -100 && px - x < this.getWidth()
+										&& py - y > -100 && py - y < this
+										.getHeight() + 200)) {
+							if (stuff.get(4).equals("normal")) {
+								pImg = new ImageIcon(getClass().getResource(
+										"images/portal1.png")).getImage();
+							} else if (stuff.get(4).equals("boss")) {
+								pImg = new ImageIcon(getClass().getResource(
+										"images/portal2.png")).getImage();
+							} else {
+								pImg = new ImageIcon(getClass().getResource(
+										"images/icon.png")).getImage();
+							}
+							String to = "to " + stuff.get(2);
+							g2d.setFont(MOUSE);
+							g2d.setColor(PURPLE);
+							g2d.drawImage(pImg, px - x, py - y - 200, mapEdit);
+							g2d.drawString(to, px - x, py - y - 200);
 						}
-						String to = "to " + stuff.get(2);
-						g2d.setFont(MOUSE);
-						g2d.setColor(PURPLE);
-g2d.drawImage(pImg, px-x, py-y-200, mapEdit);
-g2d.drawString(to, px-x, py-y-200);}
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 
 				}
-				
+
 				for (int c = 0; c < npcs.size(); c++) {
 					ArrayList<String> stuff = new ArrayList<String>();// should
 					// have
@@ -1605,11 +1735,15 @@ g2d.drawString(to, px-x, py-y-200);}
 						int px = Integer.parseInt(stuff.get(0));
 						int py = Integer.parseInt(stuff.get(1));
 						if (zoom
-								|| (px-x > -100 && px-x < this.getWidth()
-										&& py-y > -100 && py-y < this.getHeight()+200)){
-								Image pImg=new ImageIcon(getClass().getResource(getImageChar(nameToChar(stuff.get(2))))).getImage();
+								|| (px - x > -100 && px - x < this.getWidth()
+										&& py - y > -100 && py - y < this
+										.getHeight() + 200)) {
+							Image pImg = new ImageIcon(getClass().getResource(
+									getImageChar(nameToChar(stuff.get(2)))))
+									.getImage();
 
-							g2d.drawImage(pImg, px-x, py-y-200, mapEdit);}
+							g2d.drawImage(pImg, px - x, py - y - 200, mapEdit);
+						}
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -1635,68 +1769,62 @@ g2d.drawString(to, px-x, py-y-200);}
 					} else if (blocks == 1) {
 						g2d.setColor(Color.black);
 						if (enPre) {
-							g2d.drawString("" + getSelShowString(),
+							g2d.drawString(getShowString(),
 									((int) ((m.x + x) / 100) * 100) + 50 - x,
 									((int) ((m.y + y) / 100) * 100) + 50 - y);
 						} else {
-							g2d.drawString("" + getSelShowString(),
+							g2d.drawString(getShowString(),
 									((int) ((m.x + x) / 50) * 50 - x),
 									((int) ((m.y + y) / 50) * 50 - y));
 						}
-					}
-					else if(blocks==2){
+					} else if (blocks == 2) {
 						g2d.setColor(PURPLE);
-						String portalS="NPortal";
-						if(selChar=='B')
-							portalS="BPortal";
+						String portalS = "NPortal";
+						if (selChar == 'B')
+							portalS = "BPortal";
 						if (enPre) {
 							g2d.drawString(portalS,
 									((int) ((m.x + x) / 100) * 100) + 25 - x,
 									((int) ((m.y + y) / 100) * 100) + 50 - y);
 						} else {
 							g2d.drawString(portalS,
-									((int) ((m.x + x) / 50) * 50+25 - x),
-									((int) ((m.y + y) / 50) * 50+50 - y));
+									((int) ((m.x + x) / 50) * 50 + 25 - x),
+									((int) ((m.y + y) / 50) * 50 + 50 - y));
 						}
-						
-					}
-					else if(blocks==3){
+
+					} else if (blocks == 3) {
 						g2d.setColor(Color.MAGENTA);
-						
+
 						if (enPre) {
 							g2d.drawString(getSelShowStringObjects(),
 									((int) ((m.x + x) / 25) * 25) + 25 - x,
 									((int) ((m.y + y) / 25) * 25) + 50 - y);
 						} else {
 							g2d.drawString(getSelShowStringObjects(),
-									((int) ((m.x + x) / 50) * 50+25 - x),
-									((int) ((m.y + y) / 50) * 50+50 - y));
+									((int) ((m.x + x) / 50) * 50 + 25 - x),
+									((int) ((m.y + y) / 50) * 50 + 50 - y));
 						}
-						
-					}
-					else if(blocks==4){
+
+					} else if (blocks == 4) {
 						g2d.setColor(Color.ORANGE);
-						
+
 						if (enPre) {
 							g2d.drawString(getNpcName(),
 									((int) ((m.x + x) / 50) * 50) + 25 - x,
 									((int) ((m.y + y) / 50) * 50) + 50 - y);
 						} else {
 							g2d.drawString(getNpcName(),
-									((int) ((m.x + x) / 100) * 100+25 - x),
-									((int) ((m.y + y) / 100) * 100+50 - y));
+									((int) ((m.x + x) / 100) * 100 + 25 - x),
+									((int) ((m.y + y) / 100) * 100 + 50 - y));
 						}
-						
-					}
-					else if(blocks==MAXBLOCKS+1){
+
+					} else if (blocks == MAXBLOCKS + 1) {
 						g2d.setColor(Color.black);
-						
-						
-							g2d.drawString("Path",
-									((int) ((m.x + x) / 100) * 100) + 25 - x,
-									((int) ((m.y + y) / 100) * 100) +50 - y);
-						
-						
+
+						g2d.drawString("Path", ((int) ((m.x + x) / 100) * 100)
+								+ 25 - x, ((int) ((m.y + y) / 100) * 100) + 50
+								- y);
+
 					}
 				}
 			}
@@ -1715,7 +1843,7 @@ g2d.drawString(to, px-x, py-y-200);}
 						selNum = 1;
 					}
 					switch (selNum) {
-					
+
 					case 1:
 						selChar = '1';
 						break;
@@ -1734,7 +1862,7 @@ g2d.drawString(to, px-x, py-y-200);}
 					case 6:
 						selChar = '*';
 						break;
-					
+
 					case 7:
 						selChar = '2';
 						break;
@@ -1747,89 +1875,8 @@ g2d.drawString(to, px-x, py-y-200);}
 					}
 
 				} else if (blocks == 1) {
-					if (selNum > 23) {
-						selNum = 0;
-					}
-					if (selNum < 0) {
-						selNum = 23;
-					}
-					switch (selNum) {
-					case 0:
-						selChar = 'G';
-						break;
-					case 1:
-						selChar = 'P';
-						break;
-					case 2:
-						selChar = 'T';
-						break;
-
-					case 3:
-						selChar = 'M';
-						break;
-					case 4:
-						selChar = '0';
-						break;
-					case 5:
-						selChar = '1';
-						break;
-
-					case 6:
-						selChar = 'B';
-						break;
-					case 7:
-						selChar = 'C';
-						break;
-					case 8:
-						selChar = 'c';
-						break;
-					case 9:
-						selChar = 'F';
-						break;
-					case 10:
-						selChar = 't';
-						break;
-					case 11:
-						selChar = 'S';
-						break;
-					case 12:
-						selChar = 'D';
-						break;
-					case 13:
-						selChar = 'I';
-						break;
-					case 14://backPath
-						selChar='R';
-						break;
-					case 15://security
-						selChar='r';
-						break;
-					case 16://Path
-						selChar='d';
-						break;
-					case 17://backSecurity
-						selChar='p';
-					case 18://Path
-						selChar='X';
-						break;
-					case 19://backSecurity
-						selChar='x';
-						break;
-					case 20://Path
-						selChar='H';
-						break;
-					case 21://backSecurity
-						selChar='L';
-						break;
-					case 22://backSecurity
-						selChar='s';
-						break;
-					case 23://backSecurity
-						selChar='~';
-						break;
-					}
-				}
-				else if(blocks==2){
+					selNum = 0;
+				} else if (blocks == 2) {
 					if (selNum > 1) {
 						selNum = 0;
 					}
@@ -1838,13 +1885,13 @@ g2d.drawString(to, px-x, py-y-200);}
 					}
 					switch (selNum) {
 					case 0:
-						selChar='N';
+						selChar = 'N';
 						break;
 					case 1:
-						selChar='B';
-						break;}
-				}
-				else if (blocks == 3) {
+						selChar = 'B';
+						break;
+					}
+				} else if (blocks == 3) {
 					if (selNum > 9) {
 						selNum = 0;
 					}
@@ -1853,39 +1900,38 @@ g2d.drawString(to, px-x, py-y-200);}
 					}
 					switch (selNum) {
 					case 0:
-						selChar='L';
+						selChar = 'L';
 						break;
 					case 1:
-						selChar='l';
+						selChar = 'l';
 						break;
 					case 2:
-						selChar='P';
+						selChar = 'P';
 						break;
 					case 3:
-						selChar='W';
+						selChar = 'W';
 						break;
 					case 4:
-						selChar='0';
+						selChar = '0';
 						break;
 					case 5:
-						selChar='1';
+						selChar = '1';
 						break;
 					case 6:
-						selChar='s';
+						selChar = 's';
 						break;
 					case 7:
-						selChar='S';
+						selChar = 'S';
 						break;
 					case 8:
-						selChar='B';
+						selChar = 'B';
 						break;
-				case 9:
-							selChar='H';
-							break;
-						
+					case 9:
+						selChar = 'H';
+						break;
+
 					}
-				}
-				else if (blocks == 4) {
+				} else if (blocks == 4) {
 					if (selNum > 7) {
 						selNum = 0;
 					}
@@ -1894,28 +1940,28 @@ g2d.drawString(to, px-x, py-y-200);}
 					}
 					switch (selNum) {
 					case 0:
-						selChar='K';
+						selChar = 'K';
 						break;
 					case 1:
-						selChar='W';
+						selChar = 'W';
 						break;
 					case 2:
-						selChar='C';
+						selChar = 'C';
 						break;
 					case 3:
-						selChar='S';
+						selChar = 'S';
 						break;
 					case 4:
-						selChar='P';
+						selChar = 'P';
 						break;
 					case 5:
-						selChar='p';
+						selChar = 'p';
 						break;
 					case 6:
-						selChar='m';
+						selChar = 'm';
 						break;
 					case 7:
-						selChar='M';
+						selChar = 'M';
 						break;
 					}
 				}
@@ -1988,6 +2034,137 @@ g2d.drawString(to, px-x, py-y-200);}
 		this.setFocusable(true);
 		this.requestFocus();
 		this.setVisible(true);
+	}
+
+	private void openEnemyChoser() {
+		new EnemyChooser();
+	}
+
+	public class EnemyChooser extends JFrame {
+		// JLabel levelLabel;
+		// JButton mHealth;
+		// JButton mEn;
+		// JButton melee;
+		// JButton ranged;
+		// JButton special;
+		EnemyChooser l = this;
+		int stage = 0;
+		JButton okButton;
+		JList<String> list;
+
+		public EnemyChooser() {
+
+			this.setFocusable(true);
+			mapEdit.setFocusable(false);
+			this.setResizable(false);
+
+			this.setTitle("Enemy maker");
+			this.setSize(400, 200);
+			this.setLocation(drawPan.getWidth() / 2 - this.getWidth() / 2,
+					drawPan.getHeight() / 2 - this.getHeight() / 2);
+			this.setAlwaysOnTop(true);
+			this.setLayout(new BorderLayout());
+
+			okButton = new JButton("OK");
+			okButton.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					if (stage == 0) {
+						type = list.getSelectedValue();
+						stage++;
+						if (type.equals("Head Boss")) {
+							imageString = "images/enemies/unique/Head.png";
+							baseHealth = 1000;
+						} else {
+							JFileChooser chooser = new JFileChooser(
+									MapEdit.class.getProtectionDomain()
+											.getCodeSource().getLocation()
+											.getPath());
+							chooser.setFileFilter(new FileFilter() {
+
+								@Override
+								public String getDescription() {
+									// TODO Auto-generated method stub
+									return "Images only. Stay in the game's images.";
+								}
+
+								@Override
+								public boolean accept(File f) {
+									// TODO Auto-generated method stub
+									String fileName = f.getName();
+									return fileName.endsWith(".png")
+											|| fileName.endsWith(".jpg")
+											|| fileName.endsWith(".gif")
+											|| !fileName.contains(".");
+								}
+							});
+							int returnVal = chooser.showOpenDialog(l);
+
+							while (!(returnVal == JFileChooser.APPROVE_OPTION
+									&& chooser.getSelectedFile().exists() && !chooser
+									.getSelectedFile().isDirectory())) {
+								returnVal = chooser.showOpenDialog(l);
+							}
+							String[] splits = chooser.getSelectedFile()
+									.getPath().split("images");
+							imageString = "images"
+									+ splits[splits.length - 1].replace("\\",
+											"/");
+							System.out.println(imageString);
+							baseHealth = 100;
+						}
+					}// end stage 0
+				}
+			});
+			this.add(okButton, BorderLayout.SOUTH);
+			list = new JList<String>();
+			list.setListData(typesOfEnemies);
+			this.add(list, BorderLayout.CENTER);
+
+			this.addWindowListener(new WindowListener() {
+
+				@Override
+				public void windowOpened(WindowEvent e) {
+
+				}
+
+				@Override
+				public void windowIconified(WindowEvent e) {
+
+				}
+
+				@Override
+				public void windowDeiconified(WindowEvent e) {
+
+				}
+
+				@Override
+				public void windowDeactivated(WindowEvent e) {
+
+				}
+
+				@Override
+				public void windowClosing(WindowEvent e) {
+
+					mapEdit.setFocusable(true);
+					mapEdit.requestFocus();
+				}
+
+				@Override
+				public void windowClosed(WindowEvent e) {
+
+				}
+
+				@Override
+				public void windowActivated(WindowEvent e) {
+
+				}
+			});
+			this.setVisible(true);
+			this.requestFocus();
+		}
 	}
 
 	public Color getColor(char type) {
@@ -2090,10 +2267,10 @@ g2d.drawString(to, px-x, py-y-200);}
 			case 'P':
 				return Color.BLACK;
 			case 'R':
-				case 'C':
+			case 'C':
 				return Color.GRAY;
 			case '>':
-			
+
 				return Color.LIGHT_GRAY;
 
 			case '*':
@@ -2128,7 +2305,8 @@ g2d.drawString(to, px-x, py-y-200);}
 				return LIGHT_BLUE;
 
 			default:
-				System.err.println("Type " + type + " does not have a color case");
+				System.err.println("Type " + type
+						+ " does not have a color case");
 				return Color.RED;
 			}
 		case 'L':
@@ -2150,7 +2328,8 @@ g2d.drawString(to, px-x, py-y-200);}
 			case '*':
 				return LIGHT_BLUE;
 			default:
-				System.err.println("Type " + type + " does not have a color case");
+				System.err.println("Type " + type
+						+ " does not have a color case");
 				return Color.RED;
 			}
 		case 'G':
@@ -2351,6 +2530,7 @@ g2d.drawString(to, px-x, py-y-200);}
 		fName += extension;
 		return fName;
 	}
+
 	public String nameWithO() {
 		// TODO Auto-generated method stub
 		String fName = "";
@@ -2370,6 +2550,7 @@ g2d.drawString(to, px-x, py-y-200);}
 		fName += extension;
 		return fName;
 	}
+
 	public String nameWithN() {
 		// TODO Auto-generated method stub
 		String fName = "";
@@ -2389,6 +2570,7 @@ g2d.drawString(to, px-x, py-y-200);}
 		fName += extension;
 		return fName;
 	}
+
 	public ImageIcon createImageIcon(String path, String description) {
 		java.net.URL imgURL = getClass().getResource(path);
 		if (imgURL != null) {
@@ -2413,71 +2595,17 @@ g2d.drawString(to, px-x, py-y-200);}
 	// return null;
 	// }
 
-	private String getSelString() {
-
-		switch (selChar) {
-		case 'C':
-			return "images/enemies/unique/cactus.png";
-		case 'c':
-			return "images/enemies/unique/chair.png";
-		case 'F':
-			return "images/enemies/unique/fishbowl.png";
-		case 'G':
-			return "images/enemies/unique/ghost.png";
-		case 'M':
-			return "images/enemies/unique/machineLaunch.png";
-		case 'P':
-			return "images/enemies/unique/pizza.png";
-		case 'T':
-			return "images/enemies/unique/tires.png";
-		case 't':
-			return "images/enemies/unique/tv.png";
-		case '0':
-			return "images/enemies/turrets/0.png";
-		case '1':
-			return "images/enemies/turrets/1.png";
-		case 'S':
-			return "images/enemies/unique/security.png";
-		case 'D':
-			return "images/enemies/unique/explosiveBox.png";
-		case 'I':
-			return "images/enemies/unique/invGhost.png";
-		case 'R'://backPath
-			return "images/enemies/unique/car1Right.png";
-		case 'r'://security
-			return "images/enemies/unique/paintRoller.png";
-		case 'd'://Path
-			return "images/enemies/unique/ducky.png";
-		case 'p'://backSecurity
-			return "images/enemies/unique/potato.png";
-		case 'X'://backSecurity
-		case 'x'://backSecurity
-			return "images/enemies/unique/birdy.png";
-		case 'H'://backSecurity
-			return "Head";
-		case 'L'://backSecurity
-			return "Lizard-Man";
-		case 's'://backSecurity
-			return "Pod";
-		case '~'://backSecurity
-			return "images/enemies/unique/birdy.png";
-		case 'B':
-		default:
-			return "images/enemies/unique/blob.png";
-		}
-
-	}
 	private String getSelStringO() {
 
 		switch (selChar) {
 		case 'L':
-			return"images/objects/Leaves.png";
+			return "images/objects/Leaves.png";
 		case 'l':
-			return"images/objects/LeavesSc.png";
+			return "images/objects/LeavesSc.png";
 		case 'P':
 			return "images/objects/PTree0.png";
 		case '0':
-			return"images/objects/collectibles/coin0.png";
+			return "images/objects/collectibles/coin0.png";
 		case '1':
 			return "images/objects/collectibles/coin1.png";
 		case 's':
@@ -2494,207 +2622,150 @@ g2d.drawString(to, px-x, py-y-200);}
 		}
 
 	}
-	private char getSelChar() {
 
-		switch (selChar) {
-		case 'I':
-			return 'c';// LookChaseEnemy
-		case '0':
-			return 'L';// Launch
-
-		case 'P':
-			return 'P';// PursuingLaunch
-		case 'M':
-		case 'C':
-		case 'F':
-		case 'T':
-			return 'S';// StandEnemy
-
-		case 'G':
-			return 'T';// TrackingEnemy
-
-		case 't':
-			return 'C';// ChargeEnemy
-
-		case 'B':
-			return 'W';// WalkEnemy
-
-		case 'D':
-			return 'E';// ExplosiveSpawner
-
-			// Lowercase denotes an enemy that must see you before attacking.
-
-		case 'c':
-			return 'w';// SeeChaseEnemy
-
-		case '1':
-			return 'l';// SeeShootEnemy
-		case 'S':
-			return 's';// SecurityEnemy
-			
-		case 'R'://backPath
-			return'p';
-		case 'r'://security
-			return 'b';
-		case 'd'://Path
-			return 'p';
-		case 'p'://backSecurity
-			return 'b';
-		case 'X':
-		case 'x':
-			return 't';
-		case 'H':
-		case 'L':
-		case 's':
-			return 'B';
-		default:
-			return 'S';// StandEnemy
-		}
-
-	}
-	public boolean cop(char selChar) {
-
-		switch (selChar) {
-		
-case 'r'://security		
-case 'b':
-			return true;
-		
-		
-		
-
-		default:
-			return false;
-		}
-
-	}
-	public String selDelay() {
-
-		switch (selChar) {
-		case 'M':
-			return "20";
-		case '0':
-		case '1':
-		case 'P':
-			return "75";
-case 'r'://security		
-		case 'p'://backSecurity
-		case 'S':
-			return "cop";
-		case '~':
-			return ""+3;
-		case 'D':
-			return "100";
-		
-		
-
-		default:
-			return null;
-		}
-
-	}
-	public String selDelay2(){
-		switch (selChar) {
-		
-		
-		
-		case 'r'://security
-		
-		case 'd'://Path
-			
-		case 'R'://backPath
-		case 'p'://backSecurity
-			return "0'0";
-		default:
-			return null;
-		}
-	}
-	public String selDelay3() {
-
-		switch (selChar) {
-		
-		
-			
-		case 'r'://security
-		
-		case 'd'://Path
-			return "F";
-		case 'R'://backPath
-		case 'p'://backSecurity
-			return "B";
-		default:
-			return null;
-		}
-
-	}
-	public char selFlying() {
-
-		switch (selChar) {
-		case 'G':
-		case 'I':
-		case 'H':
-		case 'X':
-			return 't';
-		case 'x':
-		default:
-			return 'f';
-		
-		}
-
-	}
-
-	public int selHealth() {
-		switch (selChar) {
-
-		case 'P':
-		case 'F':
-		case 'D':
-			return 50;
-
-		case 't':
-		case '0':
-			return 60;
-
-		case 'T':
-		
-		case 'c':
-			//backPath
-		
-		case 'r'://security
-		
-		case 'd'://Path
-		
-		case 'p'://backSecurity
-		
-			return 800;
-		case 'H':
-		case 'L':
-			return 1000;
-			
-case 'R':
-case 'C':
-case 'X':
-case 'x':	
-	return -10;
-	
-		case '1':
-		case 'B':
-		case 'G':
-		case 'M':
-		case 'S':
-		case 'I':
-			
-	
-		default:
-			return 100;
-		
-		}
-	}
+	// public boolean cop(char selChar) {
+	//
+	// switch (selChar) {
+	//
+	// case 'r'://security
+	// case 'b':
+	// return true;
+	//
+	//
+	//
+	//
+	// default:
+	// return false;
+	// }
+	//
+	// }
+	// public String selDelay() {
+	//
+	// switch (selChar) {
+	// case 'M':
+	// return "20";
+	// case '0':
+	// case '1':
+	// case 'P':
+	// return "75";
+	// case 'r'://security
+	// case 'p'://backSecurity
+	// case 'S':
+	// return "cop";
+	// case '~':
+	// return ""+3;
+	// case 'D':
+	// return "100";
+	//
+	//
+	//
+	// default:
+	// return null;
+	// }
+	//
+	// }
+	// public String selDelay2(){
+	// switch (selChar) {
+	//
+	//
+	//
+	// case 'r'://security
+	//
+	// case 'd'://Path
+	//
+	// case 'R'://backPath
+	// case 'p'://backSecurity
+	// return "0'0";
+	// default:
+	// return null;
+	// }
+	// }
+	// public String selDelay3() {
+	//
+	// switch (selChar) {
+	//
+	//
+	//
+	// case 'r'://security
+	//
+	// case 'd'://Path
+	// return "F";
+	// case 'R'://backPath
+	// case 'p'://backSecurity
+	// return "B";
+	// default:
+	// return null;
+	// }
+	//
+	// }
+	// public char selFlying() {
+	//
+	// switch (selChar) {
+	// case 'G':
+	// case 'I':
+	// case 'H':
+	// case 'X':
+	// return 't';
+	// case 'x':
+	// default:
+	// return 'f';
+	//
+	// }
+	//
+	// }
+	//
+	// public int selHealth() {
+	// switch (selChar) {
+	//
+	// case 'P':
+	// case 'F':
+	// case 'D':
+	// return 50;
+	//
+	// case 't':
+	// case '0':
+	// return 60;
+	//
+	// case 'T':
+	//
+	// case 'c':
+	// //backPath
+	//
+	// case 'r'://security
+	//
+	// case 'd'://Path
+	//
+	// case 'p'://backSecurity
+	//
+	// return 800;
+	// case 'H':
+	// case 'L':
+	// return 1000;
+	//
+	// case 'R':
+	// case 'C':
+	// case 'X':
+	// case 'x':
+	// return -10;
+	//
+	// case '1':
+	// case 'B':
+	// case 'G':
+	// case 'M':
+	// case 'S':
+	// case 'I':
+	//
+	//
+	// default:
+	// return 100;
+	//
+	// }
+	// }
 
 	public void addRowEnd() {
 		String[] nStrings = new String[strings.length + 1];
 		int ml = 0;
-		for (int c = 0; c < strings.length-1; c++) {
+		for (int c = 0; c < strings.length - 1; c++) {
 			nStrings[c] = strings[c];
 			if (strings[c].length() > ml) {
 				ml = strings[c].length();
@@ -2702,12 +2773,12 @@ case 'x':
 		}
 		String addString = "";
 		addString += 'I';
-		for (int c = 1; c < ml-1; c++) {
+		for (int c = 1; c < ml - 1; c++) {
 			addString += '1';
 		}
 		addString += 'I';
-		nStrings[nStrings.length-2] = addString;
-		nStrings[nStrings.length-1]=strings[strings.length-1];
+		nStrings[nStrings.length - 2] = addString;
+		nStrings[nStrings.length - 1] = strings[strings.length - 1];
 		strings = nStrings;
 	}
 
@@ -2716,8 +2787,8 @@ case 'x':
 		int ml = 0;
 		int cA = 0;
 
-		int theRow = (int) ((y + (this.getHeight() / 2)) / 100)+2;
-		for (int c = 0; c < strings.length-0; c++, cA++) {
+		int theRow = (int) ((y + (this.getHeight() / 2)) / 100) + 2;
+		for (int c = 0; c < strings.length - 0; c++, cA++) {
 
 			if (strings[c].length() > ml) {
 				ml = strings[c].length();
@@ -2731,7 +2802,7 @@ case 'x':
 		}
 		String addString = "";
 		addString += 'I';
-		for (int c = 1; c < ml-1; c++) {
+		for (int c = 1; c < ml - 1; c++) {
 			addString += '1';
 		}
 		addString += 'I';
@@ -2742,38 +2813,39 @@ case 'x':
 
 	public void addColEnd() {
 		strings[1] += 'I';
-		
-		for (int c = 2; c < strings.length-1; c++) {
-			strings[c] =strings[c].substring(0, strings[c].length()-1)+'1'+strings[c].substring(strings[c].length()-1);
+
+		for (int c = 2; c < strings.length - 1; c++) {
+			strings[c] = strings[c].substring(0, strings[c].length() - 1) + '1'
+					+ strings[c].substring(strings[c].length() - 1);
 		}
-		strings[strings.length-1] +="I";
-				}
+		strings[strings.length - 1] += "I";
+	}
 
 	public void addColMid() {
 
 		int block = (int) ((x + (this.getWidth() / 2)) / 100);
-		strings[1]+="I";
-		for (int c = 2; c < strings.length-1; c++) {
+		strings[1] += "I";
+		for (int c = 2; c < strings.length - 1; c++) {
 			strings[c] = strings[c].substring(0, block) + "1"
 					+ strings[c].substring(block);
 		}
-		strings[strings.length-1]+="I";
+		strings[strings.length - 1] += "I";
 	}
 
 	public void remRowEnd() {
 		String[] nStrings = new String[strings.length - 1];
 		int ml = 0;
-		for (int c = 0; c <nStrings.length-1; c++) {
-			
+		for (int c = 0; c < nStrings.length - 1; c++) {
+
 			nStrings[c] = strings[c];
 			if (strings[c].length() > ml) {
 				ml = strings[c].length();
 			}
 		}
-nStrings[nStrings.length-1]="";
-for(int c=0;c<ml;c++){
-	nStrings[nStrings.length-1]+="I";
-}
+		nStrings[nStrings.length - 1] = "";
+		for (int c = 0; c < ml; c++) {
+			nStrings[nStrings.length - 1] += "I";
+		}
 		strings = nStrings;
 	}
 
@@ -2781,7 +2853,7 @@ for(int c=0;c<ml;c++){
 		String[] nStrings = new String[strings.length - 1];
 
 		int cA = 0;
-		int theRow = (int) ((y - 1 + (this.getHeight() / 2)) / 100)+2;
+		int theRow = (int) ((y - 1 + (this.getHeight() / 2)) / 100) + 2;
 		for (int c = 0; c < strings.length; c++) {
 
 			if (theRow != c) {
@@ -2796,7 +2868,7 @@ for(int c=0;c<ml;c++){
 
 	public void remColEnd() {
 		for (int c = 1; c < strings.length; c++) {
-			strings[c] = strings[c].substring(0, strings[c].length() - 2)+"I";
+			strings[c] = strings[c].substring(0, strings[c].length() - 2) + "I";
 		}
 	}
 
@@ -2807,63 +2879,6 @@ for(int c=0;c<ml;c++){
 			strings[c] = strings[c].substring(0, block - 1)
 					+ strings[c].substring(block);
 		}
-	}
-
-	private String getSelShowString() {
-
-		switch (selChar) {
-		case 'C':
-			return "cactus";
-		case 'c':
-			return "chair";
-		case 'F':
-			return "fishbowl";
-		case 'G':
-			return "ghost";
-		case 'M':
-			return "machineLaunch";
-		case 'P':
-			return "pizza";
-		case 'T':
-			return "tires";
-		case 't':
-			return "tv";
-		case '0':
-			return "tennisLauncher";
-		case '1':
-			return "cannon";
-		case 'B':
-			return "blob";
-		case 'S':
-			return "security";
-		case 'D':
-			return "explosiveBox";
-		case 'I':
-			return "invertedGhost";
-		case 'R'://backPath
-			return "car1Right";
-		case 'r'://security
-			return "paintRoller";
-		case 'd'://Path
-			return "ducky";
-		case 'p'://backSecurity
-			return "potato";
-		case 'X':
-			return "axis-X bird";
-		case 'x':
-			return "axis-Y bird";
-		case 'H':
-			return "HeadOfDoom";
-		case 'L':
-			return "LizardMan";
-		case 's':
-			return "pod";
-		case '~':
-			return "chain";
-		default:
-			return "?";
-		}
-
 	}
 
 	private String getSelShowStringBlocks() {
@@ -2899,12 +2914,13 @@ for(int c=0;c<ml;c++){
 			return "liquid";
 		case 'I':
 			return "InvisibleWall";
-		
+
 		default:
 			return "?";
 		}
 
 	}
+
 	private String getSelShowStringObjects() {
 
 		switch (selChar) {
@@ -2933,6 +2949,7 @@ for(int c=0;c<ml;c++){
 		}
 
 	}
+
 	public Color getTextureBack() {
 		switch (strings[0].charAt(0)) {
 		case 'D':
@@ -2957,10 +2974,11 @@ for(int c=0;c<ml;c++){
 		return strings[0].charAt(0);
 
 	}
+
 	private int[][] createArray(String string) {
 		// TODO Auto-generated method stub
 
-		//System.out.println(string);
+		// System.out.println(string);
 		String[] split = string.split("\'");
 		int splitLength = split.length / 2;
 
@@ -2970,42 +2988,24 @@ for(int c=0;c<ml;c++){
 
 		for (int p1 = 0; p1 < splitLength; p1++) {
 
-			//System.out.println("In loop");
+			// System.out.println("In loop");
 			for (p2 = 0; p2 < toReturn[p1].length; p2++) {
 				toReturn[p1][p2] = Integer.parseInt(split[splitCounter]);
 				splitCounter++;
 			}
 		}
 
-//		for (int k = 0; k < toReturn.length; k++) {
-//			for (int c = 0; c < toReturn[k].length; c++)
-//				//System.out.print(toReturn[k][c] + " ");
-//			//System.out.println();
-//		}
+		// for (int k = 0; k < toReturn.length; k++) {
+		// for (int c = 0; c < toReturn[k].length; c++)
+		// //System.out.print(toReturn[k][c] + " ");
+		// //System.out.println();
+		// }
 
 		return toReturn;
 	}
-	
-	public int objectsAddX(){
-		switch(selChar){
-		case 'L':
-			return 35;
-		case 'l':
-			return 10;
-		case 'W':
-			return 40;
-		case '0':
-		case '1':
-		case 's':	
-			return 25;
-		
-		case 'P':
-		default:
-			return 0;
-		}
-	}
-	public int objectsAddY(){
-		switch(selChar){
+
+	public int objectsAddX() {
+		switch (selChar) {
 		case 'L':
 			return 35;
 		case 'l':
@@ -3016,14 +3016,34 @@ for(int c=0;c<ml;c++){
 		case '1':
 		case 's':
 			return 25;
-		
+
 		case 'P':
 		default:
 			return 0;
 		}
 	}
-	public boolean getObjectCollide(){
-		switch(selChar){
+
+	public int objectsAddY() {
+		switch (selChar) {
+		case 'L':
+			return 35;
+		case 'l':
+			return 10;
+		case 'W':
+			return 40;
+		case '0':
+		case '1':
+		case 's':
+			return 25;
+
+		case 'P':
+		default:
+			return 0;
+		}
+	}
+
+	public boolean getObjectCollide() {
+		switch (selChar) {
 		case 'P':
 		case 'B':
 			return true;
@@ -3037,8 +3057,9 @@ for(int c=0;c<ml;c++){
 			return false;
 		}
 	}
-	public int getObjectsVal(){
-		switch(selChar){
+
+	public int getObjectsVal() {
+		switch (selChar) {
 		case '0':
 			return 1;
 		case '1':
@@ -3051,12 +3072,13 @@ for(int c=0;c<ml;c++){
 			return -4;
 		case 'H':
 			return -5;
-			default:
-				return 0;
+		default:
+			return 0;
 		}
 	}
-	public String getNpcName(){
-		switch(selChar){
+
+	public String getNpcName() {
+		switch (selChar) {
 		case 'K':
 			return "kepler";
 		case 'C':
@@ -3074,20 +3096,21 @@ for(int c=0;c<ml;c++){
 		case 'M':
 			return "macaroni";
 		default:
-			return"?";
+			return "?";
 		}
 	}
-	public char nameToChar(String name){
-		switch(name){
+
+	public char nameToChar(String name) {
+		switch (name) {
 		case "wizard":
-		return 'W';
-		
+			return 'W';
+
 		case "kepler":
 			return 'K';
 		case "sirCobalt":
-		return 'C';
+			return 'C';
 		case "shopkeep":
-		return 'S';
+			return 'S';
 		case "plato":
 			return 'P';
 		case "policeMan":
@@ -3095,29 +3118,31 @@ for(int c=0;c<ml;c++){
 		case "gatekeeper":
 			return 'm';
 		case "macaroni":
-	return 'M';
+			return 'M';
 		default:
 			return ' ';
 		}
 	}
-	public String getNPC3(String answer){
-		switch(selChar){
+
+	public String getNPC3(String answer) {
+		switch (selChar) {
 		case 'm':
-		return "3";
-		case'C':
-			return answer.equalsIgnoreCase("y")?"t":"f";
+			return "3";
+		case 'C':
+			return answer.equalsIgnoreCase("y") ? "t" : "f";
 		default:
 			return null;
 		}
 	}
-	public String getImageChar(){
-		switch(selChar){
+
+	public String getImageChar() {
+		switch (selChar) {
 		case 'K':
-		return	"images/npcs/map/stationary/kepler.png";
+			return "images/npcs/map/stationary/kepler.png";
 		case 'C':
 			return "images/npcs/map/stationary/sirCobalt.png";
 		case 'W':
-		return	"images/npcs/map/stationary/wizard.png";
+			return "images/npcs/map/stationary/wizard.png";
 		case 'S':
 			return "images/npcs/map/stationary/shopkeep.png";
 		case 'P':
@@ -3132,14 +3157,15 @@ for(int c=0;c<ml;c++){
 			return null;
 		}
 	}
-	public String getImageChar(char selChar){
-		switch(selChar){
+
+	public String getImageChar(char selChar) {
+		switch (selChar) {
 		case 'K':
-		return	"images/npcs/map/stationary/kepler.png";
+			return "images/npcs/map/stationary/kepler.png";
 		case 'C':
 			return "images/npcs/map/stationary/sirCobalt.png";
 		case 'W':
-		return	"images/npcs/map/stationary/wizard.png";
+			return "images/npcs/map/stationary/wizard.png";
 		case 'S':
 			return "images/npcs/map/stationary/shopkeep.png";
 		case 'P':
@@ -3154,19 +3180,36 @@ for(int c=0;c<ml;c++){
 			return null;
 		}
 	}
-	public int npcX(){
-		switch(selChar){
-		
+
+	public int npcX() {
+		switch (selChar) {
+
 		default:
 			return 0;
 		}
 	}
-	public int npcY(){
-		switch(selChar){
+
+	public int npcY() {
+		switch (selChar) {
 		case 'C':
 			return -6;
 		default:
 			return 0;
 		}
+	}
+
+	public String getShowString() {
+		String returnS = type;
+
+		switch (imageString) {
+		case "Head Boss":
+		case "Lizard Man":
+		case "Pod":
+			break;
+
+		default:
+			returnS += " enemy";
+		}
+		return returnS;
 	}
 }
