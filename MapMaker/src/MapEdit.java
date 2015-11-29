@@ -134,14 +134,14 @@ public class MapEdit extends JFrame {
 				int key = e.getKeyCode();
 
 				if (key == KeyEvent.VK_ESCAPE) {
-
+System.out.println(strings[0]);
 					MapMaker.saveStrings(strings, name, project);
 					MapMaker.saveStrings(enemies, nameWithE(), project);
 					MapMaker.saveStrings(portals, nameWithP(), project);
 					MapMaker.saveStrings(objects, nameWithO(), project);
 					MapMaker.saveStrings(npcs, nameWithN(), project);
 					mapEdit.dispose();
-				} else if (key == KeyEvent.VK_C) {
+				} else if (key == KeyEvent.VK_V) {
 					if (blocks == 1) {
 						openEnemyChoser();
 					}
@@ -167,19 +167,30 @@ public class MapEdit extends JFrame {
 							"Which texture pack do you want?", "Texture Pack",
 							JOptionPane.CANCEL_OPTION,
 							JOptionPane.DEFAULT_OPTION, null, options, 0);
+					if(sel>0){
 					String[] options2 = { "cancel", "none", "rain", "snow",
-							"fog", "sandstorm"};
+							"fog", "sandstorm" };
 					int sel2 = JOptionPane.showOptionDialog(mapEdit,
 							"What weather do you want?", "Weather",
 							JOptionPane.CANCEL_OPTION,
 							JOptionPane.DEFAULT_OPTION, null, options2, 0);
-					if (sel > 0&&sel2>0) {
-						try{
-						strings[0] = options[sel]+","+options2[sel2]+","+Integer.parseInt(JOptionPane.showInputDialog(mapEdit, "What level do you want the Map to be?", "1"));}
-						catch(Exception ex){
-							JOptionPane.showMessageDialog(mapEdit, "Level must be a number.");
+					if (sel2 > 0) {
+						try {
+							strings[0] = options[sel]
+									+ ","
+									+ options2[sel2]
+									+ ","
+									+ Integer
+											.parseInt(JOptionPane
+													.showInputDialog(
+															mapEdit,
+															"What level do you want the Map to be?",
+															"1"));
+						} catch (Exception ex) {
+							JOptionPane.showMessageDialog(mapEdit,
+									"Level must be a number.");
 						}
-					}
+					}}
 				} else if (key == KeyEvent.VK_C && zoom) {
 
 					String[] options = { "Cancel", "Add row at the end",
@@ -325,6 +336,7 @@ public class MapEdit extends JFrame {
 										(int) ((x + m.getX() + 10) / 100))
 										+ selChar
 										+ s.substring((int) ((x + m.getX() + 10) / 100) + 1);
+								if((int) ((y - 10 + m.getY()) / 100) + 2>0)
 								strings[(int) ((y - 10 + m.getY()) / 100) + 2] = s;
 							}
 						} else if (blocks == 1) {
@@ -503,18 +515,24 @@ public class MapEdit extends JFrame {
 									currentS += enemies.get(c).charAt(c2);
 								}
 							}
-							char ch = stuff.get(0).charAt(0);
+							String ch = stuff.get(0);
 							Image enImg;
-							if (ch == 'B') {
-								String sB = "images/icon.png";
-								if (stuff.get(3).equals("Lizard-Man")) {
-									sB = "images/Lizard.png";
-								} else if (stuff.get(3).equals("Head")) {
-									sB = "images/enemies/unique/Head.png";
-								}
+							String sB;
+							if (ch.equals("Head Boss")) {
+								sB = "images/enemies/bosses/Head.png";
 								enImg = new ImageIcon(getClass()
 										.getResource(sB)).getImage();
-							} else {
+							} else if (ch.equals("Lizard Man")) {
+								sB = "images/enemies/bosses/LizardMan/front/w.png";
+								enImg = new ImageIcon(getClass()
+										.getResource(sB)).getImage();
+							} else if (ch.equals("Pod")) {
+								sB = "images/podAll.png";
+								enImg = new ImageIcon(getClass()
+										.getResource(sB)).getImage();
+							}
+
+							else {
 								enImg = new ImageIcon(getClass().getResource(
 										stuff.get(3))).getImage();
 							}
@@ -1566,7 +1584,7 @@ public class MapEdit extends JFrame {
 						int enY = Integer.parseInt(stuff.get(2));
 						String type = stuff.get(0);
 						Image enImg;
-						
+
 						if (zoom
 								|| (enX - x > -100 && enX - x < this.getWidth()
 										&& enY - y > -100 && enY - y < this
@@ -1575,17 +1593,18 @@ public class MapEdit extends JFrame {
 							if (type.equals("Head Boss")) {
 								sB = "images/enemies/bosses/Head.png";
 								enImg = new ImageIcon(getClass()
-										.getResource(sB)).getImage();}
-							else if (type.equals("Lizard Man")) {
+										.getResource(sB)).getImage();
+							} else if (type.equals("Lizard Man")) {
 								sB = "images/enemies/bosses/LizardMan/front/w.png";
 								enImg = new ImageIcon(getClass()
-										.getResource(sB)).getImage();}
-							else if (type.equals("Pod")) {
+										.getResource(sB)).getImage();
+							} else if (type.equals("Pod")) {
 								sB = "images/podAll.png";
 								enImg = new ImageIcon(getClass()
-										.getResource(sB)).getImage();}	
-							
-							 else {
+										.getResource(sB)).getImage();
+							}
+
+							else {
 
 								enImg = new ImageIcon(getClass().getResource(
 										stuff.get(3))).getImage();
@@ -1761,7 +1780,9 @@ public class MapEdit extends JFrame {
 					g2d.setColor(Color.black);
 					g2d.fillOval(theX - 4, theY - 4, 8, 8);
 				} else if (!zoom) {
+
 					g2d.setFont(MOUSE);
+
 					if (blocks == 0) {
 						g2d.setColor(Color.red);
 						g2d.drawString("" + getSelShowStringBlocks(), m.x + 10,
@@ -1769,10 +1790,12 @@ public class MapEdit extends JFrame {
 					} else if (blocks == 1) {
 						g2d.setColor(Color.black);
 						if (enPre) {
+							
 							g2d.drawString(getShowString(),
 									((int) ((m.x + x) / 100) * 100) + 50 - x,
 									((int) ((m.y + y) / 100) * 100) + 50 - y);
 						} else {
+							
 							g2d.drawString(getShowString(),
 									((int) ((m.x + x) / 50) * 50 - x),
 									((int) ((m.y + y) / 50) * 50 - y));
@@ -1783,10 +1806,12 @@ public class MapEdit extends JFrame {
 						if (selChar == 'B')
 							portalS = "BPortal";
 						if (enPre) {
+							
 							g2d.drawString(portalS,
 									((int) ((m.x + x) / 100) * 100) + 25 - x,
 									((int) ((m.y + y) / 100) * 100) + 50 - y);
 						} else {
+							
 							g2d.drawString(portalS,
 									((int) ((m.x + x) / 50) * 50 + 25 - x),
 									((int) ((m.y + y) / 50) * 50 + 50 - y));
@@ -1796,10 +1821,12 @@ public class MapEdit extends JFrame {
 						g2d.setColor(Color.MAGENTA);
 
 						if (enPre) {
+							
 							g2d.drawString(getSelShowStringObjects(),
 									((int) ((m.x + x) / 25) * 25) + 25 - x,
 									((int) ((m.y + y) / 25) * 25) + 50 - y);
 						} else {
+							
 							g2d.drawString(getSelShowStringObjects(),
 									((int) ((m.x + x) / 50) * 50 + 25 - x),
 									((int) ((m.y + y) / 50) * 50 + 50 - y));
@@ -1809,10 +1836,12 @@ public class MapEdit extends JFrame {
 						g2d.setColor(Color.ORANGE);
 
 						if (enPre) {
+							
 							g2d.drawString(getNpcName(),
 									((int) ((m.x + x) / 50) * 50) + 25 - x,
 									((int) ((m.y + y) / 50) * 50) + 50 - y);
 						} else {
+							
 							g2d.drawString(getNpcName(),
 									((int) ((m.x + x) / 100) * 100 + 25 - x),
 									((int) ((m.y + y) / 100) * 100 + 50 - y));
@@ -1825,7 +1854,8 @@ public class MapEdit extends JFrame {
 								+ 25 - x, ((int) ((m.y + y) / 100) * 100) + 50
 								- y);
 
-					}
+						}
+
 				}
 			}
 		};
@@ -2075,8 +2105,9 @@ public class MapEdit extends JFrame {
 						type = list.getSelectedValue();
 						stage++;
 						if (type.equals("Head Boss")) {
-							imageString = "images/enemies/unique/Head.png";
+							imageString = "Head Boss";
 							baseHealth = 1000;
+							l.exit();
 						} else {
 							JFileChooser chooser = new JFileChooser(
 									MapEdit.class.getProtectionDomain()
@@ -2112,8 +2143,8 @@ public class MapEdit extends JFrame {
 							imageString = "images"
 									+ splits[splits.length - 1].replace("\\",
 											"/");
-							System.out.println(imageString);
 							baseHealth = 100;
+							l.exit();
 						}
 					}// end stage 0
 				}
@@ -2164,6 +2195,12 @@ public class MapEdit extends JFrame {
 			});
 			this.setVisible(true);
 			this.requestFocus();
+		}
+
+		public void exit() {
+			mapEdit.setFocusable(true);
+			mapEdit.requestFocus();
+			this.dispose();
 		}
 	}
 
@@ -2366,6 +2403,7 @@ public class MapEdit extends JFrame {
 	}
 
 	private void loadS() {
+		
 		String[] strings;
 		ArrayList<String> lines = new ArrayList<String>();
 		try {
@@ -2387,8 +2425,8 @@ public class MapEdit extends JFrame {
 					}
 				}
 				strings = new String[lines.size()];
-
-				for (int c = 0; c < strings.length; c++) {
+strings[0]=lines.get(0);
+				for (int c = 1; c < strings.length; c++) {
 					strings[c] = "";
 					for (int c2 = 0; c2 < mL; c2++) {
 						if (lines.get(c).length() > c2) {
@@ -3206,7 +3244,9 @@ public class MapEdit extends JFrame {
 		case "Lizard Man":
 		case "Pod":
 			break;
-
+		case "images/enemies/unique/pizza.png":
+			returnS += " pizza";
+			break;
 		default:
 			returnS += " enemy";
 		}

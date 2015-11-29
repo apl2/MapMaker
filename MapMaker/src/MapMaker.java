@@ -270,6 +270,7 @@ public class MapMaker extends JFrame {
 									arrB[arrB.length-1]+='I';
 								}
 								try {
+									arrB[0]="Grassy,none,1";
 									saveStrings(arrB, project + ".txt",
 											project);
 									saveStrings(new String[0], project
@@ -718,11 +719,15 @@ public class MapMaker extends JFrame {
 
 	public static void saveStrings(String[] strings, String file, String project) {
 		try {
+			if(new File("bin/projects/" + project + "/" + file).exists()){
+				new File("bin/projects/" + project + "/" + file).delete();
+				System.out.println("delete");
+				System.out.println(new File("bin/projects/" + project + "/" + file).exists());
+			}
 			BufferedWriter writer = new BufferedWriter(new FileWriter(
 					"bin/projects/" + project + "/" + file));
 			for (int c = 0; c < strings.length; c++) {
-
-				writer.write(strings[c]);
+				writer.write(strings[c].trim());
 				writer.newLine();
 			}
 			writer.close();
@@ -731,6 +736,11 @@ public class MapMaker extends JFrame {
 			System.out.println("Got io exeption:" + ex.getMessage());
 		}
 		try {
+			if(new File("projects/" + project + "/" + file).exists()){
+				new File("projects/" + project + "/" + file).delete();
+				System.out.println("delete");
+				System.out.println(new File("projects/" + project + "/" + file).exists());
+			}
 			BufferedWriter writer = new BufferedWriter(new FileWriter(
 					"projects/" + project + "/" + file));
 			for (int c = 0; c < strings.length; c++) {
