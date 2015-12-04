@@ -168,8 +168,8 @@ System.out.println(strings[0]);
 							JOptionPane.CANCEL_OPTION,
 							JOptionPane.DEFAULT_OPTION, null, options, 0);
 					if(sel>0){
-					String[] options2 = { "cancel", "none", "rain", "snow",
-							"fog", "sandstorm" };
+					String[] options2 = { "cancel", "none", "rain", "obscure",
+							"fog" };
 					int sel2 = JOptionPane.showOptionDialog(mapEdit,
 							"What weather do you want?", "Weather",
 							JOptionPane.CANCEL_OPTION,
