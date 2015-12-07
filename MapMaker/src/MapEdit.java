@@ -141,7 +141,7 @@ System.out.println(strings[0]);
 					MapMaker.saveStrings(objects, nameWithO(), project);
 					MapMaker.saveStrings(npcs, nameWithN(), project);
 					mapEdit.dispose();
-				} else if (key == KeyEvent.VK_V) {
+				} else if (key == KeyEvent.VK_B) {
 					if (blocks == 1) {
 						openEnemyChoser();
 					}
@@ -1641,6 +1641,7 @@ System.out.println(strings[0]);
 						}
 					}
 				}
+				int spawnNum=0;
 				for (int c = 0; c < objects.size(); c++) {
 					ArrayList<String> stuff = new ArrayList<String>();// should
 					// have
@@ -1671,8 +1672,9 @@ System.out.println(strings[0]);
 							if (val == -3) {
 								g2d.setColor(Color.BLACK);
 								g2d.setFont(MOUSE);
-								g2d.drawString("Spawn", px - x + 20, py - y
+								g2d.drawString("Spawn"+spawnNum, px - x + 20, py - y
 										- 150);
+								spawnNum++;
 							} else {
 								Image pImg = new ImageIcon(getClass()
 										.getResource(stuff.get(2))).getImage();
