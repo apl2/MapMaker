@@ -141,7 +141,7 @@ System.out.println(strings[0]);
 					MapMaker.saveStrings(objects, nameWithO(), project);
 					MapMaker.saveStrings(npcs, nameWithN(), project);
 					mapEdit.dispose();
-				} else if (key == KeyEvent.VK_B) {
+				} else if (key == KeyEvent.VK_V) {
 					if (blocks == 1) {
 						openEnemyChoser();
 					}
