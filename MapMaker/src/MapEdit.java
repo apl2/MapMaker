@@ -95,6 +95,7 @@ public class MapEdit extends JFrame {
 	boolean choosing = false;
 	final int MAXBLOCKS = 4;
 	int selEn;
+	int theSpawn;
 	ArrayList<String> objects = new ArrayList<String>();
 
 	public MapEdit(String name, String project) {
@@ -185,13 +186,18 @@ System.out.println(strings[0]);
 													.showInputDialog(
 															mapEdit,
 															"What level do you want the Map to be?",
-															"1"));
+															"1"))+","+theSpawn;
 						} catch (Exception ex) {
 							JOptionPane.showMessageDialog(mapEdit,
 									"Level must be a number.");
 						}
 					}}
-				} else if (key == KeyEvent.VK_C && zoom) {
+				}
+				else if(key==KeyEvent.VK_Y){
+					theSpawn=Integer.parseInt(JOptionPane.showInputDialog("What spawn number should the default spawn be?"));
+			strings[0]=strings[0].substring(strings[0].lastIndexOf(","))+theSpawn;
+				}
+				else if (key == KeyEvent.VK_C && zoom) {
 
 					String[] options = { "Cancel", "Add row at the end",
 							"Add column at the end" };
@@ -1668,9 +1674,11 @@ System.out.println(strings[0]);
 						if (zoom
 								|| (px - x > -100 && px - x < this.getWidth()
 										&& py - y > -100 && py - y < this
-										.getHeight() + 200))
+										.getHeight() + 200)){
 							if (val == -3) {
 								g2d.setColor(Color.BLACK);
+								if(theSpawn==spawnNum)
+									g2d.setColor(Color.RED);
 								g2d.setFont(MOUSE);
 								g2d.drawString("Spawn"+spawnNum, px - x + 20, py - y
 										- 150);
@@ -1680,6 +1688,9 @@ System.out.println(strings[0]);
 										.getResource(stuff.get(2))).getImage();
 								g2d.drawImage(pImg, px - x, py - y - 200,
 										mapEdit);
+							}}else{
+								if(val==-3)
+									spawnNum++;
 							}
 
 					} catch (Exception e) {
