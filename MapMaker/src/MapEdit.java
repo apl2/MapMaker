@@ -79,8 +79,9 @@ public class MapEdit extends JFrame {
 	int yd = 0;
 	char selChar = 'W';// Blocks
 
-	String[] typesOfEnemies = { "Standing", "Tracking", "Head Boss" };
-	String type = typesOfEnemies[0];// enemies/objects/NPCs
+	String pType="normal";
+	String pType2="portal";
+	String type = "Standing";// enemies/objects/NPCs
 	String imageString = "images/enemies/unique/blob.png";// enemies
 	boolean flying;// enemies
 	int baseHealth = 100;// enemies
@@ -144,7 +145,10 @@ System.out.println(strings[0]);
 					mapEdit.dispose();
 				} else if (key == KeyEvent.VK_V) {
 					if (blocks == 1) {
-						openEnemyChoser();
+						new EnemyChooser();
+					}
+					else if(blocks==2){
+						new PortalChooser();
 					}
 				} else if (key == KeyEvent.VK_I) {
 					JOptionPane
@@ -372,7 +376,6 @@ System.out.println(strings[0]);
 							String returnVal = JOptionPane.showInputDialog(
 									mapEdit, "What is the name of the map");
 							if (returnVal != null) {
-								String pS = "normal";
 								String returnVal2=JOptionPane.showInputDialog(mapEdit,"What spawn number?");
 								int spawnNum=-1;
 								try{
@@ -384,10 +387,9 @@ System.out.println(strings[0]);
 								}catch(Exception ex){
 									spawnNum=-1;
 								}
-								if (selChar == 'B')
-									pS = "boss";
+								
 								portals.add(theX + "," + theY + "," + returnVal
-										+ "," + 0 + "," + pS+","+spawnNum// Run.removeExtension(chooser.getSelectedFile().toString()+","+Integer.parseInt(JOptionPane.showInputDialog(mapEdit,
+										+ "," + 0 + "," + pType+","+spawnNum+(!pType2.equals("portal")?","+pType2:"")// Run.removeExtension(chooser.getSelectedFile().toString()+","+Integer.parseInt(JOptionPane.showInputDialog(mapEdit,
 															// "How many collectibles"))
 								);
 							}
@@ -506,6 +508,7 @@ System.out.println(strings[0]);
 							}
 							selNum = 0;
 							selChar = 'S';
+							
 						}
 					} else if (key == KeyEvent.VK_Q) {
 						enPre = !enPre;
@@ -1742,7 +1745,7 @@ System.out.println(strings[0]);
 										"images/portal2.png")).getImage();
 							} else {
 								pImg = new ImageIcon(getClass().getResource(
-										"images/icon.png")).getImage();
+										"images/portals/"+stuff.get(4)+"/"+stuff.get(6)+"/c.png")).getImage();
 							}
 							String to = "to " + stuff.get(2);
 							g2d.setFont(MOUSE);
@@ -1815,20 +1818,18 @@ System.out.println(strings[0]);
 						g2d.setColor(Color.black);
 						if (enPre) {
 							
-							g2d.drawString(getShowString(),
+							g2d.drawString(getEnemyShowString(),
 									((int) ((m.x + x) / 100) * 100) + 50 - x,
 									((int) ((m.y + y) / 100) * 100) + 50 - y);
 						} else {
 							
-							g2d.drawString(getShowString(),
+							g2d.drawString(getEnemyShowString(),
 									((int) ((m.x + x) / 50) * 50 - x),
 									((int) ((m.y + y) / 50) * 50 - y));
 						}
 					} else if (blocks == 2) {
 						g2d.setColor(PURPLE);
-						String portalS = "NPortal";
-						if (selChar == 'B')
-							portalS = "BPortal";
+						String portalS=getPortalShowString();
 						if (enPre) {
 							
 							g2d.drawString(portalS,
@@ -1930,21 +1931,6 @@ System.out.println(strings[0]);
 
 				} else if (blocks == 1) {
 					selNum = 0;
-				} else if (blocks == 2) {
-					if (selNum > 1) {
-						selNum = 0;
-					}
-					if (selNum < 0) {
-						selNum = 1;
-					}
-					switch (selNum) {
-					case 0:
-						selChar = 'N';
-						break;
-					case 1:
-						selChar = 'B';
-						break;
-					}
 				} else if (blocks == 3) {
 					if (selNum > 9) {
 						selNum = 0;
@@ -2090,10 +2076,113 @@ System.out.println(strings[0]);
 		this.setVisible(true);
 	}
 
-	private void openEnemyChoser() {
-		new EnemyChooser();
-	}
 
+	public class PortalChooser extends JFrame {
+		// JLabel levelLabel;
+		// JButton mHealth;
+		// JButton mEn;
+		// JButton melee;
+		// JButton ranged;
+		// JButton special;
+		String[]typesOfPortals={"normal","boss","doors"};
+		String[] typesOfDoors={"brown"};
+		PortalChooser l = this;
+		int stage = 0;
+		JButton okButton;
+		JList<String> list;
+
+		public PortalChooser() {
+
+			this.setFocusable(true);
+			mapEdit.setFocusable(false);
+			this.setResizable(false);
+
+			this.setTitle("PortalChooser");
+			this.setSize(400, 200);
+			this.setLocation(drawPan.getWidth() / 2 - this.getWidth() / 2,
+					drawPan.getHeight() / 2 - this.getHeight() / 2);
+			this.setAlwaysOnTop(true);
+			this.setLayout(new BorderLayout());
+
+			okButton = new JButton("OK");
+			okButton.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					if (stage == 0) {
+						pType = list.getSelectedValue();
+						stage++;
+						if(pType.equals("doors"))
+						list.setListData(typesOfDoors);
+						else{
+							pType2="portal";
+						exit();}
+						list.setSelectedIndex(-1);
+					}
+					else if(stage==1){
+						pType2=list.getSelectedValue();
+						exit();
+					}
+					// end stage 0
+				}
+			});
+			this.add(okButton, BorderLayout.SOUTH);
+			list = new JList<String>();
+			list.setListData(typesOfPortals);
+			this.add(list, BorderLayout.CENTER);
+
+			this.addWindowListener(new WindowListener() {
+
+				@Override
+				public void windowOpened(WindowEvent e) {
+
+				}
+
+				@Override
+				public void windowIconified(WindowEvent e) {
+
+				}
+
+				@Override
+				public void windowDeiconified(WindowEvent e) {
+
+				}
+
+				@Override
+				public void windowDeactivated(WindowEvent e) {
+
+				}
+
+				@Override
+				public void windowClosing(WindowEvent e) {
+
+					mapEdit.setFocusable(true);
+					mapEdit.requestFocus();
+				}
+
+				@Override
+				public void windowClosed(WindowEvent e) {
+
+				}
+
+				@Override
+				public void windowActivated(WindowEvent e) {
+
+				}
+			});
+			this.setVisible(true);
+			this.requestFocus();
+		}
+
+		public void exit() {
+			mapEdit.setFocusable(true);
+			mapEdit.requestFocus();
+			this.dispose();
+		}
+	}
+	
+	
 	public class EnemyChooser extends JFrame {
 		// JLabel levelLabel;
 		// JButton mHealth;
@@ -2101,6 +2190,7 @@ System.out.println(strings[0]);
 		// JButton melee;
 		// JButton ranged;
 		// JButton special;
+		String[] typesOfEnemies = { "Standing", "Tracking", "Head Boss" };
 		EnemyChooser l = this;
 		int stage = 0;
 		JButton okButton;
@@ -2112,7 +2202,7 @@ System.out.println(strings[0]);
 			mapEdit.setFocusable(false);
 			this.setResizable(false);
 
-			this.setTitle("Enemy maker");
+			this.setTitle("EnemyChooser");
 			this.setSize(400, 200);
 			this.setLocation(drawPan.getWidth() / 2 - this.getWidth() / 2,
 					drawPan.getHeight() / 2 - this.getHeight() / 2);
@@ -3259,8 +3349,20 @@ strings[0]=lines.get(0);
 			return 0;
 		}
 	}
+	public String getPortalShowString() {
+		String returnS = pType;
 
-	public String getShowString() {
+		switch (pType2) {
+		case "portal":
+			returnS+=" portal";
+			break;
+		default:
+			returnS = pType2+" door";
+			break;
+		}
+		return returnS;
+	}
+	public String getEnemyShowString() {
 		String returnS = type;
 
 		switch (imageString) {
