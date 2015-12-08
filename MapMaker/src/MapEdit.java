@@ -2226,7 +2226,7 @@ System.out.println(strings[0]);
 							JFileChooser chooser = new JFileChooser(
 									MapEdit.class.getProtectionDomain()
 											.getCodeSource().getLocation()
-											.getPath());
+											.getPath()+"/images");
 							chooser.setFileFilter(new FileFilter() {
 
 								@Override
@@ -2239,10 +2239,10 @@ System.out.println(strings[0]);
 								public boolean accept(File f) {
 									// TODO Auto-generated method stub
 									String fileName = f.getName();
-									return fileName.endsWith(".png")
+									return (fileName.endsWith(".png")
 											|| fileName.endsWith(".jpg")
 											|| fileName.endsWith(".gif")
-											|| !fileName.contains(".");
+											|| !fileName.contains("."));
 								}
 							});
 							int returnVal = chooser.showOpenDialog(l);
@@ -2250,6 +2250,9 @@ System.out.println(strings[0]);
 							while (!(returnVal == JFileChooser.APPROVE_OPTION
 									&& chooser.getSelectedFile().exists() && !chooser
 									.getSelectedFile().isDirectory())) {
+								chooser.setSelectedFile(new File(MapEdit.class.getProtectionDomain()
+											.getCodeSource().getLocation()
+											.getPath()+"/images"));
 								returnVal = chooser.showOpenDialog(l);
 							}
 							String[] splits = chooser.getSelectedFile()
