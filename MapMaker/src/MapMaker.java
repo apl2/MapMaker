@@ -68,7 +68,7 @@ public class MapMaker extends JFrame {
 
 	public MapMaker(String s) {
 		project = s;
-		
+
 		this.setTitle("MapMaker");
 
 	}
@@ -201,7 +201,7 @@ public class MapMaker extends JFrame {
 					// for(int c=0;c<tileM.size();c++){
 					// imURL.add(mapMaker.getClass().getResource("bin/projects/"+project+"/tiles/"+tileM.get(c)));
 					// }
-					new MapEdit(mLoadL.getSelectedValue(), project).run();
+					new MapEdit(mLoadL.getSelectedValue()+"/"+mLoadL.getSelectedValue()+".txt", project).run();
 				} else {
 					JOptionPane.showMessageDialog(mapMaker,
 							"You must select a value");
@@ -224,22 +224,28 @@ public class MapMaker extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				String name = JOptionPane.showInputDialog("Map name.");
+				if (name == null)
+					return;
 				try {
 					boolean b = false;
-					String[] s = new File("bin/projects/" + project).list();
+					
+					String[] s = new File("bin/projects/" + project+"/"+name).list();
+					if(s!=null)
 					for (int c = 0; c < s.length; c++) {
-						if (s[c].equalsIgnoreCase(project + ".txt")) {
+						System.out.println(s[c]);
+						if (s[c].equalsIgnoreCase(name + ".txt")) {
 							b = true;
 							break;
 						}
 					}
 					if (b == false
-							|| JOptionPane.showConfirmDialog(
-									mapMaker,
-									"The file "
-											+ project
-											+ ".txt already exists. Do you want to override it? You may only have one map per pack.") == 0) {
+							|| JOptionPane
+									.showConfirmDialog(
+											mapMaker,
+											"The map "
+													+ name
+													+ " already exists. Do you want to override it? You may only have one map per pack.") == 0) {
 						if (Integer.parseInt(nMSize.getText()) <= 500) {
 							if (Integer.parseInt(nMheight.getText()) <= 500) {
 								// String[]arr=new
@@ -249,38 +255,42 @@ public class MapMaker extends JFrame {
 								// }
 
 								String[] arrB = new String[Integer
-										.parseInt(nMheight.getText())+3];
-								int width = Integer.parseInt(nMSize.getText())+2;
-								arrB[0]="Grassy,none,1,0";
-							
-									arrB[1]="";
-								for(int c=0;c<width;c++){
-									arrB[1]+='I';
+										.parseInt(nMheight.getText()) + 3];
+								int width = Integer.parseInt(nMSize.getText()) + 2;
+								arrB[0] = "Grassy,none,1,0";
+
+								arrB[1] = "";
+								for (int c = 0; c < width; c++) {
+									arrB[1] += 'I';
 								}
-								for (int c = 2; c < arrB.length-1; c++) {
+								for (int c = 2; c < arrB.length - 1; c++) {
 									arrB[c] = "";
-									arrB[c]+="I";
-									for (int c2 = 1; c2 < width-1; c2++) {
+									arrB[c] += "I";
+									for (int c2 = 1; c2 < width - 1; c2++) {
 										arrB[c] += "1";
 									}
-									arrB[c]+="I";
+									arrB[c] += "I";
 								}
-								arrB[arrB.length-1]="";
-								for(int c=0;c<width;c++){
-									arrB[arrB.length-1]+='I';
+								arrB[arrB.length - 1] = "";
+								for (int c = 0; c < width; c++) {
+									arrB[arrB.length - 1] += 'I';
 								}
 								try {
-									arrB[0]="Grassy,none,1";
-									saveStrings(arrB, project + ".txt",
-											project);
-									saveStrings(new String[0], project
-											+ "E.txt", project);
-									saveStrings(new String[0], project
-											+ "P.txt", project);
-									saveStrings(new String[0], project
-											+ "O.txt", project);
-									saveStrings(new String[0], project
-											+ "N.txt", project);
+									new File("bin/projects/" + project + "/"
+											+ name).mkdirs();
+									new File("projects/" + project + "/" + name)
+											.mkdirs();
+									arrB[0] = "Grassy,none,1";
+									saveStrings(arrB, name + "/" + name
+											+ ".txt", project);
+									saveStrings(new String[0], name + "/"
+											+ name + "E.txt", project);
+									saveStrings(new String[0], name + "/"
+											+ name + "P.txt", project);
+									saveStrings(new String[0], name + "/"
+											+ name + "O.txt", project);
+									saveStrings(new String[0], name + "/"
+											+ name + "N.txt", project);
 								} catch (Exception ex) {
 									JOptionPane.showMessageDialog(mapMaker,
 											ex.getMessage());
@@ -299,11 +309,12 @@ public class MapMaker extends JFrame {
 				} catch (NumberFormatException ex) {
 					JOptionPane.showMessageDialog(mapMaker,
 							"Side size must be a number");
-				}catch(ArrayIndexOutOfBoundsException e2){
-					JOptionPane.showMessageDialog(mapMaker, "Size must be greater than 0");
+				} catch (ArrayIndexOutOfBoundsException e2) {
+					JOptionPane.showMessageDialog(mapMaker,
+							"Size must be greater than 0");
 				}
 				updateNor();
-			
+
 				mapMaker.revalidate();
 				bPanel.removeAll();
 
@@ -348,7 +359,7 @@ public class MapMaker extends JFrame {
 				mapMaker.revalidate();
 			}
 		});
-		
+
 		drawPan = new JPanel() {
 			/**
 			 * 
@@ -362,14 +373,14 @@ public class MapMaker extends JFrame {
 				// Check bin for view
 				g2.drawImage(
 						new ImageIcon(getClass().getResource("images/view.png"))
-								.getImage(), 0, 0-mLoadL.getHeight(), mapMaker.getWidth(),mapMaker
-								.getHeight(), this);
+								.getImage(), 0, 0 - mLoadL.getHeight(),
+						mapMaker.getWidth(), mapMaker.getHeight(), this);
 				g2.setColor(Color.BLACK);
 				int sizeForm = this.getWidth() / 25;
 				g2.setFont(new Font("sans", Font.PLAIN, sizeForm));
 				g2.drawString("Map Maker",
 						this.getWidth() / 2 - this.getWidth() / 10,
-						(mapMaker.getHeight() / 2)-mLoadL.getHeight());
+						(mapMaker.getHeight() / 2) - mLoadL.getHeight());
 			}
 		};
 		this.add(drawPan, BorderLayout.CENTER);
@@ -422,14 +433,14 @@ public class MapMaker extends JFrame {
 								if (chooser.getSelectedFile().exists()) {
 									String[] options = { "yes", "no" };
 									boolean newFile = true;
-//											JOptionPane
-//											.showOptionDialog(
-//													mapMaker,
-//													"Do you want to create a folder for your map(s)?",
-//													"Create Folder?",
-//													JOptionPane.DEFAULT_OPTION,
-//													JOptionPane.INFORMATION_MESSAGE,
-//													null, options, "no") == 0;
+									// JOptionPane
+									// .showOptionDialog(
+									// mapMaker,
+									// "Do you want to create a folder for your map(s)?",
+									// "Create Folder?",
+									// JOptionPane.DEFAULT_OPTION,
+									// JOptionPane.INFORMATION_MESSAGE,
+									// null, options, "no") == 0;
 
 									if (newFile) {
 										File nFile = new File(chooser
@@ -549,19 +560,41 @@ public class MapMaker extends JFrame {
 						}
 					}
 				});
-				String[] s = new File("bin/projects/" + project)
-						.list(new FilenameFilter() {
-
-							@Override
-							public boolean accept(File dir, String name) {
-								// TODO Auto-generated method stub
-								return name.toLowerCase().endsWith(".txt")
-										&& !name.endsWith("E.txt")&& !name.endsWith("P.txt")&& !name.endsWith("O.txt")&& !name.endsWith("N.txt");
-							}
-						});
-				mLoadM.removeAllElements();
+				String[] s = new File("bin/projects/" + project).list(
+				// new FilenameFilter() {
+				//
+				// @Override
+				// public boolean accept(File dir, String name) {
+				// // TODO Auto-generated method stub
+				// return name.toLowerCase().endsWith(".txt")
+				// &&
+				// !name.endsWith("E.txt")&& !name.endsWith("P.txt")&&
+				// !name.endsWith("O.txt")&& !name.endsWith("N.txt");
+				// }
+						// }
+						);
+				ArrayList<String> maps = new ArrayList<String>();
 				for (int c = 0; c < s.length; c++) {
-					mLoadM.addElement(s[c]);
+					String[] s2 = new File("bin/projects/" + project+"/"+s[c])
+							.list(new FilenameFilter() {
+
+								@Override
+								public boolean accept(File dir, String name) {
+									// TODO Auto-generated method stub
+									return name.toLowerCase().endsWith(".txt")
+											&& !name.endsWith("E.txt")
+											&& !name.endsWith("P.txt")
+											&& !name.endsWith("O.txt")
+											&& !name.endsWith("N.txt");
+								}
+							});
+					for(int c2=0;c2<s2.length;c2++){
+						maps.add(s[c]);
+					}
+				}
+				mLoadM.removeAllElements();
+				for (int c = 0; c < maps.size(); c++) {
+					mLoadM.addElement(maps.get(c));
 				}
 				bPanel.add(cancel);
 				bPanel.add(delete);
@@ -587,11 +620,10 @@ public class MapMaker extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				// mapMaker.remove(drawPan);
-				//nMapN.setText("Enter Map Name");
+				// nMapN.setText("Enter Map Name");
 				nMSize.setText("Side");
 
 				nMheight.setText("Height");
-		
 
 				bPanel.removeAll();
 				JButton cancel = new JButton("Cancel");
@@ -600,7 +632,7 @@ public class MapMaker extends JFrame {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						// TODO Auto-generated method stub
-						
+
 						// mapMaker.remove(nMSize);
 						mapMaker.revalidate();
 						bPanel.removeAll();
@@ -719,10 +751,11 @@ public class MapMaker extends JFrame {
 
 	public static void saveStrings(String[] strings, String file, String project) {
 		try {
-			if(new File("bin/projects/" + project + "/" + file).exists()){
+			if (new File("bin/projects/" + project + "/" + file).exists()) {
 				new File("bin/projects/" + project + "/" + file).delete();
 				System.out.println("delete");
-				System.out.println(new File("bin/projects/" + project + "/" + file).exists());
+				System.out.println(new File("bin/projects/" + project + "/"
+						+ file).exists());
 			}
 			BufferedWriter writer = new BufferedWriter(new FileWriter(
 					"bin/projects/" + project + "/" + file));
@@ -736,10 +769,11 @@ public class MapMaker extends JFrame {
 			System.out.println("Got io exeption:" + ex.getMessage());
 		}
 		try {
-			if(new File("projects/" + project + "/" + file).exists()){
+			if (new File("projects/" + project + "/" + file).exists()) {
 				new File("projects/" + project + "/" + file).delete();
 				System.out.println("delete");
-				System.out.println(new File("projects/" + project + "/" + file).exists());
+				System.out.println(new File("projects/" + project + "/" + file)
+						.exists());
 			}
 			BufferedWriter writer = new BufferedWriter(new FileWriter(
 					"projects/" + project + "/" + file));

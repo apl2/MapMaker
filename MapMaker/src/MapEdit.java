@@ -373,10 +373,21 @@ System.out.println(strings[0]);
 									mapEdit, "What is the name of the map");
 							if (returnVal != null) {
 								String pS = "normal";
+								String returnVal2=JOptionPane.showInputDialog(mapEdit,"What spawn number?");
+								int spawnNum=-1;
+								try{
+									spawnNum=Integer.parseInt(returnVal2);
+							if(spawnNum<-1){
+								JOptionPane.showMessageDialog(mapEdit, "The spawnNum needs to 0 or higher.\nOr use -1 as the default spawn number.\nSetting spawn number to default spawn number.");
+							spawnNum=-1;
+							}
+								}catch(Exception ex){
+									spawnNum=-1;
+								}
 								if (selChar == 'B')
 									pS = "boss";
 								portals.add(theX + "," + theY + "," + returnVal
-										+ "," + 0 + "," + pS// Run.removeExtension(chooser.getSelectedFile().toString()+","+Integer.parseInt(JOptionPane.showInputDialog(mapEdit,
+										+ "," + 0 + "," + pS+","+spawnNum// Run.removeExtension(chooser.getSelectedFile().toString()+","+Integer.parseInt(JOptionPane.showInputDialog(mapEdit,
 															// "How many collectibles"))
 								);
 							}
