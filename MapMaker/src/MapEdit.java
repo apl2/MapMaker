@@ -81,11 +81,11 @@ public class MapEdit extends JFrame {
 
 	String pType="normal";
 	String pType2="portal";
-	String type = "Standing";// enemies/objects/NPCs
-	String imageString = "images/enemies/unique/blob.png";// enemies
-	boolean flying;// enemies
-	int baseHealth = 100;// enemies
-
+	String eType = "Standing";
+	String eImageString = "images/enemies/unique/blob.png";
+	boolean eFlying;
+	int eBaseHealth = 100;// enemies
+String nString="Kepler";//NPCs
 	ArrayList<String> portals = new ArrayList<String>();
 	int selNum = 2;
 	int blocks = 0;
@@ -149,6 +149,9 @@ System.out.println(strings[0]);
 					}
 					else if(blocks==2){
 						new PortalChooser();
+					}
+					else if(blocks==4){
+						new NPCChooser();
 					}
 				} else if (key == KeyEvent.VK_I) {
 					JOptionPane
@@ -362,8 +365,8 @@ System.out.println(strings[0]);
 								theX -= 50;
 								theY -= 50;
 							}
-							enemies.add((type + "," + theX + "," + theY + ","
-									+ imageString + "," + flying + "," + baseHealth));
+							enemies.add((eType + "," + theX + "," + theY + ","
+									+ eImageString + "," +eFlying + "," +eBaseHealth));
 						} else if (blocks == 2) {
 							Point m = MouseInfo.getPointerInfo().getLocation();
 							int sen = 100;
@@ -418,11 +421,14 @@ System.out.println(strings[0]);
 							int theY = ((int) ((m.y + y) / sen) * sen) + 200
 									+ npcY();
 							String answer = null;
-							if (selChar == 'C')
+							if (nString.equals("sirCobalt"))
 								answer = JOptionPane
 										.showInputDialog("Option to join player? y/n");
+							else if(nString.equals("gatekeeper"))
+							answer =JOptionPane.showInputDialog("How many collectibles");
+							
 							String s = getNPC3(answer);
-							npcs.add(theX + "," + theY + "," + getNpcName()
+							npcs.add(theX + "," + theY + "," + nString
 									+ (s != null ? "," + s : ""));
 						} else if (blocks == MAXBLOCKS + 1) {
 							Point m = MouseInfo.getPointerInfo().getLocation();
@@ -582,8 +588,9 @@ System.out.println(strings[0]);
 							}
 							if (currentS != "")
 								stuff.add(currentS);
+							System.out.println(stuff.get(2));
 							Image enImg = new ImageIcon(getClass().getResource(
-									getImageChar(nameToChar(stuff.get(2)))))
+									getImageChar(stuff.get(2))))
 									.getImage();
 							if (new Rectangle(Integer.parseInt(stuff.get(0)),
 									Integer.parseInt(stuff.get(1)),
@@ -608,18 +615,21 @@ System.out.println(strings[0]);
 									currentS += portals.get(c).charAt(c2);
 								}
 							}
+							if(currentS!=null){
+								stuff.add(currentS);
+							}
 							Image enImg;
 							if (stuff.get(3).equals("normal")) {
 								enImg = new ImageIcon(getClass().getResource(
-										"images/portal1.png")).getImage();
+										"images/portals/normal/0.png")).getImage();
 							}
 
 							else if (stuff.get(3).equals("boss")) {
 								enImg = new ImageIcon(getClass().getResource(
-										"images/portal2.png")).getImage();
+										"images/portals/boss/0.png")).getImage();
 							} else {
 								enImg = new ImageIcon(getClass().getResource(
-										"images/icon.png")).getImage();
+										"images/portals/"+stuff.get(4)+"/"+stuff.get(6)+"/c.png")).getImage();
 							}
 							if (new Rectangle(Integer.parseInt(stuff.get(0)),
 									Integer.parseInt(stuff.get(1)),
@@ -1785,7 +1795,7 @@ System.out.println(strings[0]);
 										&& py - y > -100 && py - y < this
 										.getHeight() + 200)) {
 							Image pImg = new ImageIcon(getClass().getResource(
-									getImageChar(nameToChar(stuff.get(2)))))
+									getImageChar(stuff.get(2))))
 									.getImage();
 
 							g2d.drawImage(pImg, px - x, py - y - 200, mapEdit);
@@ -1862,12 +1872,12 @@ System.out.println(strings[0]);
 
 						if (enPre) {
 							
-							g2d.drawString(getNpcName(),
+							g2d.drawString(nString,
 									((int) ((m.x + x) / 50) * 50) + 25 - x,
 									((int) ((m.y + y) / 50) * 50) + 50 - y);
 						} else {
 							
-							g2d.drawString(getNpcName(),
+							g2d.drawString(nString,
 									((int) ((m.x + x) / 100) * 100 + 25 - x),
 									((int) ((m.y + y) / 100) * 100 + 50 - y));
 						}
@@ -1971,39 +1981,7 @@ System.out.println(strings[0]);
 						break;
 
 					}
-				} else if (blocks == 4) {
-					if (selNum > 7) {
-						selNum = 0;
-					}
-					if (selNum < 0) {
-						selNum = 7;
-					}
-					switch (selNum) {
-					case 0:
-						selChar = 'K';
-						break;
-					case 1:
-						selChar = 'W';
-						break;
-					case 2:
-						selChar = 'C';
-						break;
-					case 3:
-						selChar = 'S';
-						break;
-					case 4:
-						selChar = 'P';
-						break;
-					case 5:
-						selChar = 'p';
-						break;
-					case 6:
-						selChar = 'm';
-						break;
-					case 7:
-						selChar = 'M';
-						break;
-					}
+				
 				}
 				if (zoom) {
 					xd = 0;
@@ -2075,7 +2053,99 @@ System.out.println(strings[0]);
 		this.requestFocus();
 		this.setVisible(true);
 	}
+	public class NPCChooser extends JFrame {
+		// JLabel levelLabel;
+		// JButton mHealth;
+		// JButton mEn;
+		// JButton melee;
+		// JButton ranged;
+		// JButton special;
+		String[]typesOfNPCs={"kepler","sirCobalt","gatekeeper","plato","reyzu","macaroni","shopkeep","wizard"};
+		NPCChooser l = this;
+		int stage = 0;
+		JButton okButton;
+		JList<String> list;
 
+		public NPCChooser() {
+
+			this.setFocusable(true);
+			mapEdit.setFocusable(false);
+			this.setResizable(false);
+
+			this.setTitle("PortalChooser");
+			this.setSize(400, 200);
+			this.setLocation(drawPan.getWidth() / 2 - this.getWidth() / 2,
+					drawPan.getHeight() / 2 - this.getHeight() / 2);
+			this.setAlwaysOnTop(true);
+			this.setLayout(new BorderLayout());
+
+			okButton = new JButton("OK");
+			okButton.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					
+						nString=list.getSelectedValue();
+						exit();
+						
+					// end stage 0
+				}
+			});
+			this.add(okButton, BorderLayout.SOUTH);
+			list = new JList<String>();
+			list.setListData(typesOfNPCs);
+			this.add(list, BorderLayout.CENTER);
+
+			this.addWindowListener(new WindowListener() {
+
+				@Override
+				public void windowOpened(WindowEvent e) {
+
+				}
+
+				@Override
+				public void windowIconified(WindowEvent e) {
+
+				}
+
+				@Override
+				public void windowDeiconified(WindowEvent e) {
+
+				}
+
+				@Override
+				public void windowDeactivated(WindowEvent e) {
+
+				}
+
+				@Override
+				public void windowClosing(WindowEvent e) {
+
+					mapEdit.setFocusable(true);
+					mapEdit.requestFocus();
+				}
+
+				@Override
+				public void windowClosed(WindowEvent e) {
+
+				}
+
+				@Override
+				public void windowActivated(WindowEvent e) {
+
+				}
+			});
+			this.setVisible(true);
+			this.requestFocus();
+		}
+
+		public void exit() {
+			mapEdit.setFocusable(true);
+			mapEdit.requestFocus();
+			this.dispose();
+		}
+	}
 
 	public class PortalChooser extends JFrame {
 		// JLabel levelLabel;
@@ -2216,11 +2286,11 @@ System.out.println(strings[0]);
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
 					if (stage == 0) {
-						type = list.getSelectedValue();
+						eType = list.getSelectedValue();
 						stage++;
-						if (type.equals("Head Boss")) {
-							imageString = "Head Boss";
-							baseHealth = 1000;
+						if (eType.equals("Head Boss")) {
+							eImageString = "Head Boss";
+							eBaseHealth = 1000;
 							l.exit();
 						} else {
 							JFileChooser chooser = new JFileChooser(
@@ -2257,10 +2327,10 @@ System.out.println(strings[0]);
 							}
 							String[] splits = chooser.getSelectedFile()
 									.getPath().split("images");
-							imageString = "images"
+							eImageString = "images"
 									+ splits[splits.length - 1].replace("\\",
 											"/");
-							baseHealth = 100;
+							eBaseHealth = 100;
 							l.exit();
 						}
 					}// end stage 0
@@ -3232,112 +3302,57 @@ strings[0]=lines.get(0);
 		}
 	}
 
-	public String getNpcName() {
-		switch (selChar) {
-		case 'K':
-			return "kepler";
-		case 'C':
-			return "sirCobalt";
-		case 'W':
-			return "wizard";
-		case 'S':
-			return "shopkeep";
-		case 'P':
-			return "plato";
-		case 'p':
-			return "policeMan";
-		case 'm':
-			return "gatekeeper";
-		case 'M':
-			return "macaroni";
-		default:
-			return "?";
-		}
-	}
+	
 
-	public char nameToChar(String name) {
-		switch (name) {
-		case "wizard":
-			return 'W';
-
-		case "kepler":
-			return 'K';
-		case "sirCobalt":
-			return 'C';
-		case "shopkeep":
-			return 'S';
-		case "plato":
-			return 'P';
-		case "policeMan":
-			return 'p';
-		case "gatekeeper":
-			return 'm';
-		case "macaroni":
-			return 'M';
-		default:
-			return ' ';
-		}
-	}
+	
 
 	public String getNPC3(String answer) {
-		switch (selChar) {
-		case 'm':
-			return "3";
-		case 'C':
+		switch (nString) {
+		case "Ham-fisted-dude":
+			int number=3;
+			try{
+				number=Integer.parseInt(answer);
+			}catch(Exception ex){
+				
+			}
+			return ""+number;
+		case "Sir Cobalt":
 			return answer.equalsIgnoreCase("y") ? "t" : "f";
 		default:
 			return null;
 		}
 	}
-
 	public String getImageChar() {
-		switch (selChar) {
-		case 'K':
+	return this.getImageChar(nString);	
+	}
+	public String getImageChar(String nString) {
+		switch (nString) {
+		case "kepler":
 			return "images/npcs/map/stationary/kepler.png";
-		case 'C':
+		case "sirCobalt":
 			return "images/npcs/map/stationary/sirCobalt.png";
-		case 'W':
+		case "wizard":
 			return "images/npcs/map/stationary/wizard.png";
-		case 'S':
+		case "shopkeep":
 			return "images/npcs/map/stationary/shopkeep.png";
-		case 'P':
+		case "plato":
 			return "images/npcs/map/stationary/plato.png";
-		case 'p':
+		case "Police man":
 			return "images/npcs/map/stationary/policeman.png";
-		case 'm':
+		case 	"gatekeeper":
 			return "images/npcs/map/stationary/gatekeeper.png";
-		case 'M':
+		case "macaroni":
 			return "images/npcs/map/stationary/macaroni.png";
+		case "reyzu":
+			return "images/npcs/map/stationary/reyzu.png";
 		default:
 			return null;
 		}
 	}
 
-	public String getImageChar(char selChar) {
-		switch (selChar) {
-		case 'K':
-			return "images/npcs/map/stationary/kepler.png";
-		case 'C':
-			return "images/npcs/map/stationary/sirCobalt.png";
-		case 'W':
-			return "images/npcs/map/stationary/wizard.png";
-		case 'S':
-			return "images/npcs/map/stationary/shopkeep.png";
-		case 'P':
-			return "images/npcs/map/stationary/plato.png";
-		case 'p':
-			return "images/npcs/map/stationary/policeman.png";
-		case 'm':
-			return "images/npcs/map/stationary/gatekeeper.png";
-		case 'M':
-			return "images/npcs/map/stationary/macaroni.png";
-		default:
-			return null;
-		}
-	}
 
 	public int npcX() {
-		switch (selChar) {
+		switch (nString) {
 
 		default:
 			return 0;
@@ -3345,9 +3360,9 @@ strings[0]=lines.get(0);
 	}
 
 	public int npcY() {
-		switch (selChar) {
-		case 'C':
-			return -6;
+		switch (nString) {
+		case "sirCobalt":
+			return -9;
 		default:
 			return 0;
 		}
@@ -3366,9 +3381,9 @@ strings[0]=lines.get(0);
 		return returnS;
 	}
 	public String getEnemyShowString() {
-		String returnS = type;
+		String returnS = eType;
 
-		switch (imageString) {
+		switch (eImageString) {
 		case "Head Boss":
 		case "Lizard Man":
 		case "Pod":

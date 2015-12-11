@@ -521,20 +521,10 @@ public class MapMaker extends JFrame {
 												+ mLoadL.getSelectedValue()
 												+ "?")) {
 							try {
-								Files.delete(new File("bin/projects/" + project
+								deleteDir(new File("bin/projects/" + project
 										+ "/" + mLoadL.getSelectedValue())
 										.toPath());
-								if (new File("bin/projects/" + project + "/"
-										+ nameWithE(mLoadL.getSelectedValue()))
-										.exists()) {
-									Files.delete(new File("bin/projects/"
-											+ project
-											+ "/"
-											+ nameWithE(mLoadL
-													.getSelectedValue()))
-											.toPath());
-
-								}
+								
 								mLoadM.removeAllElements();
 								String[] s = new File("bin/projects/" + project)
 										.list(new FilenameFilter() {
