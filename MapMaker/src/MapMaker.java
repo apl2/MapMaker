@@ -245,7 +245,7 @@ public class MapMaker extends JFrame {
 											mapMaker,
 											"The map "
 													+ name
-													+ " already exists. Do you want to override it? You may only have one map per pack.") == 0) {
+													+ " already exists. Do you want to override it?") == 0) {
 						if (Integer.parseInt(nMSize.getText()) <= 500) {
 							if (Integer.parseInt(nMheight.getText()) <= 500) {
 								// String[]arr=new

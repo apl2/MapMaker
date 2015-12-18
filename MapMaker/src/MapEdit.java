@@ -79,6 +79,9 @@ public class MapEdit extends JFrame {
 	int yd = 0;
 	char selChar = 'W';// Blocks
 
+	
+	String oType="Normal";
+	String oImageString="images/icon.png";
 	String pType="normal";
 	String pType2="portal";
 	String eType = "Standing";
@@ -98,7 +101,7 @@ String nString="Kepler";//NPCs
 	int selEn;
 	int theSpawn;
 	ArrayList<String> objects = new ArrayList<String>();
-
+    int oValue;
 	public MapEdit(String name, String project) {
 		// TODO Auto-generated constructor stub
 
@@ -149,6 +152,9 @@ System.out.println(strings[0]);
 					}
 					else if(blocks==2){
 						new PortalChooser();
+					}
+					else if(blocks==3){
+						new ObjectChooser();
 					}
 					else if(blocks==4){
 						new NPCChooser();
@@ -366,7 +372,7 @@ System.out.println(strings[0]);
 								theY -= 50;
 							}
 							enemies.add((eType + "," + theX + "," + theY + ","
-									+ eImageString + "," +eFlying + "," +eBaseHealth));
+									+ eImageString + "," +eFlying + "," +eBaseHealth+(extraEn(eType)!=null?","+extraEn(eType):"")));
 						} else if (blocks == 2) {
 							Point m = MouseInfo.getPointerInfo().getLocation();
 							int sen = 100;
@@ -406,11 +412,20 @@ System.out.println(strings[0]);
 									+ objectsAddX();
 							int theY = ((int) ((m.y + y) / sen) * sen) + 200
 									+ objectsAddY();
-
+                               String s= getObjectsVal();
+                               int amount=0;
+                               if(s==null){
+                            	  amount=oValue;
+                            			  }
+                               else{
+                            	   amount=Integer.parseInt(s);
+                            		   
+                            	   
+                               }
 							objects.add(theX + "," + theY + ","
-									+ getSelStringO() + ","
+									+ oImageString + ","
 									+ getObjectCollide() + ","
-									+ getObjectsVal());
+									+ amount);
 						} else if (blocks == 4) {
 							Point m = MouseInfo.getPointerInfo().getLocation();
 							int sen = 100;
@@ -455,48 +470,48 @@ System.out.println(strings[0]);
 								int py = Integer.parseInt(stuff.get(2));
 								Image pImg = new ImageIcon(getClass()
 										.getResource(stuff.get(3))).getImage();
-								// int stuffG=6;
-								// if(cop(enemies.get(selEn).charAt(0))==true)
-								// stuffG=7;
+								 int stuffG=6;
+								 if(hasPath(stuff.get(0)))
+								 stuffG=7;
 
-								// System.out.println(stuffG);
-								// if(stuff.size()>stuffG){
-								// int[][]points=createArray(stuff.get(stuffG));
-								// if(points.length>0){
-								// int theX = ((int) ((m.x + x) / 100));
-								// int theY = ((int) ((m.y + y) / 100) )+2;
-								//
-								// int newX=((int) ((px) / 100) );
-								// int newY=((int) ((py) / 100) );
-								//
-								// for(int c=0;c<points.length;c++){
-								// newX+=points[c][0];
-								// newY+=points[c][1];
-								// }
-								// if(//(newX!=theX&&newY!=theY)
-								// //||
-								// (newX==theX&&newY==theY)
-								// ){
-								// //System.out.println("no");
-								// //System.out.println(newX-theX);
-								// //System.out.println(newY-theY);
-								// }else{
-								// theX-=newX;
-								// theY-=newY;
-								// if((theX<2&&theX>-2)&&(theY<2&&theY>-2)){
-								// stuff.set(stuffG,
-								// stuff.get(stuffG)+"'"+theX+"'"+theY);
-								//
-								// String s="";
-								// for(int c=0;c<stuff.size();c++){
-								// if(c!=0)
-								// s+=",";
-								// s+=stuff.get(c);
-								// }
-								// enemies.set(selEn, s);
-								// //System.out.println("yes");
-								// }}
-								// }}
+								 System.out.println(stuffG);
+								 if(stuff.size()>stuffG){
+								 int[][]points=createArray(stuff.get(stuffG));
+								 if(points.length>0){
+								 int theX = ((int) ((m.x + x) / 100));
+								 int theY = ((int) ((m.y + y) / 100) )+2;
+								
+								 int newX=((int) ((px) / 100) );
+								 int newY=((int) ((py) / 100) );
+								
+								 for(int c=0;c<points.length;c++){
+								 newX+=points[c][0];
+								 newY+=points[c][1];
+								 }
+								 if(//(newX!=theX&&newY!=theY)
+								 //||
+								 (newX==theX&&newY==theY)
+								 ){
+								 //System.out.println("no");
+								 //System.out.println(newX-theX);
+								 //System.out.println(newY-theY);
+								 }else{
+								 theX-=newX;
+								 theY-=newY;
+								 if((theX<2&&theX>-2)&&(theY<2&&theY>-2)){
+								 stuff.set(stuffG,
+								 stuff.get(stuffG)+"'"+theX+"'"+theY);
+								
+								 String s="";
+								 for(int c=0;c<stuff.size();c++){
+								 if(c!=0)
+								 s+=",";
+								 s+=stuff.get(c);
+								 }
+								 enemies.set(selEn, s);
+								 //System.out.println("yes");
+								 }}
+								 }}
 							} catch (Exception e2) {
 								e2.printStackTrace();
 							}
@@ -694,7 +709,7 @@ System.out.println(strings[0]);
 										enImg.getWidth(null),
 										enImg.getHeight(null))
 										.contains(new Point(x + m.x, y + m.y
-												+ 200))) {
+												+ 200))&&hasPath(stuff.get(0))) {
 									selEn = c;
 									blocks = MAXBLOCKS + 1;
 									break;
@@ -1857,12 +1872,12 @@ System.out.println(strings[0]);
 
 						if (enPre) {
 							
-							g2d.drawString(getSelShowStringObjects(),
+							g2d.drawString(getObjectShowString(),
 									((int) ((m.x + x) / 25) * 25) + 25 - x,
 									((int) ((m.y + y) / 25) * 25) + 50 - y);
 						} else {
 							
-							g2d.drawString(getSelShowStringObjects(),
+							g2d.drawString(getObjectShowString(),
 									((int) ((m.x + x) / 50) * 50 + 25 - x),
 									((int) ((m.y + y) / 50) * 50 + 50 - y));
 						}
@@ -1941,47 +1956,6 @@ System.out.println(strings[0]);
 
 				} else if (blocks == 1) {
 					selNum = 0;
-				} else if (blocks == 3) {
-					if (selNum > 9) {
-						selNum = 0;
-					}
-					if (selNum < 0) {
-						selNum = 9;
-					}
-					switch (selNum) {
-					case 0:
-						selChar = 'L';
-						break;
-					case 1:
-						selChar = 'l';
-						break;
-					case 2:
-						selChar = 'P';
-						break;
-					case 3:
-						selChar = 'W';
-						break;
-					case 4:
-						selChar = '0';
-						break;
-					case 5:
-						selChar = '1';
-						break;
-					case 6:
-						selChar = 's';
-						break;
-					case 7:
-						selChar = 'S';
-						break;
-					case 8:
-						selChar = 'B';
-						break;
-					case 9:
-						selChar = 'H';
-						break;
-
-					}
-				
 				}
 				if (zoom) {
 					xd = 0;
@@ -2052,6 +2026,176 @@ System.out.println(strings[0]);
 		this.setFocusable(true);
 		this.requestFocus();
 		this.setVisible(true);
+	}
+	public class ObjectChooser extends JFrame {
+		String[]typesOfObjects={"Normal","SpecialCollectible","RandSkinObject","Spawn","BossBlock","HookObject","DropPoint","Money"};
+		String[]typesOfCoins={"1","3","5","10","20","50","100","-100"};
+		ObjectChooser l = this;
+		int stage = 0;
+		JButton okButton;
+		JList<String> list;
+
+		public ObjectChooser() {
+
+			this.setFocusable(true);
+			mapEdit.setFocusable(false);
+			this.setResizable(false);
+
+			this.setTitle("ObjectChooser");
+			this.setSize(400, 200);
+			this.setLocation(drawPan.getWidth() / 2 - this.getWidth() / 2,
+					drawPan.getHeight() / 2 - this.getHeight() / 2);
+			this.setAlwaysOnTop(true);
+			this.setLayout(new BorderLayout());
+
+			okButton = new JButton("OK");
+			okButton.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					if(stage==0){
+						oType=list.getSelectedValue();
+						if(oType.equals("SpecialCollectible"))
+						oImageString="images/objects/collectibles/special.png";
+						else if(oType.equals("Spawn"))
+							oImageString="images/icon.png";
+						else if(oType.equals("BossBlock"))
+							oImageString="images/portals/bossWall.png";
+						else if(oType.equals("HookObject"))
+							oImageString="images/objects/HookObject.png";
+						else if(oType.equals("DropPoint"))
+							oImageString="images/objects/chestC.png";
+						else if(oType.equals("Money")){
+							list.setListData(typesOfCoins);
+							list.setSelectedIndex(-1);
+							stage=1;
+						}
+						else if(oType.equals("RandSkinObject")){
+							JFileChooser chooser = new JFileChooser(
+									MapEdit.class.getProtectionDomain()
+											.getCodeSource().getLocation()
+											.getPath()+"/images");
+							chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+							int returnVal = chooser.showOpenDialog(l);
+
+							
+								chooser.setSelectedFile(new File(MapEdit.class.getProtectionDomain()
+											.getCodeSource().getLocation()
+											.getPath()+"/images"));
+								returnVal = chooser.showOpenDialog(l);
+							
+							String[] splits = chooser.getSelectedFile()
+									.getPath().split("images");
+							oImageString = "images"
+									+ splits[splits.length - 1].replace("\\",
+											"/");
+							l.exit();
+						}
+						else{
+							JFileChooser chooser = new JFileChooser(
+									MapEdit.class.getProtectionDomain()
+											.getCodeSource().getLocation()
+											.getPath()+"/images");
+							chooser.setFileFilter(new FileFilter() {
+
+								@Override
+								public String getDescription() {
+									// TODO Auto-generated method stub
+									return "Images only. Stay in the game's images.";
+								}
+
+								@Override
+								public boolean accept(File f) {
+									// TODO Auto-generated method stub
+									String fileName = f.getName();
+									return (fileName.endsWith(".png")
+											|| fileName.endsWith(".jpg")
+											|| fileName.endsWith(".gif")
+											|| !fileName.contains("."));
+								}
+							});
+							int returnVal = chooser.showOpenDialog(l);
+
+							while (!(returnVal == JFileChooser.APPROVE_OPTION
+									&& chooser.getSelectedFile().exists() && !chooser
+									.getSelectedFile().isDirectory())) {
+								chooser.setSelectedFile(new File(MapEdit.class.getProtectionDomain()
+											.getCodeSource().getLocation()
+											.getPath()+"/images"));
+								returnVal = chooser.showOpenDialog(l);
+							}
+							String[] splits = chooser.getSelectedFile()
+									.getPath().split("images");
+							oImageString = "images"
+									+ splits[splits.length - 1].replace("\\",
+											"/");
+							
+						}
+						if(!oType.equals("Money"))
+						l.exit();
+						}
+					else{
+						oValue=Integer.parseInt(list.getSelectedValue());
+						oImageString="images/objects/collectibles/coin"+list.getSelectedValue()+".png";
+						exit();
+					}
+					// end stage 0
+				}
+			});
+			this.add(okButton, BorderLayout.SOUTH);
+			list = new JList<String>();
+			list.setListData(typesOfObjects);
+			this.add(list, BorderLayout.CENTER);
+
+			this.addWindowListener(new WindowListener() {
+
+				@Override
+				public void windowOpened(WindowEvent e) {
+
+				}
+
+				@Override
+				public void windowIconified(WindowEvent e) {
+
+				}
+
+				@Override
+				public void windowDeiconified(WindowEvent e) {
+
+				}
+
+				@Override
+				public void windowDeactivated(WindowEvent e) {
+
+				}
+
+				@Override
+				public void windowClosing(WindowEvent e) {
+
+					mapEdit.setFocusable(true);
+					mapEdit.requestFocus();
+				}
+
+				@Override
+				public void windowClosed(WindowEvent e) {
+
+				}
+
+				@Override
+				public void windowActivated(WindowEvent e) {
+
+				}
+			});
+			this.setVisible(true);
+			this.requestFocus();
+		}
+
+		public void exit() {
+			mapEdit.setFocusable(true);
+			mapEdit.requestFocus();
+			this.dispose();
+		}
 	}
 	public class NPCChooser extends JFrame {
 		// JLabel levelLabel;
@@ -2260,7 +2404,7 @@ System.out.println(strings[0]);
 		// JButton melee;
 		// JButton ranged;
 		// JButton special;
-		String[] typesOfEnemies = { "Standing", "Tracking", "Head Boss" };
+		String[] typesOfEnemies = { "Standing", "Tracking", "Head Boss","Path" };
 		EnemyChooser l = this;
 		int stage = 0;
 		JButton okButton;
@@ -2820,33 +2964,7 @@ strings[0]=lines.get(0);
 	// return null;
 	// }
 
-	private String getSelStringO() {
-
-		switch (selChar) {
-		case 'L':
-			return "images/objects/Leaves.png";
-		case 'l':
-			return "images/objects/LeavesSc.png";
-		case 'P':
-			return "images/objects/PTree0.png";
-		case '0':
-			return "images/objects/collectibles/coin0.png";
-		case '1':
-			return "images/objects/collectibles/coin1.png";
-		case 's':
-			return "images/objects/collectibles/special.png";
-		case 'S':
-			return "images/dummy.png";
-		case 'B':
-			return "images/bossWall.png";
-		case 'H':
-			return "images/objects/HookObject.png";
-		default:
-		case 'W':
-			return "images/objects/Wood.png";
-		}
-
-	}
+	
 
 	// public boolean cop(char selChar) {
 	//
@@ -3146,34 +3264,7 @@ strings[0]=lines.get(0);
 
 	}
 
-	private String getSelShowStringObjects() {
-
-		switch (selChar) {
-		case 'L':
-			return "Leaves";
-		case 'l':
-			return "LeavesScattered";
-		case 'P':
-			return "PalmTree";
-		case 'W':
-			return "Wood";
-		case '0':
-			return "coin $1";
-		case '1':
-			return "coin $5";
-		case 's':
-			return "Special Collectible";
-		case 'S':
-			return "Spawn";
-		case 'B':
-			return "BossWall";
-		case 'H':
-			return "Hook";
-		default:
-			return "?";
-		}
-
-	}
+	
 
 	public Color getTextureBack() {
 		switch (strings[0].charAt(0)) {
@@ -3230,38 +3321,32 @@ strings[0]=lines.get(0);
 	}
 
 	public int objectsAddX() {
-		switch (selChar) {
-		case 'L':
+		switch (oImageString) {
+		case "images/objects/leaves.png":
 			return 35;
-		case 'l':
+		case "images/objects/leavesSc.png":
 			return 10;
-		case 'W':
+		case "images/objects/Wood.png":
 			return 40;
-		case '0':
-		case '1':
-		case 's':
-			return 25;
+		case "images/objects/collectibles/coin0.png":
+		case "images/objects/collectibles/coin1.png":
 
-		case 'P':
 		default:
 			return 0;
 		}
 	}
 
 	public int objectsAddY() {
-		switch (selChar) {
-		case 'L':
+		switch (oImageString) {
+		case "images/objects/leaves.png":
 			return 35;
-		case 'l':
+		case "images/objects/leavesSc.png":
 			return 10;
-		case 'W':
+		case "images/objects/Wood.png":
 			return 40;
-		case '0':
-		case '1':
-		case 's':
-			return 25;
+		case "images/objects/collectibles/coin0.png":
+		case "images/objects/collectibles/coin1.png":
 
-		case 'P':
 		default:
 			return 0;
 		}
@@ -3283,29 +3368,48 @@ strings[0]=lines.get(0);
 		}
 	}
 
-	public int getObjectsVal() {
-		switch (selChar) {
-		case '0':
-			return 1;
-		case '1':
-			return 5;
-		case 's':
-			return -1;
-		case 'S':
-			return -3;
-		case 'B':
-			return -4;
-		case 'H':
-			return -5;
-		default:
-			return 0;
-		}
+
+	
+
+	
+public String extraEn(String type){
+	switch(type){
+	case "Path Security":
+		String string="images/enemies/unique/cop.png";
+		JFileChooser chooser = new JFileChooser(
+				MapEdit.class.getProtectionDomain()
+						.getCodeSource().getLocation()
+						.getPath()+"/images");
+		chooser.setFileFilter(new FileFilter() {
+
+			@Override
+			public String getDescription() {
+				// TODO Auto-generated method stub
+				return "Images only. Stay in the game's images.";
+			}
+
+			@Override
+			public boolean accept(File f) {
+				// TODO Auto-generated method stub
+				String fileName = f.getName();
+				return (fileName.endsWith(".png")
+						|| fileName.endsWith(".jpg")
+						|| fileName.endsWith(".gif")
+						|| !fileName.contains("."));
+			}
+		});
+		int returnVal = chooser.showOpenDialog(mapEdit);
+		if(returnVal==JOptionPane.YES_OPTION){
+			String[] splits = chooser.getSelectedFile()
+			.getPath().split("images");
+	string = "images"
+			+ splits[splits.length - 1].replace("\\",
+					"/");}
+		return string;
+	default:
+		return null;
 	}
-
-	
-
-	
-
+}
 	public String getNPC3(String answer) {
 		switch (nString) {
 		case "Ham-fisted-dude":
@@ -3339,7 +3443,7 @@ strings[0]=lines.get(0);
 			return "images/npcs/map/stationary/plato.png";
 		case "Police man":
 			return "images/npcs/map/stationary/policeman.png";
-		case 	"gatekeeper":
+		case "gatekeeper":
 			return "images/npcs/map/stationary/gatekeeper.png";
 		case "macaroni":
 			return "images/npcs/map/stationary/macaroni.png";
@@ -3366,6 +3470,15 @@ strings[0]=lines.get(0);
 		default:
 			return 0;
 		}
+	}
+	public String getObjectShowString() {
+		String returnS = oType;
+
+		
+		if(returnS.equals("Money"))
+			returnS=oValue+" "+oType;
+			
+		return returnS;
 	}
 	public String getPortalShowString() {
 		String returnS = pType;
@@ -3395,5 +3508,36 @@ strings[0]=lines.get(0);
 			returnS += " enemy";
 		}
 		return returnS;
+	}
+	public boolean hasPath(String s){
+		switch(s){
+		case "Path":
+		case "Path Security":	
+		return true;
+		default:
+		return false;
+		}
+	}
+	public String getObjectsVal(){
+		switch(oType){
+		
+		case "SpecialCollectible":
+			return "-1";
+		case "RandSkinObject":
+			return "-2";
+		case "Spawn":
+			return "-3";
+		case "BossBlock":
+			return "-4";
+		case "HookObject":
+			return "-5";
+		case "DropPoint":
+			return "-6";
+		case "Money":
+		return null;
+		case "Normal":
+		default:
+			return "0";
+		}
 	}
 }
