@@ -1722,6 +1722,17 @@ System.out.println(strings[0]);
 								g2d.drawString("Spawn"+spawnNum, px - x + 20, py - y
 										- 150);
 								spawnNum++;
+							}else if(val==-2){
+								try{
+								Image pImg = new ImageIcon(getClass()
+										.getResource(getAllWanted(stuff.get(2)))).getImage();
+								g2d.drawImage(pImg, px - x, py - y - 200,
+										mapEdit);
+								}catch(Exception ex){
+									System.out.println(getAllWanted(stuff.get(2)));
+									ex.printStackTrace();
+									System.exit(0);
+								}
 							} else {
 								Image pImg = new ImageIcon(getClass()
 										.getResource(stuff.get(2))).getImage();
@@ -2077,19 +2088,18 @@ System.out.println(strings[0]);
 											.getCodeSource().getLocation()
 											.getPath()+"/images");
 							chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-							int returnVal = chooser.showOpenDialog(l);
 
 							
 								chooser.setSelectedFile(new File(MapEdit.class.getProtectionDomain()
 											.getCodeSource().getLocation()
 											.getPath()+"/images"));
-								returnVal = chooser.showOpenDialog(l);
+								chooser.showOpenDialog(l);
 							
 							String[] splits = chooser.getSelectedFile()
 									.getPath().split("images");
 							oImageString = "images"
 									+ splits[splits.length - 1].replace("\\",
-											"/");
+											"/")+"/";
 							l.exit();
 						}
 						else{
@@ -3538,6 +3548,20 @@ public String extraEn(String type){
 		case "Normal":
 		default:
 			return "0";
+		}
+	}
+	public static String getAllWanted(String folderLoc){
+		switch(folderLoc){
+//		case "images/objects/table/":
+//			return "images/objects/table/table.png";//first anyways
+		default:
+			String s;
+			try{
+			s=folderLoc+new File(folderLoc).list()[0];}
+			catch(Exception ex){
+				s="images/icon.png";
+			}
+		return s;
 		}
 	}
 }
