@@ -82,6 +82,7 @@ public class MapEdit extends JFrame {
 	
 	String oType="Normal";
 	String oImageString="images/icon.png";
+	String oCollectible="normal";
 	String pType="normal";
 	String pType2="portal";
 	String eType = "Standing";
@@ -422,10 +423,11 @@ System.out.println(strings[0]);
                             		   
                             	   
                                }
+                               
 							objects.add(theX + "," + theY + ","
 									+ oImageString + ","
 									+ getObjectCollide() + ","
-									+ amount);
+									+ amount+(!oCollectible.equals("normal")?","+oCollectible:""));
 						} else if (blocks == 4) {
 							Point m = MouseInfo.getPointerInfo().getLocation();
 							int sen = 100;
@@ -559,6 +561,7 @@ System.out.println(strings[0]);
 							String ch = stuff.get(0);
 							Image enImg;
 							String sB;
+							
 							if (ch.equals("Head Boss")) {
 								sB = "images/enemies/bosses/Head.png";
 								enImg = new ImageIcon(getClass()
@@ -604,7 +607,8 @@ System.out.println(strings[0]);
 							if (currentS != "")
 								stuff.add(currentS);
 							System.out.println(stuff.get(2));
-							Image enImg = new ImageIcon(getClass().getResource(
+							Image enImg;
+							enImg = new ImageIcon(getClass().getResource(
 									getImageChar(stuff.get(2))))
 									.getImage();
 							if (new Rectangle(Integer.parseInt(stuff.get(0)),
@@ -670,8 +674,19 @@ System.out.println(strings[0]);
 								}
 							}
 							stuff.add(currentS);
-							Image enImg = new ImageIcon(getClass().getResource(
-									stuff.get(2))).getImage();
+							Image enImg;
+							if(stuff.size()>4&&stuff.get(4).equals("-2")){
+								enImg = new ImageIcon(getClass()
+										.getResource(getAllWanted(stuff.get(2)))).getImage();}
+							else{
+								enImg = new ImageIcon(getClass().getResource(
+										stuff.get(2))).getImage();}
+//							if(stuff.size()<4){
+//								System.out.println("Thingy");
+//								
+//							}else
+//							enImg = new ImageIcon(getClass().getResource(
+//									stuff.get(2))).getImage();
 
 							if (new Rectangle(Integer.parseInt(stuff.get(0)),
 									Integer.parseInt(stuff.get(1)),
@@ -2047,7 +2062,7 @@ System.out.println(strings[0]);
 		JList<String> list;
 
 		public ObjectChooser() {
-
+this.setUndecorated(true);
 			this.setFocusable(true);
 			mapEdit.setFocusable(false);
 			this.setResizable(false);
@@ -2142,13 +2157,18 @@ System.out.println(strings[0]);
 											"/");
 							
 						}
-						if(!oType.equals("Money"))
-						l.exit();
+						if(!oType.equals("Money")&&!oType.equals("Collectible")){
+							oCollectible="normal";
+							l.exit();}
 						}
 					else{
+						if(oType.equals("Money")){
+							oCollectible="normal";
 						oValue=Integer.parseInt(list.getSelectedValue());
 						oImageString="images/objects/collectibles/coin"+list.getSelectedValue()+".png";
-						exit();
+						exit();}else{
+							
+						}
 					}
 					// end stage 0
 				}
