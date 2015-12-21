@@ -9,6 +9,7 @@ import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
+import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -2235,7 +2236,11 @@ public class MapEdit extends JFrame {
 			this.add(okButton, BorderLayout.SOUTH);
 			list = new JList<String>();
 			list.setListData(typesOfObjects);
-			this.add(list, BorderLayout.CENTER);
+			ScrollPane sc=new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
+			
+		sc.add(list);
+			
+			this.add(sc, BorderLayout.CENTER);
 
 			this.addWindowListener(new WindowListener() {
 
@@ -2330,7 +2335,11 @@ public class MapEdit extends JFrame {
 			this.add(okButton, BorderLayout.SOUTH);
 			list = new JList<String>();
 			list.setListData(typesOfNPCs);
-			this.add(list, BorderLayout.CENTER);
+			ScrollPane sc=new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
+			
+		sc.add(list);
+			
+			this.add(sc, BorderLayout.CENTER);
 
 			this.addWindowListener(new WindowListener() {
 
@@ -2435,7 +2444,11 @@ public class MapEdit extends JFrame {
 			this.add(okButton, BorderLayout.SOUTH);
 			list = new JList<String>();
 			list.setListData(typesOfPortals);
-			this.add(list, BorderLayout.CENTER);
+			ScrollPane sc=new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
+			
+		sc.add(list);
+			
+			this.add(sc, BorderLayout.CENTER);
 
 			this.addWindowListener(new WindowListener() {
 
@@ -2575,7 +2588,11 @@ public class MapEdit extends JFrame {
 			this.add(okButton, BorderLayout.SOUTH);
 			list = new JList<String>();
 			list.setListData(typesOfEnemies);
-			this.add(list, BorderLayout.CENTER);
+			ScrollPane sc=new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
+			
+		sc.add(list);
+			
+			this.add(sc, BorderLayout.CENTER);
 
 			this.addWindowListener(new WindowListener() {
 
