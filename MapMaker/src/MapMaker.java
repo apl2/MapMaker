@@ -461,45 +461,50 @@ public class MapMaker extends JFrame {
 									}
 
 									try {
-										File[] files = new File("bin/projects/"
-												+ project).listFiles();
-
-										for (int c = 0; c < files.length; c++) {
-											if (new File(
-													chooser.getSelectedFile()
-															.toString()
-															+ "/"
-															+ (newFile ? project
-																	+ "/"
-																	: "")
-															+ Run.removeExtension(files[c]
-																	.toString()))
-													.exists()) {
-												Files.delete(new File(
-														chooser.getSelectedFile()
-																.toString()
-																+ "/"
-																+ (newFile ? project
-																		+ "/"
-																		: "")
-																+ Run.removeExtension(files[c]
-																		.toString()))
-														.toPath());
-											}
-											Files.copy(
-													files[c].toPath(),
-													new File(
-															chooser.getSelectedFile()
-																	.toString()
-																	+ "/"
-																	+ (newFile ? project
-																			+ "/"
-																			: "")
-																	+ Run.removeExtension(files[c]
-																			.toString()))
-															.toPath());
-										}
-									} catch (IOException e1) {
+										copyDir(new File("bin/projects/"
+												+ project).toPath(), new File(chooser
+														.getSelectedFile().toString()
+														+ "/" + project).toPath());
+//										File[] files = new File("bin/projects/"
+//												+ project).listFiles();
+//
+//										for (int c = 0; c < files.length; c++) {
+//											
+//											if (new File(
+//													chooser.getSelectedFile()
+//															.toString()
+//															+ "/"
+//															+ (newFile ? project
+//																	+ "/"
+//																	: "")
+//															+ Run.removeExtension(files[c]
+//																	.toString()))
+//													.exists()) {
+//												Files.delete(new File(
+//														chooser.getSelectedFile()
+//																.toString()
+//																+ "/"
+//																+ (newFile ? project
+//																		+ "/"
+//																		: "")
+//																+ Run.removeExtension(files[c]
+//																		.toString()))
+//														.toPath());
+//											}
+//											Files.copy(
+//													files[c].toPath(),
+//													new File(
+//															chooser.getSelectedFile()
+//																	.toString()
+//																	+ "/"
+//																	+ (newFile ? project
+//																			+ "/"
+//																			: "")
+//																	+ Run.removeExtension(files[c]
+//																			.toString()))
+//															.toPath());
+//										}
+									} catch (Exception e1) {
 										// TODO Auto-generated catch block
 										e1.printStackTrace();
 									}
@@ -551,17 +556,18 @@ public class MapMaker extends JFrame {
 					}
 				});
 				String[] s = new File("bin/projects/" + project).list(
-				// new FilenameFilter() {
-				//
-				// @Override
-				// public boolean accept(File dir, String name) {
-				// // TODO Auto-generated method stub
-				// return name.toLowerCase().endsWith(".txt")
-				// &&
-				// !name.endsWith("E.txt")&& !name.endsWith("P.txt")&&
-				// !name.endsWith("O.txt")&& !name.endsWith("N.txt");
-				// }
-						// }
+				 new FilenameFilter() {
+				
+				 @Override
+				 public boolean accept(File dir, String name) {
+				 // TODO Auto-generated method stub
+//				 return name.toLowerCase().endsWith(".txt")
+//				 &&
+//				 !name.endsWith("E.txt")&& !name.endsWith("P.txt")&&
+//				 !name.endsWith("O.txt")&& !name.endsWith("N.txt");
+					 return !name.contains(".");
+				 }
+						 }
 						);
 				ArrayList<String> maps = new ArrayList<String>();
 				for (int c = 0; c < s.length; c++) {
@@ -810,4 +816,20 @@ public class MapMaker extends JFrame {
 
 		return fName;
 	}
+public static void	saveInfo(String project,String name){
+	try{
+	BufferedWriter writer=new BufferedWriter(new FileWriter("bin/projects/"+project+"/"+"info.txt"));
+	writer.write(name);
+	writer.close();
+	writer.close();
+	BufferedWriter writer2=new BufferedWriter(new FileWriter("projects/"+project+"/"+"info.txt"));
+	writer2.write(name);
+	writer2.close();
+	writer2.close();
+}catch(Exception ex){
+	ex.printStackTrace();
 }
+	}
+
+	}
+

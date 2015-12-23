@@ -148,7 +148,13 @@ public class MapEdit extends JFrame {
 					MapMaker.saveStrings(objects, nameWithO(), project);
 					MapMaker.saveStrings(npcs, nameWithN(), project);
 					mapEdit.dispose();
-				} else if (key == KeyEvent.VK_V) {
+				}
+				else if(key==KeyEvent.VK_O){
+					if(JOptionPane.showConfirmDialog(mapEdit, "Do you want to set this map as the default?")==JOptionPane.YES_OPTION){
+					MapMaker.saveInfo(project,name.split("/")[0]);	
+					}
+				}
+				else if (key == KeyEvent.VK_V) {
 					if (blocks == 1) {
 						new EnemyChooser();
 					} else if (blocks == 2) {
