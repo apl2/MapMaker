@@ -379,11 +379,15 @@ public class MapEdit extends JFrame {
 								theX -= 50;
 								theY -= 50;
 							}
+							String extraEn=extraEn(eType);
+							String extraEn2=extraEn2(eType);
 							enemies.add((eType + "," + theX + "," + theY + ","
 									+ eImageString + "," + eFlying + ","
-									+ eBaseHealth + (extraEn(eType) != null ? ","
-									+ extraEn(eType)
-									: "")));
+									+ eBaseHealth + (extraEn != null ? ","
+									+ extraEn
+									: "")+ (extraEn2 != null ? ","
+											+ extraEn2
+											: "")));
 						} else if (blocks == 2) {
 							Point m = MouseInfo.getPointerInfo().getLocation();
 							int sen = 100;
@@ -502,17 +506,18 @@ public class MapEdit extends JFrame {
 							try {
 								int px = Integer.parseInt(stuff.get(1));
 								int py = Integer.parseInt(stuff.get(2));
-								Image pImg = new ImageIcon(getClass()
-										.getResource(stuff.get(3))).getImage();
+//								Image pImg = new ImageIcon(getClass()
+//										.getResource(stuff.get(3))).getImage();
 								int stuffG = 6;
 								if (hasPath(stuff.get(0)))
 									stuffG = 7;
 
-								System.out.println(stuffG);
-								if (stuff.size() > stuffG) {
-									int[][] points = createArray(stuff
+								if (stuff.size() > stuffG-1) {
+									int[][] points=new int[0][0];
+									if(stuff.size()>stuffG)
+									points = createArray(stuff
 											.get(stuffG));
-									if (points.length > 0) {
+									
 										int theX = ((int) ((m.x + x) / 100));
 										int theY = ((int) ((m.y + y) / 100)) + 2;
 
@@ -534,11 +539,12 @@ public class MapEdit extends JFrame {
 											theY -= newY;
 											if ((theX < 2 && theX > -2)
 													&& (theY < 2 && theY > -2)) {
+												if(stuff.size()<=stuffG)
+													stuff.add("");
 												stuff.set(stuffG,
-														stuff.get(stuffG) + "'"
+														(!stuff.get(stuffG).equals("")?stuff.get(stuffG) + "'":"")
 																+ theX + "'"
 																+ theY);
-
 												String s = "";
 												for (int c = 0; c < stuff
 														.size(); c++) {
@@ -550,7 +556,9 @@ public class MapEdit extends JFrame {
 												// System.out.println("yes");
 											}
 										}
-									}
+									
+								}else{
+									throw new Exception(); 
 								}
 							} catch (Exception e2) {
 								e2.printStackTrace();
@@ -767,7 +775,7 @@ public class MapEdit extends JFrame {
 										enImg.getHeight(null))
 										.contains(new Point(x + m.x, y + m.y
 												+ 200))
-										&& hasPath(stuff.get(0))) {
+										&& (isPath(stuff.get(0)))) {
 									selEn = c;
 									blocks = MAXBLOCKS + 1;
 									break;
@@ -1715,24 +1723,24 @@ public class MapEdit extends JFrame {
 							g2d.drawImage(enImg, enX - x, enY - y - 200,
 									mapEdit);
 						}
-						// int stuffG=6;
-						// if(cop(enemies.get(c).charAt(0))==true){
-						// stuffG=7;
-						// }
-						// if((ch=='b'||ch=='p')&&stuff.size()>stuffG){
-						// int addX=enX-x+50;
-						// int addY=enY-y-150;
-						// //System.out.println(stuff.get(stuffG));
-						// int[][]points=createArray(stuff.get(stuffG));
-						// //System.out.println(points.length);
-						// g2d.setColor(Color.black);
-						// for(int c3=0;c3<points.length;c3++){
-						// g2d.drawLine(addX, addY, addX+(points[c3][0]*100),
-						// addY+(points[c3][1]*100));
-						// addX+=(points[c3][0]*100);
-						// addY+=(points[c3][1]*100);
-						// }
-						// }
+						 int stuffG=6;
+						 if(hasPath(stuff.get(0))){
+						 stuffG=7;
+						 }
+						 if(isPath(stuff.get(0))&&stuff.size()>stuffG){
+						 int addX=enX-x+50;
+						 int addY=enY-y-150;
+						 //System.out.println(stuff.get(stuffG));
+						 int[][]points=createArray(stuff.get(stuffG));
+						 //System.out.println(points.length);
+						 g2d.setColor(Color.black);
+						 for(int c3=0;c3<points.length;c3++){
+						 g2d.drawLine(addX, addY, addX+(points[c3][0]*100),
+						 addY+(points[c3][1]*100));
+						 addX+=(points[c3][0]*100);
+						 addY+=(points[c3][1]*100);
+						 }
+						 }
 					} catch (IndexOutOfBoundsException ex) {
 						ex.printStackTrace();
 						enemies.remove(c);
@@ -2513,7 +2521,7 @@ public class MapEdit extends JFrame {
 		// JButton melee;
 		// JButton ranged;
 		// JButton special;
-		String[] typesOfEnemies = { "Standing", "Tracking", "Head Boss", "Path" };
+		String[] typesOfEnemies = { "Standing", "Tracking", "Head Boss", "Path","Path Security" };
 		EnemyChooser l = this;
 		int stage = 0;
 		JButton okButton;
@@ -3405,18 +3413,20 @@ public class MapEdit extends JFrame {
 	private int[][] createArray(String string) {
 		// TODO Auto-generated method stub
 
-		// System.out.println(string);
+		 System.out.println(string);
+		if(!string.equals("")){
 		String[] split = string.split("\'");
 		int splitLength = split.length / 2;
 
 		int splitCounter = 0;
 		int p2;
 		int[][] toReturn = new int[splitLength][2];
-
+System.out.println(splitLength);
 		for (int p1 = 0; p1 < splitLength; p1++) {
 
-			// System.out.println("In loop");
+			System.out.println(p1);
 			for (p2 = 0; p2 < toReturn[p1].length; p2++) {
+				System.out.println(splitCounter);
 				toReturn[p1][p2] = Integer.parseInt(split[splitCounter]);
 				splitCounter++;
 			}
@@ -3428,7 +3438,8 @@ public class MapEdit extends JFrame {
 		// //System.out.println();
 		// }
 
-		return toReturn;
+		return toReturn;}else 
+			return new int[0][0];
 	}
 
 	public int objectsAddX() {
@@ -3517,7 +3528,17 @@ public class MapEdit extends JFrame {
 			return null;
 		}
 	}
-
+	public String extraEn2(String type) {
+		switch (type) {
+		case "Path":
+			return JOptionPane.showOptionDialog(mapEdit, "Is this a backwards path enemy?", "Map Maker", JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Yes","No"}, "Yes")==0?",B":",L";
+		case "Path Security":
+			return JOptionPane.showOptionDialog(mapEdit, "Is this a backwards path security enemy?", "Map Maker", JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Yes","No"}, "Yes")==0?",B":",L";
+		
+		default:
+			return null;
+		}
+	}
 	public String getNPC3(String answer) {
 		switch (nString) {
 		case "Ham-fisted-dude":
@@ -3623,14 +3644,24 @@ public class MapEdit extends JFrame {
 
 	public boolean hasPath(String s) {
 		switch (s) {
-		case "Path":
+		
 		case "Path Security":
 			return true;
+			case "Path":
 		default:
 			return false;
 		}
 	}
-
+	public boolean isPath(String s) {
+		switch (s) {
+		
+		case "Path Security":
+			case "Path":
+				return true;
+		default:
+			return false;
+		}
+	}
 	public String getObjectsVal() {
 		switch (oType) {
 
