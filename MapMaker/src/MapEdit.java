@@ -3413,7 +3413,6 @@ public class MapEdit extends JFrame {
 	private int[][] createArray(String string) {
 		// TODO Auto-generated method stub
 
-		 System.out.println(string);
 		if(!string.equals("")){
 		String[] split = string.split("\'");
 		int splitLength = split.length / 2;
@@ -3421,12 +3420,8 @@ public class MapEdit extends JFrame {
 		int splitCounter = 0;
 		int p2;
 		int[][] toReturn = new int[splitLength][2];
-System.out.println(splitLength);
 		for (int p1 = 0; p1 < splitLength; p1++) {
-
-			System.out.println(p1);
 			for (p2 = 0; p2 < toReturn[p1].length; p2++) {
-				System.out.println(splitCounter);
 				toReturn[p1][p2] = Integer.parseInt(split[splitCounter]);
 				splitCounter++;
 			}
