@@ -40,7 +40,7 @@ import javax.swing.Timer;
 import javax.swing.filechooser.FileFilter;
 
 public class MapEdit extends JFrame {
-boolean defaultMap;
+	boolean defaultMap;
 	public static final Color MED_GRAY = new Color(150, 150, 160);
 	public static final Color NIGHT_SKY = // new Color(24, 24, 61);
 	Color.black;
@@ -103,7 +103,8 @@ boolean defaultMap;
 	int theSpawn;
 	ArrayList<String> objects = new ArrayList<String>();
 	int oValue;
-int weatherT;
+	int weatherT;
+
 	public MapEdit(String name, String project) {
 		// TODO Auto-generated constructor stub
 		this.name = name;
@@ -151,7 +152,7 @@ int weatherT;
 					if (JOptionPane.showConfirmDialog(mapEdit,
 							"Do you want to set this map as the default?") == JOptionPane.YES_OPTION) {
 						MapMaker.saveInfo(project, name.split("/")[0]);
-						defaultMap=true;
+						defaultMap = true;
 					}
 				} else if (key == KeyEvent.VK_V) {
 					if (blocks == 1) {
@@ -179,7 +180,7 @@ int weatherT;
 											+ "T: change texture pack\n"
 											+ "P: Build/close paths");
 				} else if (key == KeyEvent.VK_T) {
-					
+
 					String[] options = { "cancel", "Grassy", "Desert", "Snowy",
 							"Island", "Volcano", "Haunted", "Lab" };
 					int sel = JOptionPane.showOptionDialog(mapEdit,
@@ -195,7 +196,7 @@ int weatherT;
 								JOptionPane.DEFAULT_OPTION, null, options2, 0);
 						if (sel2 > 0) {
 							try {
-								weatherT=0;
+								weatherT = 0;
 								strings[0] = options[sel]
 										+ ","
 										+ options2[sel2]
@@ -1907,8 +1908,8 @@ int weatherT;
 				}
 				Point m = MouseInfo.getPointerInfo().getLocation();
 				String weather = strings[0].split(",")[1];
-				
-				if(weather.equals("rain")){
+
+				if (weather.equals("rain")) {
 					if (weatherT > 0)
 						weatherT = -1;
 					weatherT++;
@@ -1916,44 +1917,44 @@ int weatherT;
 							new ImageIcon(getClass().getResource(
 									"images/weather/rain/" + weatherT + ".png"))
 									.getImage(), 0, 0, this);
-					
-					}
-				else if(weather.equals("obscure")){
-					if(!strings[0].split(",")[0].equals("Desert")){
-					if (weatherT > 1)
-						weatherT = -1;
-					weatherT++;
-					
-					g2d.drawImage(
-							new ImageIcon(getClass().getResource(
-									"images/weather/snow/" + weatherT + ".png"))
-									.getImage(), 0, 0, this);
-					
-					}else{
+
+				} else if (weather.equals("obscure")) {
+					if (!strings[0].split(",")[0].equals("Desert")) {
+						if (weatherT > 1)
+							weatherT = -1;
+						weatherT++;
+
+						g2d.drawImage(
+								new ImageIcon(getClass().getResource(
+										"images/weather/snow/" + weatherT
+												+ ".png")).getImage(), 0, 0,
+								this);
+
+					} else {
 						if (weatherT > 0)
-						weatherT = -1;
-					weatherT++;
+							weatherT = -1;
+						weatherT++;
+						g2d.drawImage(
+								new ImageIcon(getClass().getResource(
+										"images/weather/sand/" + weatherT
+												+ ".png")).getImage(), 0, 0,
+								this);
+
+					}
+				} else if (weather.equals("fog")) {
 					g2d.drawImage(
 							new ImageIcon(getClass().getResource(
-									"images/weather/sand/" + weatherT + ".png"))
-									.getImage(), 0, 0, this);
-					
-					}
-					}
-				else if(weather.equals("fog")){
-					g2d.drawImage(
-							new ImageIcon(getClass().getResource(
-									"images/weather/fog/0.png")).getImage(), 0, 0,
-							this);
+									"images/weather/fog/0.png")).getImage(), 0,
+							0, this);
 				}
 				g2d.setFont(MOUSE);
 				g2d.setColor(Color.RED);
-				if(defaultMap){
+				if (defaultMap) {
 					g2d.drawString("Default Map", 125, 50);
-				}else{
+				} else {
 					g2d.drawString("Not Default", 125, 50);
 				}
-				
+
 				if (choosing && !zoom) {
 
 					int theX = ((int) (this.getWidth() / 100) * 100) / 2
@@ -2573,7 +2574,10 @@ int weatherT;
 		// JButton ranged;
 		// JButton special;
 		String[] typesOfEnemies = { "Standing", "Tracking", "Head Boss",
-				"Path", "Path Security", "Launch" , "Pursuing Launch" ,"Charge","Walking","Slime","Explosive Spawning","Chain","Tail"};
+				"Path", "Path Security", "Launch", "Pursuing Launch", "Charge",
+				"Walking", "Slime", "Explosive Spawning", "Chain", "Tail",
+				"See Chase", "See Shoot", "Security", "Look Chase",
+				"Side To Player", "Lizard-Man", "Pod" };
 		EnemyChooser l = this;
 		int stage = 0;
 		JButton okButton;
@@ -2603,6 +2607,14 @@ int weatherT;
 						stage++;
 						if (eType.equals("Head Boss")) {
 							eImageString = "Head Boss";
+							eBaseHealth = 1000;
+							l.exit();
+						} else if (eType.equals("Lizard-Man")) {
+							eImageString = "Lizard-Man";
+							eBaseHealth = 1000;
+							l.exit();
+						} else if (eType.equals("Pod")) {
+							eImageString = "Pod";
 							eBaseHealth = 1000;
 							l.exit();
 						} else if (stage == 1) {
@@ -2648,7 +2660,14 @@ int weatherT;
 							eBaseHealth = 100;
 							stage++;
 
-							eFlying = null;
+							eFlying = "false";
+							String[]options=new String[]{"true","false"};
+							String s="Is this a flying enemy?";
+							if(eType.equals("Side To Player"))
+								s="Does it follow on the X axis?";
+							int chosen=JOptionPane.showOptionDialog(l, s, "Map Maker", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, "false");
+							if(chosen==0)
+								eFlying="true";
 							l.exit();
 						}
 					}// end stage 0
@@ -3036,8 +3055,7 @@ int weatherT;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		
-		
+
 		try {
 			lines.clear();
 			File saveFile = new File("bin/projects/" + project + "/info.txt");
@@ -3051,9 +3069,10 @@ int weatherT;
 					lines.add(line);
 				}
 				reader.close();
-				
-				if(lines.size()>0&&name.split("/")[1].startsWith(lines.get(0)))
-					defaultMap=true;
+
+				if (lines.size() > 0
+						&& name.split("/")[1].startsWith(lines.get(0)))
+					defaultMap = true;
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -3568,13 +3587,14 @@ int weatherT;
 		case "Launch":
 		case "Pursuing Launch":
 		case "Explosive Spawning":
+		case "See Shoot":
 			return JOptionPane.showInputDialog("What delay time?");
 		case "Chain":
 		case "Tail":
 			return JOptionPane.showInputDialog("How many Links?");
 
 		case "Path Security":
-
+		case "Security":
 			String string = "images/enemies/unique/cop.png";
 			JFileChooser chooser = new JFileChooser(MapEdit.class
 					.getProtectionDomain().getCodeSource().getLocation()
@@ -3616,6 +3636,7 @@ int weatherT;
 		case "Tail":
 			return JOptionPane.showInputDialog("Distance?");
 		case "Path":
+		case "PatrolChase":
 			return JOptionPane.showOptionDialog(mapEdit,
 					"Is this a backwards path enemy?", "Map Maker",
 					JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE,
