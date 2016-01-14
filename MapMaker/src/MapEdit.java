@@ -40,7 +40,7 @@ import javax.swing.Timer;
 import javax.swing.filechooser.FileFilter;
 
 public class MapEdit extends JFrame {
-
+boolean defaultMap;
 	public static final Color MED_GRAY = new Color(150, 150, 160);
 	public static final Color NIGHT_SKY = // new Color(24, 24, 61);
 	Color.black;
@@ -87,7 +87,7 @@ public class MapEdit extends JFrame {
 	String pType2 = "portal";
 	String eType = "Standing";
 	String eImageString = "images/enemies/unique/blob.png";
-	boolean eFlying;
+	String eFlying;
 	int eBaseHealth = 100;// enemies
 	String nString = "Kepler";// NPCs
 	ArrayList<String> portals = new ArrayList<String>();
@@ -103,10 +103,9 @@ public class MapEdit extends JFrame {
 	int theSpawn;
 	ArrayList<String> objects = new ArrayList<String>();
 	int oValue;
-
+int weatherT;
 	public MapEdit(String name, String project) {
 		// TODO Auto-generated constructor stub
-
 		this.name = name;
 		this.project = project;
 		// this.imUrl=imUrl;
@@ -148,13 +147,13 @@ public class MapEdit extends JFrame {
 					MapMaker.saveStrings(objects, nameWithO(), project);
 					MapMaker.saveStrings(npcs, nameWithN(), project);
 					mapEdit.dispose();
-				}
-				else if(key==KeyEvent.VK_O){
-					if(JOptionPane.showConfirmDialog(mapEdit, "Do you want to set this map as the default?")==JOptionPane.YES_OPTION){
-					MapMaker.saveInfo(project,name.split("/")[0]);	
+				} else if (key == KeyEvent.VK_O) {
+					if (JOptionPane.showConfirmDialog(mapEdit,
+							"Do you want to set this map as the default?") == JOptionPane.YES_OPTION) {
+						MapMaker.saveInfo(project, name.split("/")[0]);
+						defaultMap=true;
 					}
-				}
-				else if (key == KeyEvent.VK_V) {
+				} else if (key == KeyEvent.VK_V) {
 					if (blocks == 1) {
 						new EnemyChooser();
 					} else if (blocks == 2) {
@@ -180,6 +179,7 @@ public class MapEdit extends JFrame {
 											+ "T: change texture pack\n"
 											+ "P: Build/close paths");
 				} else if (key == KeyEvent.VK_T) {
+					
 					String[] options = { "cancel", "Grassy", "Desert", "Snowy",
 							"Island", "Volcano", "Haunted", "Lab" };
 					int sel = JOptionPane.showOptionDialog(mapEdit,
@@ -195,6 +195,7 @@ public class MapEdit extends JFrame {
 								JOptionPane.DEFAULT_OPTION, null, options2, 0);
 						if (sel2 > 0) {
 							try {
+								weatherT=0;
 								strings[0] = options[sel]
 										+ ","
 										+ options2[sel2]
@@ -379,15 +380,15 @@ public class MapEdit extends JFrame {
 								theX -= 50;
 								theY -= 50;
 							}
-							String extraEn=extraEn(eType);
-							String extraEn2=extraEn2(eType);
+
+							String extraEn = extraEn(eType);
+							String extraEn2 = extraEn2(eType);
 							enemies.add((eType + "," + theX + "," + theY + ","
 									+ eImageString + "," + eFlying + ","
-									+ eBaseHealth + (extraEn != null ? ","
-									+ extraEn
-									: "")+ (extraEn2 != null ? ","
-											+ extraEn2
-											: "")));
+									+ eBaseHealth
+									+ (extraEn != null ? "," + extraEn : "") + (extraEn2 != null ? ","
+									+ extraEn2
+									: "")));
 						} else if (blocks == 2) {
 							Point m = MouseInfo.getPointerInfo().getLocation();
 							int sen = 100;
@@ -506,59 +507,60 @@ public class MapEdit extends JFrame {
 							try {
 								int px = Integer.parseInt(stuff.get(1));
 								int py = Integer.parseInt(stuff.get(2));
-//								Image pImg = new ImageIcon(getClass()
-//										.getResource(stuff.get(3))).getImage();
+								// Image pImg = new ImageIcon(getClass()
+								// .getResource(stuff.get(3))).getImage();
 								int stuffG = 6;
 								if (hasPath(stuff.get(0)))
 									stuffG = 7;
 
-								if (stuff.size() > stuffG-1) {
-									int[][] points=new int[0][0];
-									if(stuff.size()>stuffG)
-									points = createArray(stuff
-											.get(stuffG));
-									
-										int theX = ((int) ((m.x + x) / 100));
-										int theY = ((int) ((m.y + y) / 100)) + 2;
+								if (stuff.size() > stuffG - 1) {
+									int[][] points = new int[0][0];
+									if (stuff.size() > stuffG)
+										points = createArray(stuff.get(stuffG));
 
-										int newX = ((int) ((px) / 100));
-										int newY = ((int) ((py) / 100));
+									int theX = ((int) ((m.x + x) / 100));
+									int theY = ((int) ((m.y + y) / 100)) + 2;
 
-										for (int c = 0; c < points.length; c++) {
-											newX += points[c][0];
-											newY += points[c][1];
-										}
-										if (// (newX!=theX&&newY!=theY)
-											// ||
-										(newX == theX && newY == theY)) {
-											// System.out.println("no");
-											// System.out.println(newX-theX);
-											// System.out.println(newY-theY);
-										} else {
-											theX -= newX;
-											theY -= newY;
-											if ((theX < 2 && theX > -2)
-													&& (theY < 2 && theY > -2)) {
-												if(stuff.size()<=stuffG)
-													stuff.add("");
-												stuff.set(stuffG,
-														(!stuff.get(stuffG).equals("")?stuff.get(stuffG) + "'":"")
-																+ theX + "'"
-																+ theY);
-												String s = "";
-												for (int c = 0; c < stuff
-														.size(); c++) {
-													if (c != 0)
-														s += ",";
-													s += stuff.get(c);
-												}
-												enemies.set(selEn, s);
-												// System.out.println("yes");
+									int newX = ((int) ((px) / 100));
+									int newY = ((int) ((py) / 100));
+
+									for (int c = 0; c < points.length; c++) {
+										newX += points[c][0];
+										newY += points[c][1];
+									}
+									if (// (newX!=theX&&newY!=theY)
+										// ||
+									(newX == theX && newY == theY)) {
+										// System.out.println("no");
+										// System.out.println(newX-theX);
+										// System.out.println(newY-theY);
+									} else {
+										theX -= newX;
+										theY -= newY;
+										if ((theX < 2 && theX > -2)
+												&& (theY < 2 && theY > -2)) {
+											if (stuff.size() <= stuffG)
+												stuff.add("");
+											stuff.set(
+													stuffG,
+													(!stuff.get(stuffG).equals(
+															"") ? stuff
+															.get(stuffG) + "'"
+															: "")
+															+ theX + "'" + theY);
+											String s = "";
+											for (int c = 0; c < stuff.size(); c++) {
+												if (c != 0)
+													s += ",";
+												s += stuff.get(c);
 											}
+											enemies.set(selEn, s);
+											// System.out.println("yes");
 										}
-									
-								}else{
-									throw new Exception(); 
+									}
+
+								} else {
+									throw new Exception();
 								}
 							} catch (Exception e2) {
 								e2.printStackTrace();
@@ -1723,24 +1725,25 @@ public class MapEdit extends JFrame {
 							g2d.drawImage(enImg, enX - x, enY - y - 200,
 									mapEdit);
 						}
-						 int stuffG=6;
-						 if(hasPath(stuff.get(0))){
-						 stuffG=7;
-						 }
-						 if(isPath(stuff.get(0))&&stuff.size()>stuffG){
-						 int addX=enX-x+50;
-						 int addY=enY-y-150;
-						 //System.out.println(stuff.get(stuffG));
-						 int[][]points=createArray(stuff.get(stuffG));
-						 //System.out.println(points.length);
-						 g2d.setColor(Color.black);
-						 for(int c3=0;c3<points.length;c3++){
-						 g2d.drawLine(addX, addY, addX+(points[c3][0]*100),
-						 addY+(points[c3][1]*100));
-						 addX+=(points[c3][0]*100);
-						 addY+=(points[c3][1]*100);
-						 }
-						 }
+						int stuffG = 6;
+						if (hasPath(stuff.get(0))) {
+							stuffG = 7;
+						}
+						if (isPath(stuff.get(0)) && stuff.size() > stuffG) {
+							int addX = enX - x + 50;
+							int addY = enY - y - 150;
+							// System.out.println(stuff.get(stuffG));
+							int[][] points = createArray(stuff.get(stuffG));
+							// System.out.println(points.length);
+							g2d.setColor(Color.black);
+							for (int c3 = 0; c3 < points.length; c3++) {
+								g2d.drawLine(addX, addY, addX
+										+ (points[c3][0] * 100), addY
+										+ (points[c3][1] * 100));
+								addX += (points[c3][0] * 100);
+								addY += (points[c3][1] * 100);
+							}
+						}
 					} catch (IndexOutOfBoundsException ex) {
 						ex.printStackTrace();
 						enemies.remove(c);
@@ -1903,6 +1906,54 @@ public class MapEdit extends JFrame {
 
 				}
 				Point m = MouseInfo.getPointerInfo().getLocation();
+				String weather = strings[0].split(",")[1];
+				
+				if(weather.equals("rain")){
+					if (weatherT > 0)
+						weatherT = -1;
+					weatherT++;
+					g2d.drawImage(
+							new ImageIcon(getClass().getResource(
+									"images/weather/rain/" + weatherT + ".png"))
+									.getImage(), 0, 0, this);
+					
+					}
+				else if(weather.equals("obscure")){
+					if(!strings[0].split(",")[0].equals("Desert")){
+					if (weatherT > 1)
+						weatherT = -1;
+					weatherT++;
+					
+					g2d.drawImage(
+							new ImageIcon(getClass().getResource(
+									"images/weather/snow/" + weatherT + ".png"))
+									.getImage(), 0, 0, this);
+					
+					}else{
+						if (weatherT > 0)
+						weatherT = -1;
+					weatherT++;
+					g2d.drawImage(
+							new ImageIcon(getClass().getResource(
+									"images/weather/sand/" + weatherT + ".png"))
+									.getImage(), 0, 0, this);
+					
+					}
+					}
+				else if(weather.equals("fog")){
+					g2d.drawImage(
+							new ImageIcon(getClass().getResource(
+									"images/weather/fog/0.png")).getImage(), 0, 0,
+							this);
+				}
+				g2d.setFont(MOUSE);
+				g2d.setColor(Color.RED);
+				if(defaultMap){
+					g2d.drawString("Default Map", 125, 50);
+				}else{
+					g2d.drawString("Not Default", 125, 50);
+				}
+				
 				if (choosing && !zoom) {
 
 					int theX = ((int) (this.getWidth() / 100) * 100) / 2
@@ -2240,7 +2291,7 @@ public class MapEdit extends JFrame {
 							exit();
 						} else {
 							oCollectible = list.getSelectedValue();
-							oImageString=getCollectiblePath(oCollectible);
+							oImageString = getCollectiblePath(oCollectible);
 							exit();
 						}
 					}
@@ -2250,10 +2301,10 @@ public class MapEdit extends JFrame {
 			this.add(okButton, BorderLayout.SOUTH);
 			list = new JList<String>();
 			list.setListData(typesOfObjects);
-			ScrollPane sc=new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
-			
-		sc.add(list);
-			
+			ScrollPane sc = new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
+
+			sc.add(list);
+
 			this.add(sc, BorderLayout.CENTER);
 
 			this.addWindowListener(new WindowListener() {
@@ -2349,10 +2400,10 @@ public class MapEdit extends JFrame {
 			this.add(okButton, BorderLayout.SOUTH);
 			list = new JList<String>();
 			list.setListData(typesOfNPCs);
-			ScrollPane sc=new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
-			
-		sc.add(list);
-			
+			ScrollPane sc = new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
+
+			sc.add(list);
+
 			this.add(sc, BorderLayout.CENTER);
 
 			this.addWindowListener(new WindowListener() {
@@ -2458,10 +2509,10 @@ public class MapEdit extends JFrame {
 			this.add(okButton, BorderLayout.SOUTH);
 			list = new JList<String>();
 			list.setListData(typesOfPortals);
-			ScrollPane sc=new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
-			
-		sc.add(list);
-			
+			ScrollPane sc = new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
+
+			sc.add(list);
+
 			this.add(sc, BorderLayout.CENTER);
 
 			this.addWindowListener(new WindowListener() {
@@ -2521,7 +2572,8 @@ public class MapEdit extends JFrame {
 		// JButton melee;
 		// JButton ranged;
 		// JButton special;
-		String[] typesOfEnemies = { "Standing", "Tracking", "Head Boss", "Path","Path Security" };
+		String[] typesOfEnemies = { "Standing", "Tracking", "Head Boss",
+				"Path", "Path Security", "Launch" };
 		EnemyChooser l = this;
 		int stage = 0;
 		JButton okButton;
@@ -2553,7 +2605,7 @@ public class MapEdit extends JFrame {
 							eImageString = "Head Boss";
 							eBaseHealth = 1000;
 							l.exit();
-						} else {
+						} else if (stage == 1) {
 							JFileChooser chooser = new JFileChooser(
 									MapEdit.class.getProtectionDomain()
 											.getCodeSource().getLocation()
@@ -2594,6 +2646,9 @@ public class MapEdit extends JFrame {
 									+ splits[splits.length - 1].replace("\\",
 											"/");
 							eBaseHealth = 100;
+							stage++;
+
+							eFlying = null;
 							l.exit();
 						}
 					}// end stage 0
@@ -2602,10 +2657,10 @@ public class MapEdit extends JFrame {
 			this.add(okButton, BorderLayout.SOUTH);
 			list = new JList<String>();
 			list.setListData(typesOfEnemies);
-			ScrollPane sc=new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
-			
-		sc.add(list);
-			
+			ScrollPane sc = new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
+
+			sc.add(list);
+
 			this.add(sc, BorderLayout.CENTER);
 
 			this.addWindowListener(new WindowListener() {
@@ -2977,6 +3032,28 @@ public class MapEdit extends JFrame {
 				}
 				reader.close();
 
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		
+		
+		try {
+			lines.clear();
+			File saveFile = new File("bin/projects/" + project + "/info.txt");
+			if (saveFile.exists()) {
+				BufferedReader reader = new BufferedReader(new FileReader(
+						saveFile));
+				String line;
+
+				while ((line = reader.readLine()) != null) {
+
+					lines.add(line);
+				}
+				reader.close();
+				
+				if(lines.size()>0&&name.split("/")[1].startsWith(lines.get(0)))
+					defaultMap=true;
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -3413,27 +3490,28 @@ public class MapEdit extends JFrame {
 	private int[][] createArray(String string) {
 		// TODO Auto-generated method stub
 
-		if(!string.equals("")){
-		String[] split = string.split("\'");
-		int splitLength = split.length / 2;
+		if (!string.equals("")) {
+			String[] split = string.split("\'");
+			int splitLength = split.length / 2;
 
-		int splitCounter = 0;
-		int p2;
-		int[][] toReturn = new int[splitLength][2];
-		for (int p1 = 0; p1 < splitLength; p1++) {
-			for (p2 = 0; p2 < toReturn[p1].length; p2++) {
-				toReturn[p1][p2] = Integer.parseInt(split[splitCounter]);
-				splitCounter++;
+			int splitCounter = 0;
+			int p2;
+			int[][] toReturn = new int[splitLength][2];
+			for (int p1 = 0; p1 < splitLength; p1++) {
+				for (p2 = 0; p2 < toReturn[p1].length; p2++) {
+					toReturn[p1][p2] = Integer.parseInt(split[splitCounter]);
+					splitCounter++;
+				}
 			}
-		}
 
-		// for (int k = 0; k < toReturn.length; k++) {
-		// for (int c = 0; c < toReturn[k].length; c++)
-		// //System.out.print(toReturn[k][c] + " ");
-		// //System.out.println();
-		// }
+			// for (int k = 0; k < toReturn.length; k++) {
+			// for (int c = 0; c < toReturn[k].length; c++)
+			// //System.out.print(toReturn[k][c] + " ");
+			// //System.out.println();
+			// }
 
-		return toReturn;}else 
+			return toReturn;
+		} else
 			return new int[0][0];
 	}
 
@@ -3487,7 +3565,11 @@ public class MapEdit extends JFrame {
 
 	public String extraEn(String type) {
 		switch (type) {
+		case "Launch":
+			return JOptionPane.showInputDialog("What delay time?");
+
 		case "Path Security":
+
 			String string = "images/enemies/unique/cop.png";
 			JFileChooser chooser = new JFileChooser(MapEdit.class
 					.getProtectionDomain().getCodeSource().getLocation()
@@ -3523,17 +3605,27 @@ public class MapEdit extends JFrame {
 			return null;
 		}
 	}
+
 	public String extraEn2(String type) {
 		switch (type) {
 		case "Path":
-			return JOptionPane.showOptionDialog(mapEdit, "Is this a backwards path enemy?", "Map Maker", JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Yes","No"}, "Yes")==0?",B":",L";
+			return JOptionPane.showOptionDialog(mapEdit,
+					"Is this a backwards path enemy?", "Map Maker",
+					JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE,
+					null, new String[] { "Yes", "No" }, "Yes") == 0 ? ",B"
+					: ",L";
 		case "Path Security":
-			return JOptionPane.showOptionDialog(mapEdit, "Is this a backwards path security enemy?", "Map Maker", JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Yes","No"}, "Yes")==0?",B":",L";
-		
+			return JOptionPane.showOptionDialog(mapEdit,
+					"Is this a backwards path security enemy?", "Map Maker",
+					JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE,
+					null, new String[] { "Yes", "No" }, "Yes") == 0 ? ",B"
+					: ",L";
+
 		default:
 			return null;
 		}
 	}
+
 	public String getNPC3(String answer) {
 		switch (nString) {
 		case "Ham-fisted-dude":
@@ -3639,24 +3731,26 @@ public class MapEdit extends JFrame {
 
 	public boolean hasPath(String s) {
 		switch (s) {
-		
+
 		case "Path Security":
 			return true;
-			case "Path":
+		case "Path":
 		default:
 			return false;
 		}
 	}
+
 	public boolean isPath(String s) {
 		switch (s) {
-		
+
 		case "Path Security":
-			case "Path":
-				return true;
+		case "Path":
+			return true;
 		default:
 			return false;
 		}
 	}
+
 	public String getObjectsVal() {
 		switch (oType) {
 
@@ -3695,11 +3789,13 @@ public class MapEdit extends JFrame {
 			return s;
 		}
 	}
+
 	String[] typesOfCollectibles = { "Cape" };
-	public String getCollectiblePath(String name){
-		switch(name){
+
+	public String getCollectiblePath(String name) {
+		switch (name) {
 		case "Invisible Cloak":
-		return "images/objects/inventoryObjects/notSoInvisibleCloak.png";
+			return "images/objects/inventoryObjects/notSoInvisibleCloak.png";
 		case "Banana":
 			return "images/objects/food/banana.png";
 		case "Donut":
@@ -3710,15 +3806,15 @@ public class MapEdit extends JFrame {
 			return "images/objects/InventoryObjects/gem.png";
 		case "Video Game":
 			return "images/objects/InventoryObjects/videoGame0.png";
-		case"Sinister Black Orb of Ultimate Agony and Suffering":
-			return"images/objects/InventoryObjects/blackOrb.png";
+		case "Sinister Black Orb of Ultimate Agony and Suffering":
+			return "images/objects/InventoryObjects/blackOrb.png";
 		case "Wizard Hat":
 			return "images/objects/InventoryObjects/wizardHat.png";
 		case "Cobalt Hat":
 			return "images/objects/InventoryObjects/cobaltHat.png";
 		case "Goggles":
 			return "images/objects/InventoryObjects/keplerGoggles.png";
-		case "Cape" :
+		case "Cape":
 			return "images/objects/InventoryObjects/cheesyCape.png";
 		default:
 			return "images/icon.png";

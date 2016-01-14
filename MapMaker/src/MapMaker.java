@@ -730,6 +730,7 @@ public class MapMaker extends JFrame {
 	}
 
 	public static Object loadObj(String file, String project) {
+		if(new File("bin/projects/" + project + "/" + file).exists())
 		try {// "bin/projects/"+project+"/tiles/Tiles.ser"
 			ObjectInputStream is = new ObjectInputStream(new FileInputStream(
 					"bin/projects/" + project + "/" + file));
@@ -742,7 +743,7 @@ public class MapMaker extends JFrame {
 			return new Object();
 
 		}
-
+		return new Object();
 	}
 
 	public static void saveStrings(String[] strings, String file, String project) {
