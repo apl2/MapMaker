@@ -2573,7 +2573,7 @@ int weatherT;
 		// JButton ranged;
 		// JButton special;
 		String[] typesOfEnemies = { "Standing", "Tracking", "Head Boss",
-				"Path", "Path Security", "Launch" };
+				"Path", "Path Security", "Launch" , "Pursuing Launch" ,"Charge","Walking","Slime","Explosive Spawning","Chain","Tail"};
 		EnemyChooser l = this;
 		int stage = 0;
 		JButton okButton;
@@ -3566,7 +3566,12 @@ int weatherT;
 	public String extraEn(String type) {
 		switch (type) {
 		case "Launch":
+		case "Pursuing Launch":
+		case "Explosive Spawning":
 			return JOptionPane.showInputDialog("What delay time?");
+		case "Chain":
+		case "Tail":
+			return JOptionPane.showInputDialog("How many Links?");
 
 		case "Path Security":
 
@@ -3608,6 +3613,8 @@ int weatherT;
 
 	public String extraEn2(String type) {
 		switch (type) {
+		case "Tail":
+			return JOptionPane.showInputDialog("Distance?");
 		case "Path":
 			return JOptionPane.showOptionDialog(mapEdit,
 					"Is this a backwards path enemy?", "Map Maker",
