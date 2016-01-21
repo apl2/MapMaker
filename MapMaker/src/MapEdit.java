@@ -2169,7 +2169,7 @@ public class MapEdit extends JFrame {
 				"Wizard Hat", "Cobalt Hat", "Goggles", "Cape" };
 		String[] typesOfObjects = { "Normal", "Collectible",
 				"SpecialCollectible", "RandSkinObject", "Spawn", "BossBlock",
-				"HookObject", "DropPoint", "Money" };
+				"HookObject", "DropPoint", "Money","ActivatedBossWallActivator","ActivatedBossWall","PushCube","BombCube"};
 		String[] typesOfCoins = { "1", "3", "5", "10", "20", "50", "100",
 				"-100" };
 		ObjectChooser l = this;
@@ -2208,6 +2208,11 @@ public class MapEdit extends JFrame {
 							oImageString = "images/objects/HookObject.png";
 						else if (oType.equals("DropPoint"))
 							oImageString = "images/objects/chestC.png";
+						else if (oType.equals("HookObject"))
+							oImageString = "images/objects/HookObject.png";
+						else if (oType.equals("DropPoint"))
+							oImageString = "images/objects/chestC.png";
+						
 						else if (oType.equals("Money")) {
 							list.setListData(typesOfCoins);
 							list.setSelectedIndex(-1);
@@ -2236,7 +2241,16 @@ public class MapEdit extends JFrame {
 									+ splits[splits.length - 1].replace("\\",
 											"/") + "/";
 							l.exit();
-						} else {
+						}
+						else if (oType.equals("ActivatedBossWall"))
+							oImageString = "images/portals/acBossWall.png";
+						else if (oType.equals("ActivatedBossWallActivator"))
+							oImageString = "images/dummy.png";
+						else if (oType.equals("PushCube"))
+							oImageString = "images/objects/pushCube.png";
+						else if (oType.equals("BombCube"))
+							oImageString = "images/objects/bombCube.png";
+						else {
 							JFileChooser chooser = new JFileChooser(
 									MapEdit.class.getProtectionDomain()
 											.getCodeSource().getLocation()
@@ -3565,19 +3579,19 @@ public class MapEdit extends JFrame {
 			return 0;
 		}
 	}
-
 	public boolean getObjectCollide() {
-		switch (selChar) {
-		case 'P':
-		case 'B':
-			return true;
-		case '0':
-		case '1':
-		case 'L':
-		case 'l':
-		case 'W':
-		case 'S':
-		default:
+		String[]options=new String[]{"Yes","No"};;
+		switch (oType) {
+		case"Normal":
+		case"Collectible":
+		case"RandSkinObject":
+			return JOptionPane.showOptionDialog(mapEdit, "Is this a wall object?", "Map Maker",JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, "No")==0;
+		case"Spawn":
+			return JOptionPane.showOptionDialog(mapEdit, "Is this also a checkpoint?", "Map Maker",JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, "No")==0;
+//		case"PushCube":
+//		case"BombCube":
+//			return JOptionPane.showOptionDialog(mapEdit, "Is this also a checkpoint?", "Map Maker",JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, "No")==0;
+			default:
 			return false;
 		}
 	}
@@ -3794,6 +3808,14 @@ public class MapEdit extends JFrame {
 			return "-5";
 		case "DropPoint":
 			return "-6";
+		case"ActivatedBossWallActivator":
+			return"-7";
+		case"ActivatedBossWall":
+			return"-8";
+		case "PushCube":
+			return "-9";
+		case "BombCube":
+			return "-10";
 		case "Money":
 			return null;
 		case "Normal":
