@@ -2380,7 +2380,7 @@ public class MapEdit extends JFrame {
 		// JButton ranged;
 		// JButton special;
 		String[] typesOfNPCs = { "kepler", "sirCobalt", "gatekeeper", "plato",
-				"reyzu", "macaroni", "shopkeep", "wizard" };
+				"reyzu", "macaroni", "shopkeep", "wizard","TutorialSirCobalt"};
 		NPCChooser l = this;
 		int stage = 0;
 		JButton okButton;
