@@ -104,7 +104,8 @@ public class MapEdit extends JFrame {
 	ArrayList<String> objects = new ArrayList<String>();
 	int oValue;
 	int weatherT;
-
+	String[]charNameList=new String[]{"shovel","club","diamond","heart","sirCobalt","wizard","macaroni"};
+	JList<String>charNames;
 	public MapEdit(String name, String project) {
 		// TODO Auto-generated constructor stub
 		this.name = name;
@@ -151,8 +152,71 @@ public class MapEdit extends JFrame {
 				} else if (key == KeyEvent.VK_O) {
 					if (JOptionPane.showConfirmDialog(mapEdit,
 							"Do you want to set this map as the default?") == JOptionPane.YES_OPTION) {
-						MapMaker.saveInfo(project, name.split("/")[0]);
+						charNames=new JList<String>(charNameList);
+						for(String s:charNameList)
+							System.out.println(s);
+						JFrame jf=new JFrame();
+						jf.setAlwaysOnTop(true);
+						//charNames.setSelectionMode(JList.);
+						jf.setSize(500, 300);
+						//jf.setLocation(WIDTH/2-250, HEIGHT/2-250);
+						jf.setLayout(new BorderLayout());
+						jf.setTitle("What characters will you start with? Ctrl click for multiple.");
+						jf.add(charNames,BorderLayout.CENTER);
+						
+						
+						jf.add(new JLabel("Exit this window when done."),BorderLayout.SOUTH);
+						jf.setVisible(true);
+						jf.addWindowListener(new WindowListener() {
+							
+							@Override
+							public void windowOpened(WindowEvent e) {
+								// TODO Auto-generated method stub
+								
+							}
+							
+							@Override
+							public void windowIconified(WindowEvent e) {
+								// TODO Auto-generated method stub
+								
+							}
+							
+							@Override
+							public void windowDeiconified(WindowEvent e) {
+								// TODO Auto-generated method stub
+								
+							}
+							
+							@Override
+							public void windowDeactivated(WindowEvent e) {
+								// TODO Auto-generated method stub
+								
+							}
+							
+							@Override
+							public void windowClosing(WindowEvent e) {
+								// TODO Auto-generated method stub
+								String[] names=new String[charNames.getSelectedIndices().length+1];
+						names[0]=name.split("/")[0];
+						for(int c=0;c<charNames.getSelectedIndices().length;c++)
+							names[c+1]=charNames.getSelectedValuesList().get(c);
+						MapMaker.saveInfo(project, names);
 						defaultMap = true;
+							}
+							
+							@Override
+							public void windowClosed(WindowEvent e) {
+								// TODO Auto-generated method stub
+								
+							}
+							
+							@Override
+							public void windowActivated(WindowEvent e) {
+								// TODO Auto-generated method stub
+								
+							}
+						});
+						
 					}
 				} else if (key == KeyEvent.VK_V) {
 					if (blocks == 1) {
@@ -1896,6 +1960,7 @@ public class MapEdit extends JFrame {
 								|| (px - x > -100 && px - x < this.getWidth()
 										&& py - y > -100 && py - y < this
 										.getHeight() + 200)) {
+							
 							Image pImg = new ImageIcon(getClass().getResource(
 									getImageChar(stuff.get(2)))).getImage();
 
@@ -2392,7 +2457,7 @@ public class MapEdit extends JFrame {
 			mapEdit.setFocusable(false);
 			this.setResizable(false);
 
-			this.setTitle("PortalChooser");
+			this.setTitle("NPCChooser");
 			this.setSize(400, 200);
 			this.setLocation(drawPan.getWidth() / 2 - this.getWidth() / 2,
 					drawPan.getHeight() / 2 - this.getHeight() / 2);
@@ -2405,7 +2470,6 @@ public class MapEdit extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
-
 					nString = list.getSelectedValue();
 					exit();
 
@@ -3694,6 +3758,8 @@ public class MapEdit extends JFrame {
 		case "kepler":
 			return "images/npcs/map/stationary/kepler.png";
 		case "sirCobalt":
+			return "images/npcs/map/stationary/sirCobalt.png";
+		case "TutorialSirCobalt":
 			return "images/npcs/map/stationary/sirCobalt.png";
 		case "wizard":
 			return "images/npcs/map/stationary/wizard.png";

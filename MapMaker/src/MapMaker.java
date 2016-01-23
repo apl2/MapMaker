@@ -817,14 +817,20 @@ public class MapMaker extends JFrame {
 
 		return fName;
 	}
-public static void	saveInfo(String project,String name){
+public static void	saveInfo(String project,String[] names){
 	try{
 	BufferedWriter writer=new BufferedWriter(new FileWriter("bin/projects/"+project+"/"+"info.txt"));
-	writer.write(name);
+for(int c=0;c<names.length;c++){
+	writer.write(names[c]);
+	if(c<names.length-1)
+	writer.newLine();}
 	writer.close();
 	writer.close();
 	BufferedWriter writer2=new BufferedWriter(new FileWriter("projects/"+project+"/"+"info.txt"));
-	writer2.write(name);
+	for(int c=0;c<names.length;c++){
+		writer2.write(names[c]);
+		if(c<names.length-1)
+		writer2.newLine();}
 	writer2.close();
 	writer2.close();
 }catch(Exception ex){
