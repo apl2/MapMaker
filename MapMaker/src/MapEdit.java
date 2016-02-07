@@ -750,13 +750,13 @@ public class MapEdit extends JFrame {
 								stuff.add(currentS);
 							}
 							Image enImg;
-							if (stuff.get(3).equals("normal")) {
+							if (stuff.get(4).equals("normal")) {
 								enImg = new ImageIcon(getClass().getResource(
 										"images/portals/normal/0.png"))
 										.getImage();
 							}
 
-							else if (stuff.get(3).equals("boss")) {
+							else if (stuff.get(4).equals("boss")) {
 								enImg = new ImageIcon(getClass().getResource(
 										"images/portals/boss/0.png"))
 										.getImage();
@@ -1913,10 +1913,10 @@ public class MapEdit extends JFrame {
 										.getHeight() + 200)) {
 							if (stuff.get(4).equals("normal")) {
 								pImg = new ImageIcon(getClass().getResource(
-										"images/portal1.png")).getImage();
+										"images/portals/normal/0.png")).getImage();
 							} else if (stuff.get(4).equals("boss")) {
 								pImg = new ImageIcon(getClass().getResource(
-										"images/portal2.png")).getImage();
+										"images/portals/boss/0.png")).getImage();
 							} else {
 								pImg = new ImageIcon(getClass().getResource(
 										"images/portals/" + stuff.get(4) + "/"
