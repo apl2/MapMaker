@@ -89,7 +89,7 @@ public class MapEdit extends JFrame {
 	String eImageString = "images/enemies/unique/blob.png";
 	String eFlying;
 	int eBaseHealth = 100;// enemies
-	String nString = "Kepler";// NPCs
+	String nString = "kepler";// NPCs
 	ArrayList<String> portals = new ArrayList<String>();
 	int selNum = 2;
 	int blocks = 0;
@@ -104,8 +104,9 @@ public class MapEdit extends JFrame {
 	ArrayList<String> objects = new ArrayList<String>();
 	int oValue;
 	int weatherT;
-	String[]charNameList=new String[]{"shovel","club","diamond","heart","sirCobalt","wizard","macaroni"};
-	JList<String>charNames;
+	String[] charNameList = new String[] { "shovel", "club", "diamond", "heart", "sirCobalt", "wizard", "macaroni" };
+	JList<String> charNames;
+
 	public MapEdit(String name, String project) {
 		// TODO Auto-generated constructor stub
 		this.name = name;
@@ -116,14 +117,12 @@ public class MapEdit extends JFrame {
 	public void run() {
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		this.setUndecorated(true);
-		JOptionPane.showMessageDialog(mapEdit, "Space/Click: place\n"
-				+ "Up/Down/Scroll Wheel: change selected block/enemy\n"
-				+ "E/Right Click: swap between enemies and blocks\n"
-				+ "Q/Middle Mouse Button: change enemy placement precision\n"
-				+ "R: delete enemy\n" + "Z: zoom out/back\n"
-				+ "X: remove (Opens Menu)\n" + "C: add (Opens Menu)\n"
-				+ "I: info\n" + "T: change texture pack\n"
-				+ "P: Build/close paths");
+		JOptionPane.showMessageDialog(mapEdit,
+				"Space/Click: place\n" + "Up/Down/Scroll Wheel: change selected block/enemy\n"
+						+ "E/Right Click: swap between enemies and blocks\n"
+						+ "Q/Middle Mouse Button: change enemy placement precision\n" + "R: delete enemy\n"
+						+ "Z: zoom out/back\n" + "X: remove (Opens Menu)\n" + "C: add (Opens Menu)\n" + "I: info\n"
+						+ "T: change texture pack\n" + "P: Build/close paths");
 		loadS();
 
 		// TODO Auto-generated method stub
@@ -152,71 +151,70 @@ public class MapEdit extends JFrame {
 				} else if (key == KeyEvent.VK_O) {
 					if (JOptionPane.showConfirmDialog(mapEdit,
 							"Do you want to set this map as the default?") == JOptionPane.YES_OPTION) {
-						charNames=new JList<String>(charNameList);
-						for(String s:charNameList)
+						charNames = new JList<String>(charNameList);
+						for (String s : charNameList)
 							System.out.println(s);
-						JFrame jf=new JFrame();
+						JFrame jf = new JFrame();
 						jf.setAlwaysOnTop(true);
-						//charNames.setSelectionMode(JList.);
+						// charNames.setSelectionMode(JList.);
 						jf.setSize(500, 300);
-						//jf.setLocation(WIDTH/2-250, HEIGHT/2-250);
+						// jf.setLocation(WIDTH/2-250, HEIGHT/2-250);
 						jf.setLayout(new BorderLayout());
 						jf.setTitle("What characters will you start with? Ctrl click for multiple.");
-						jf.add(charNames,BorderLayout.CENTER);
-						
-						
-						jf.add(new JLabel("Exit this window when done."),BorderLayout.SOUTH);
+						jf.add(charNames, BorderLayout.CENTER);
+
+						jf.add(new JLabel("Exit this window when done."), BorderLayout.SOUTH);
 						jf.setVisible(true);
 						jf.addWindowListener(new WindowListener() {
-							
+
 							@Override
 							public void windowOpened(WindowEvent e) {
 								// TODO Auto-generated method stub
-								
+
 							}
-							
+
 							@Override
 							public void windowIconified(WindowEvent e) {
 								// TODO Auto-generated method stub
-								
+
 							}
-							
+
 							@Override
 							public void windowDeiconified(WindowEvent e) {
 								// TODO Auto-generated method stub
-								
+
 							}
-							
+
 							@Override
 							public void windowDeactivated(WindowEvent e) {
 								// TODO Auto-generated method stub
-								
+
 							}
-							
+
 							@Override
 							public void windowClosing(WindowEvent e) {
 								// TODO Auto-generated method stub
-								String[] names=new String[charNames.getSelectedIndices().length+1];
-						names[0]=name.split("/")[0];
-						for(int c=0;c<charNames.getSelectedIndices().length;c++)
-							names[c+1]=charNames.getSelectedValuesList().get(c);
-						MapMaker.saveInfo(project, names);
-						defaultMap = true;
+								String[] names = new String[charNames.getSelectedIndices().length + 1];
+								names[0] = name.split("/")[0];
+								for (int c = 0; c < charNames.getSelectedIndices().length; c++)
+									names[c + 1] = charNames.getSelectedValuesList().get(c);
+								MapMaker.saveInfo(project, names);
+								defaultMap = true;
 							}
-							
+
 							@Override
 							public void windowClosed(WindowEvent e) {
 								// TODO Auto-generated method stub
-								
+
 							}
-							
+
 							@Override
 							public void windowActivated(WindowEvent e) {
 								// TODO Auto-generated method stub
-								
+
 							}
 						});
-						
+
 					}
 				} else if (key == KeyEvent.VK_V) {
 					if (blocks == 1) {
@@ -229,72 +227,44 @@ public class MapEdit extends JFrame {
 						new NPCChooser();
 					}
 				} else if (key == KeyEvent.VK_I) {
-					JOptionPane
-							.showMessageDialog(
-									mapEdit,
-									"Space/Click: place\n"
-											+ "Up/Down/Scroll Wheel: change selected block/enemy\n"
-											+ "E/Right Click: swap between enemies and blocks\n"
-											+ "Q/Middle Mouse Button: change enemy placement precision\n"
-											+ "R: delete enemy\n"
-											+ "Z: zoom out/back\n"
-											+ "X: remove (Opens Menu)\n"
-											+ "C: add (Opens Menu)\n"
-											+ "I: info\n"
-											+ "T: change texture pack\n"
-											+ "P: Build/close paths");
+					JOptionPane.showMessageDialog(mapEdit,
+							"Space/Click: place\n" + "Up/Down/Scroll Wheel: change selected block/enemy\n"
+									+ "E/Right Click: swap between enemies and blocks\n"
+									+ "Q/Middle Mouse Button: change enemy placement precision\n" + "R: delete enemy\n"
+									+ "Z: zoom out/back\n" + "X: remove (Opens Menu)\n" + "C: add (Opens Menu)\n"
+									+ "I: info\n" + "T: change texture pack\n" + "P: Build/close paths");
 				} else if (key == KeyEvent.VK_T) {
 
-					String[] options = { "cancel", "Grassy", "Desert", "Snowy",
-							"Island", "Volcano", "Haunted", "Lab" };
-					int sel = JOptionPane.showOptionDialog(mapEdit,
-							"Which texture pack do you want?", "Texture Pack",
-							JOptionPane.CANCEL_OPTION,
-							JOptionPane.DEFAULT_OPTION, null, options, 0);
+					String[] options = { "cancel", "Grassy", "Desert", "Snowy", "Island", "Volcano", "Haunted", "Lab" };
+					int sel = JOptionPane.showOptionDialog(mapEdit, "Which texture pack do you want?", "Texture Pack",
+							JOptionPane.CANCEL_OPTION, JOptionPane.DEFAULT_OPTION, null, options, 0);
 					if (sel > 0) {
-						String[] options2 = { "cancel", "none", "rain",
-								"obscure", "fog" };
-						int sel2 = JOptionPane.showOptionDialog(mapEdit,
-								"What weather do you want?", "Weather",
-								JOptionPane.CANCEL_OPTION,
-								JOptionPane.DEFAULT_OPTION, null, options2, 0);
+						String[] options2 = { "cancel", "none", "rain", "obscure", "fog" };
+						int sel2 = JOptionPane.showOptionDialog(mapEdit, "What weather do you want?", "Weather",
+								JOptionPane.CANCEL_OPTION, JOptionPane.DEFAULT_OPTION, null, options2, 0);
 						if (sel2 > 0) {
 							try {
 								weatherT = 0;
 								strings[0] = options[sel]
-										+ ","
-										+ options2[sel2]
-										+ ","
-										+ Integer
-												.parseInt(JOptionPane
-														.showInputDialog(
-																mapEdit,
-																"What level do you want the Map to be?",
-																"1")) + ","
-										+ theSpawn;
+										+ "," + options2[sel2] + "," + Integer.parseInt(JOptionPane
+												.showInputDialog(mapEdit, "What level do you want the Map to be?", "1"))
+										+ "," + theSpawn;
 							} catch (Exception ex) {
-								JOptionPane.showMessageDialog(mapEdit,
-										"Level must be a number.");
+								JOptionPane.showMessageDialog(mapEdit, "Level must be a number.");
 							}
 						}
 					}
 				} else if (key == KeyEvent.VK_Y) {
 					theSpawn = Integer
-							.parseInt(JOptionPane
-									.showInputDialog("What spawn number should the default spawn be?"));
-					strings[0] = strings[0].substring(strings[0]
-							.lastIndexOf(",")) + theSpawn;
+							.parseInt(JOptionPane.showInputDialog("What spawn number should the default spawn be?"));
+					strings[0] = strings[0].substring(strings[0].lastIndexOf(",")) + theSpawn;
 				} else if (key == KeyEvent.VK_C && zoom) {
 
-					String[] options = { "Cancel", "Add row at the end",
-							"Add column at the end" };
+					String[] options = { "Cancel", "Add row at the end", "Add column at the end" };
 					choosing = true;
-					int sel = JOptionPane
-							.showOptionDialog(
-									mapEdit,
-									"What and where would you like to add?\n If you want to add things in the middle, get out of zooming out.",
-									"Add", JOptionPane.DEFAULT_OPTION,
-									JOptionPane.PLAIN_MESSAGE, null, options, 0);
+					int sel = JOptionPane.showOptionDialog(mapEdit,
+							"What and where would you like to add?\n If you want to add things in the middle, get out of zooming out.",
+							"Add", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, 0);
 					choosing = false;
 					switch (sel) {
 
@@ -309,17 +279,14 @@ public class MapEdit extends JFrame {
 					}
 
 				} else if (key == KeyEvent.VK_X && zoom) {
-					String[] options = { "Cancel", "Remove row at the end",
-							"Remove column at the end" };
+					String[] options = { "Cancel", "Remove row at the end", "Remove column at the end" };
 					choosing = true;
 					JFrame f = new JFrame();
 					f.setLocation(mapEdit.getX() + mapEdit.getWidth() / 2, 0);
 					// f.setSize(0,0);
 					f.setVisible(true);
-					int sel = JOptionPane.showOptionDialog(f,
-							"What and where would you like to add?", "Add",
-							JOptionPane.DEFAULT_OPTION,
-							JOptionPane.PLAIN_MESSAGE, null, options, 0);
+					int sel = JOptionPane.showOptionDialog(f, "What and where would you like to add?", "Add",
+							JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, 0);
 					f.dispose();
 					choosing = false;
 					switch (sel) {
@@ -347,19 +314,15 @@ public class MapEdit extends JFrame {
 					} else if (key == KeyEvent.VK_D) {
 						xd = 25;
 					} else if (key == KeyEvent.VK_X) {
-						String[] options = { "Cancel", "Remove row here",
-								"Remove row at the end", "Remove column here",
+						String[] options = { "Cancel", "Remove row here", "Remove row at the end", "Remove column here",
 								"Remove column at the end" };
 						choosing = true;
 						JFrame f = new JFrame();
-						f.setLocation(mapEdit.getX() + mapEdit.getWidth() / 2,
-								0);
+						f.setLocation(mapEdit.getX() + mapEdit.getWidth() / 2, 0);
 						// f.setSize(0,0);
 						f.setVisible(true);
-						int sel = JOptionPane.showOptionDialog(f,
-								"What and where would you like to add?", "Add",
-								JOptionPane.DEFAULT_OPTION,
-								JOptionPane.PLAIN_MESSAGE, null, options, 0);
+						int sel = JOptionPane.showOptionDialog(f, "What and where would you like to add?", "Add",
+								JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, 0);
 						f.dispose();
 						choosing = false;
 						switch (sel) {
@@ -379,19 +342,15 @@ public class MapEdit extends JFrame {
 						}
 
 					} else if (key == KeyEvent.VK_C) {
-						String[] options = { "Cancel", "Add row here",
-								"Add row at the end", "Add column here",
+						String[] options = { "Cancel", "Add row here", "Add row at the end", "Add column here",
 								"Add column at the end" };
 						choosing = true;
 						JFrame f = new JFrame();
-						f.setLocation(mapEdit.getX() + mapEdit.getWidth() / 2,
-								0);
+						f.setLocation(mapEdit.getX() + mapEdit.getWidth() / 2, 0);
 						// f.setSize(0,0);
 						f.setVisible(true);
-						int sel = JOptionPane.showOptionDialog(f,
-								"What and where would you like to add?", "Add",
-								JOptionPane.DEFAULT_OPTION,
-								JOptionPane.PLAIN_MESSAGE, null, options, 0);
+						int sel = JOptionPane.showOptionDialog(f, "What and where would you like to add?", "Add",
+								JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, 0);
 						f.dispose();
 						choosing = false;
 						switch (sel) {
@@ -425,9 +384,7 @@ public class MapEdit extends JFrame {
 									&& (int) ((x + m.getX() + 10) / 100) > 0
 									&& (int) ((x + m.getX() + 10) / 100) + 1 < maxWidth) {
 								String s = strings[(int) ((y + m.getY() - 10) / 100) + 2];
-								s = s.substring(0,
-										(int) ((x + m.getX() + 10) / 100))
-										+ selChar
+								s = s.substring(0, (int) ((x + m.getX() + 10) / 100)) + selChar
 										+ s.substring((int) ((x + m.getX() + 10) / 100) + 1);
 								if ((int) ((y - 10 + m.getY()) / 100) + 2 > 0)
 									strings[(int) ((y - 10 + m.getY()) / 100) + 2] = s;
@@ -448,12 +405,9 @@ public class MapEdit extends JFrame {
 
 							String extraEn = extraEn(eType);
 							String extraEn2 = extraEn2(eType);
-							enemies.add((eType + "," + theX + "," + theY + ","
-									+ eImageString + "," + eFlying + ","
-									+ eBaseHealth
-									+ (extraEn != null ? "," + extraEn : "") + (extraEn2 != null ? ","
-									+ extraEn2
-									: "")));
+							enemies.add((eType + "," + theX + "," + theY + "," + eImageString + "," + eFlying + ","
+									+ eBaseHealth + (extraEn != null ? "," + extraEn : "")
+									+ (extraEn2 != null ? "," + extraEn2 : "")));
 						} else if (blocks == 2) {
 							Point m = MouseInfo.getPointerInfo().getLocation();
 							int sen = 100;
@@ -463,39 +417,23 @@ public class MapEdit extends JFrame {
 							int theX = ((int) ((m.x + x) / sen) * sen);
 							int theY = ((int) ((m.y + y) / sen) * sen) + 200;
 
-							String returnVal = JOptionPane.showInputDialog(
-									mapEdit, "What is the name of the map");
+							String returnVal = JOptionPane.showInputDialog(mapEdit, "What is the name of the map");
 							if (returnVal != null) {
-								String returnVal2 = JOptionPane
-										.showInputDialog(mapEdit,
-												"What spawn number?");
+								String returnVal2 = JOptionPane.showInputDialog(mapEdit, "What spawn number?");
 								int spawnNum = -1;
 								try {
 									spawnNum = Integer.parseInt(returnVal2);
 									if (spawnNum < -1) {
-										JOptionPane
-												.showMessageDialog(
-														mapEdit,
-														"The spawnNum needs to 0 or higher.\nOr use -1 as the default spawn number.\nSetting spawn number to default spawn number.");
+										JOptionPane.showMessageDialog(mapEdit,
+												"The spawnNum needs to 0 or higher.\nOr use -1 as the default spawn number.\nSetting spawn number to default spawn number.");
 										spawnNum = -1;
 									}
 								} catch (Exception ex) {
 									spawnNum = -1;
 								}
 
-								portals.add(theX
-										+ ","
-										+ theY
-										+ ","
-										+ returnVal
-										+ ","
-										+ 0
-										+ ","
-										+ pType
-										+ ","
-										+ spawnNum
-										+ (!pType2.equals("portal") ? ","
-												+ pType2 : "")// Run.removeExtension(chooser.getSelectedFile().toString()+","+Integer.parseInt(JOptionPane.showInputDialog(mapEdit,
+								portals.add(theX + "," + theY + "," + returnVal + "," + 0 + "," + pType + "," + spawnNum
+										+ (!pType2.equals("portal") ? "," + pType2 : "")// Run.removeExtension(chooser.getSelectedFile().toString()+","+Integer.parseInt(JOptionPane.showInputDialog(mapEdit,
 								// "How many collectibles"))
 								);
 							}
@@ -505,10 +443,8 @@ public class MapEdit extends JFrame {
 							if (!enPre) {
 								sen = 50;
 							}
-							int theX = ((int) ((m.x + x) / sen) * sen)
-									+ objectsAddX();
-							int theY = ((int) ((m.y + y) / sen) * sen) + 200
-									+ objectsAddY();
+							int theX = ((int) ((m.x + x) / sen) * sen) + objectsAddX();
+							int theY = ((int) ((m.y + y) / sen) * sen) + 200 + objectsAddY();
 							String s = getObjectsVal();
 							int amount = 0;
 							if (s == null) {
@@ -518,17 +454,8 @@ public class MapEdit extends JFrame {
 
 							}
 
-							objects.add(theX
-									+ ","
-									+ theY
-									+ ","
-									+ oImageString
-									+ ","
-									+ getObjectCollide()
-									+ ","
-									+ amount
-									+ (!oCollectible.equals("normal") ? ","
-											+ oCollectible : ""));
+							objects.add(theX + "," + theY + "," + oImageString + "," + getObjectCollide() + "," + amount
+									+ (!oCollectible.equals("normal") ? "," + oCollectible : ""));
 						} else if (blocks == 4) {
 							Point m = MouseInfo.getPointerInfo().getLocation();
 							int sen = 100;
@@ -536,19 +463,15 @@ public class MapEdit extends JFrame {
 								sen = 50;
 							}
 							int theX = ((int) ((m.x + x) / sen) * sen) + npcX();
-							int theY = ((int) ((m.y + y) / sen) * sen) + 200
-									+ npcY();
+							int theY = ((int) ((m.y + y) / sen) * sen) + 200 + npcY();
 							String answer = null;
 							if (nString.equals("sirCobalt"))
-								answer = JOptionPane
-										.showInputDialog("Option to join player? y/n");
+								answer = JOptionPane.showInputDialog("Option to join player? y/n");
 							else if (nString.equals("gatekeeper"))
-								answer = JOptionPane
-										.showInputDialog("How many collectibles");
+								answer = JOptionPane.showInputDialog("How many collectibles");
 
 							String s = getNPC3(answer);
-							npcs.add(theX + "," + theY + "," + nString
-									+ (s != null ? "," + s : ""));
+							npcs.add(theX + "," + theY + "," + nString + (s != null ? "," + s : ""));
 						} else if (blocks == MAXBLOCKS + 1) {
 							Point m = MouseInfo.getPointerInfo().getLocation();
 
@@ -602,16 +525,11 @@ public class MapEdit extends JFrame {
 									} else {
 										theX -= newX;
 										theY -= newY;
-										if ((theX < 2 && theX > -2)
-												&& (theY < 2 && theY > -2)) {
+										if ((theX < 2 && theX > -2) && (theY < 2 && theY > -2)) {
 											if (stuff.size() <= stuffG)
 												stuff.add("");
-											stuff.set(
-													stuffG,
-													(!stuff.get(stuffG).equals(
-															"") ? stuff
-															.get(stuffG) + "'"
-															: "")
+											stuff.set(stuffG,
+													(!stuff.get(stuffG).equals("") ? stuff.get(stuffG) + "'" : "")
 															+ theX + "'" + theY);
 											String s = "";
 											for (int c = 0; c < stuff.size(); c++) {
@@ -677,26 +595,21 @@ public class MapEdit extends JFrame {
 
 							if (ch.equals("Head Boss")) {
 								sB = "images/enemies/bosses/Head.png";
-								enImg = new ImageIcon(getClass()
-										.getResource(sB)).getImage();
+								enImg = new ImageIcon(getClass().getResource(sB)).getImage();
 							} else if (ch.equals("Lizard Man")) {
 								sB = "images/enemies/bosses/LizardMan/front/w.png";
-								enImg = new ImageIcon(getClass()
-										.getResource(sB)).getImage();
+								enImg = new ImageIcon(getClass().getResource(sB)).getImage();
 							} else if (ch.equals("Pod")) {
 								sB = "images/podAll.png";
-								enImg = new ImageIcon(getClass()
-										.getResource(sB)).getImage();
+								enImg = new ImageIcon(getClass().getResource(sB)).getImage();
 							}
 
 							else {
-								enImg = new ImageIcon(getClass().getResource(
-										stuff.get(3))).getImage();
+								enImg = new ImageIcon(getClass().getResource(stuff.get(3))).getImage();
 							}
-							if (new Rectangle(Integer.parseInt(stuff.get(1)),
-									Integer.parseInt(stuff.get(2)),
+							if (new Rectangle(Integer.parseInt(stuff.get(1)), Integer.parseInt(stuff.get(2)),
 									enImg.getWidth(null), enImg.getHeight(null))
-									.contains(new Point(x + m.x, y + m.y + 200))) {
+											.contains(new Point(x + m.x, y + m.y + 200))) {
 								enemies.remove(c);
 								c--;
 							}
@@ -721,12 +634,10 @@ public class MapEdit extends JFrame {
 								stuff.add(currentS);
 							System.out.println(stuff.get(2));
 							Image enImg;
-							enImg = new ImageIcon(getClass().getResource(
-									getImageChar(stuff.get(2)))).getImage();
-							if (new Rectangle(Integer.parseInt(stuff.get(0)),
-									Integer.parseInt(stuff.get(1)),
+							enImg = new ImageIcon(getClass().getResource(getImageChar(stuff.get(2)))).getImage();
+							if (new Rectangle(Integer.parseInt(stuff.get(0)), Integer.parseInt(stuff.get(1)),
 									enImg.getWidth(null), enImg.getHeight(null))
-									.contains(new Point(x + m.x, y + m.y + 200))) {
+											.contains(new Point(x + m.x, y + m.y + 200))) {
 								npcs.remove(c);
 								c--;
 							}
@@ -751,25 +662,19 @@ public class MapEdit extends JFrame {
 							}
 							Image enImg;
 							if (stuff.get(4).equals("normal")) {
-								enImg = new ImageIcon(getClass().getResource(
-										"images/portals/normal/0.png"))
-										.getImage();
+								enImg = new ImageIcon(getClass().getResource("images/portals/normal/0.png")).getImage();
 							}
 
 							else if (stuff.get(4).equals("boss")) {
-								enImg = new ImageIcon(getClass().getResource(
-										"images/portals/boss/0.png"))
-										.getImage();
+								enImg = new ImageIcon(getClass().getResource("images/portals/boss/0.png")).getImage();
 							} else {
-								enImg = new ImageIcon(getClass().getResource(
-										"images/portals/" + stuff.get(4) + "/"
-												+ stuff.get(6) + "/c.png"))
-										.getImage();
+								enImg = new ImageIcon(getClass()
+										.getResource("images/portals/" + stuff.get(4) + "/" + stuff.get(6) + "/c.png"))
+												.getImage();
 							}
-							if (new Rectangle(Integer.parseInt(stuff.get(0)),
-									Integer.parseInt(stuff.get(1)),
+							if (new Rectangle(Integer.parseInt(stuff.get(0)), Integer.parseInt(stuff.get(1)),
 									enImg.getWidth(null), enImg.getHeight(null))
-									.contains(new Point(x + m.x, y + m.y + 200))) {
+											.contains(new Point(x + m.x, y + m.y + 200))) {
 								portals.remove(c);
 								c--;
 							}
@@ -792,11 +697,9 @@ public class MapEdit extends JFrame {
 							stuff.add(currentS);
 							Image enImg;
 							if (stuff.size() > 4 && stuff.get(4).equals("-2")) {
-								enImg = new ImageIcon(getClass().getResource(
-										getAllWanted(stuff.get(2)))).getImage();
+								enImg = new ImageIcon(getClass().getResource(getAllWanted(stuff.get(2)))).getImage();
 							} else {
-								enImg = new ImageIcon(getClass().getResource(
-										stuff.get(2))).getImage();
+								enImg = new ImageIcon(getClass().getResource(stuff.get(2))).getImage();
 							}
 							// if(stuff.size()<4){
 							// System.out.println("Thingy");
@@ -805,10 +708,9 @@ public class MapEdit extends JFrame {
 							// enImg = new ImageIcon(getClass().getResource(
 							// stuff.get(2))).getImage();
 
-							if (new Rectangle(Integer.parseInt(stuff.get(0)),
-									Integer.parseInt(stuff.get(1)),
+							if (new Rectangle(Integer.parseInt(stuff.get(0)), Integer.parseInt(stuff.get(1)),
 									enImg.getWidth(null), enImg.getHeight(null))
-									.contains(new Point(x + m.x, y + m.y + 200))) {
+											.contains(new Point(x + m.x, y + m.y + 200))) {
 								objects.remove(c);
 								c--;
 							}
@@ -833,15 +735,10 @@ public class MapEdit extends JFrame {
 										currentS += enemies.get(c).charAt(c2);
 									}
 								}
-								Image enImg = new ImageIcon(getClass()
-										.getResource(stuff.get(3))).getImage();
-								if (new Rectangle(
-										Integer.parseInt(stuff.get(1)),
-										Integer.parseInt(stuff.get(2)),
-										enImg.getWidth(null),
-										enImg.getHeight(null))
-										.contains(new Point(x + m.x, y + m.y
-												+ 200))
+								Image enImg = new ImageIcon(getClass().getResource(stuff.get(3))).getImage();
+								if (new Rectangle(Integer.parseInt(stuff.get(1)), Integer.parseInt(stuff.get(2)),
+										enImg.getWidth(null), enImg.getHeight(null)).contains(
+												new Point(x + m.x, y + m.y + 200))
 										&& (isPath(stuff.get(0)))) {
 									selEn = c;
 									blocks = MAXBLOCKS + 1;
@@ -965,8 +862,7 @@ public class MapEdit extends JFrame {
 					mWidth *= 100;
 					int mHeight = (strings.length - 1) * 100;
 					int scale = Math.max(mWidth, mHeight);
-					g2d.scale((double) this.getWidth() / (double) scale,
-							(double) this.getHeight() / (double) scale);
+					g2d.scale((double) this.getWidth() / (double) scale, (double) this.getHeight() / (double) scale);
 				}
 
 				for (int cA = 1; cA < strings.length; cA++) {
@@ -974,9 +870,7 @@ public class MapEdit extends JFrame {
 
 						int nx = c * 100 - x;
 						int ny = (cA - 1) * 100 - y - 100;
-						if (zoom
-								|| (nx > -100 && nx < this.getWidth()
-										&& ny > -100 && ny < this.getHeight())) {
+						if (zoom || (nx > -100 && nx < this.getWidth() && ny > -100 && ny < this.getHeight())) {
 
 							char theChar = strings[cA].charAt(c);
 							if (theChar == 'I') {
@@ -990,42 +884,31 @@ public class MapEdit extends JFrame {
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(LIGHT_OFF_TAN);
-										g2d.fill(new Rectangle(nx, ny + 30, 60,
-												4));
-										g2d.fill(new Rectangle(nx + 60,
-												ny + 26, 40, 4));
-										g2d.fill(new Rectangle(nx, ny + 80, 30,
-												4));
-										g2d.fill(new Rectangle(nx + 30,
-												ny + 76, 70, 4));
+										g2d.fill(new Rectangle(nx, ny + 30, 60, 4));
+										g2d.fill(new Rectangle(nx + 60, ny + 26, 40, 4));
+										g2d.fill(new Rectangle(nx, ny + 80, 30, 4));
+										g2d.fill(new Rectangle(nx + 30, ny + 76, 70, 4));
 										g2d.draw(new Rectangle(nx, ny, 100, 100));
 										g2d.setFont(MOUSE);
 										g2d.setColor(Color.BLACK);
-										g2d.drawString("spawn", nx + 30,
-												ny + 40);
+										g2d.drawString("spawn", nx + 30, ny + 40);
 										break;
 									case '1':
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(LIGHT_OFF_TAN);
-										g2d.fill(new Rectangle(nx, ny + 30, 60,
-												4));
-										g2d.fill(new Rectangle(nx + 60,
-												ny + 26, 40, 4));
-										g2d.fill(new Rectangle(nx, ny + 80, 30,
-												4));
-										g2d.fill(new Rectangle(nx + 30,
-												ny + 76, 70, 4));
+										g2d.fill(new Rectangle(nx, ny + 30, 60, 4));
+										g2d.fill(new Rectangle(nx + 60, ny + 26, 40, 4));
+										g2d.fill(new Rectangle(nx, ny + 80, 30, 4));
+										g2d.fill(new Rectangle(nx + 30, ny + 76, 70, 4));
 										g2d.draw(new Rectangle(nx, ny, 100, 100));
 										break;
 									case 'L':
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(LIGHT_BLUE);
-										g2d.fill(new Rectangle(nx + 60,
-												ny + 67, 40, 3));
-										g2d.fill(new Rectangle(nx, ny + 70, 60,
-												3));
+										g2d.fill(new Rectangle(nx + 60, ny + 67, 40, 3));
+										g2d.fill(new Rectangle(nx, ny + 70, 60, 3));
 										break;
 									case 'W':
 										g2d.setColor(getColor(theChar));
@@ -1040,10 +923,8 @@ public class MapEdit extends JFrame {
 										g2d.setColor(LIGHT_OFF_TAN);
 										g2d.drawLine(nx, ny, nx + 100, ny + 100);
 										g2d.drawLine(nx + 100, ny, nx, ny + 100);
-										g2d.drawLine(nx, ny + 100 / 2,
-												nx + 100, ny + 100 / 2);
-										g2d.drawLine(nx + 100 / 2, ny,
-												nx + 100 / 2, ny + 100);
+										g2d.drawLine(nx, ny + 100 / 2, nx + 100, ny + 100 / 2);
+										g2d.drawLine(nx + 100 / 2, ny, nx + 100 / 2, ny + 100);
 										break;
 
 									case '>':
@@ -1068,43 +949,34 @@ public class MapEdit extends JFrame {
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(Color.LIGHT_GRAY);
-										g2d.fill(new Rectangle(nx + 60,
-												ny + 40, 4, 4));
-										g2d.fill(new Rectangle(nx + 30,
-												ny + 80, 3, 3));
+										g2d.fill(new Rectangle(nx + 60, ny + 40, 4, 4));
+										g2d.fill(new Rectangle(nx + 30, ny + 80, 3, 3));
 										g2d.draw(new Rectangle(nx, ny, 100, 100));
 										g2d.setFont(MOUSE);
 										g2d.setColor(Color.BLACK);
-										g2d.drawString("spawn", nx + 30,
-												ny + 40);
+										g2d.drawString("spawn", nx + 30, ny + 40);
 										break;
 									case '1':
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(Color.LIGHT_GRAY);
-										g2d.fill(new Rectangle(nx + 60,
-												ny + 40, 4, 4));
-										g2d.fill(new Rectangle(nx + 30,
-												ny + 80, 3, 3));
+										g2d.fill(new Rectangle(nx + 60, ny + 40, 4, 4));
+										g2d.fill(new Rectangle(nx + 30, ny + 80, 3, 3));
 										g2d.draw(new Rectangle(nx, ny, 100, 100));
 										break;
 									case 'L':
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(LIGHT_BLUE);
-										g2d.fill(new Rectangle(nx + 70,
-												ny + 65, 10, 10));
-										g2d.fill(new Rectangle(nx + 30,
-												ny + 30, 15, 15));
+										g2d.fill(new Rectangle(nx + 70, ny + 65, 10, 10));
+										g2d.fill(new Rectangle(nx + 30, ny + 30, 15, 15));
 										break;
 									case 'W':
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(BROWN);
-										g2d.fill(new Rectangle(nx, ny + 20,
-												100, 10));
-										g2d.fill(new Rectangle(nx, ny + 70,
-												100, 10));
+										g2d.fill(new Rectangle(nx, ny + 20, 100, 10));
+										g2d.fill(new Rectangle(nx, ny + 70, 100, 10));
 										g2d.setColor(Color.BLACK);
 										g2d.draw(new Rectangle(nx, ny, 100, 100));
 										break;
@@ -1113,10 +985,8 @@ public class MapEdit extends JFrame {
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(LIGHT_BROWN);
-										g2d.fill(new Rectangle(nx, ny + 20,
-												100, 10));
-										g2d.fill(new Rectangle(nx, ny + 70,
-												100, 10));
+										g2d.fill(new Rectangle(nx, ny + 20, 100, 10));
+										g2d.fill(new Rectangle(nx, ny + 70, 100, 10));
 										break;
 
 									case '>':
@@ -1132,12 +1002,9 @@ public class MapEdit extends JFrame {
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(Color.WHITE);
-										g2d.fill(new Rectangle(nx + 70,
-												ny + 30, 5, 5));
-										g2d.fill(new Rectangle(nx + 40,
-												ny + 70, 5, 5));
-										g2d.fill(new Rectangle(nx + 10,
-												ny + 15, 3, 3));
+										g2d.fill(new Rectangle(nx + 70, ny + 30, 5, 5));
+										g2d.fill(new Rectangle(nx + 40, ny + 70, 5, 5));
+										g2d.fill(new Rectangle(nx + 10, ny + 15, 3, 3));
 										g2d.setColor(Color.LIGHT_GRAY);
 										g2d.draw(new Rectangle(nx, ny, 100, 100));
 										break;
@@ -1153,65 +1020,46 @@ public class MapEdit extends JFrame {
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(OFF_TAN);
-										g2d.fill(new Rectangle(nx + 70,
-												ny + 30, 5, 5));
-										g2d.fill(new Rectangle(nx + 40,
-												ny + 70, 5, 5));
-										g2d.fill(new Rectangle(nx + 10,
-												ny + 15, 3, 3));
+										g2d.fill(new Rectangle(nx + 70, ny + 30, 5, 5));
+										g2d.fill(new Rectangle(nx + 40, ny + 70, 5, 5));
+										g2d.fill(new Rectangle(nx + 10, ny + 15, 3, 3));
 										g2d.setColor(LIGHT_OFF_GREEN);
-										g2d.fill(new Rectangle(nx + 30,
-												ny + 15, 4, 10));
-										g2d.fill(new Rectangle(nx + 80,
-												ny + 20, 4, 10));
-										g2d.fill(new Rectangle(nx + 20,
-												ny + 80, 4, 10));
+										g2d.fill(new Rectangle(nx + 30, ny + 15, 4, 10));
+										g2d.fill(new Rectangle(nx + 80, ny + 20, 4, 10));
+										g2d.fill(new Rectangle(nx + 20, ny + 80, 4, 10));
 										g2d.draw(new Rectangle(nx, ny, 100, 100));
 										g2d.setFont(MOUSE);
 										g2d.setColor(Color.BLACK);
-										g2d.drawString("spawn", nx + 30,
-												ny + 40);
+										g2d.drawString("spawn", nx + 30, ny + 40);
 										break;
 									case '1':
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(OFF_TAN);
-										g2d.fill(new Rectangle(nx + 70,
-												ny + 30, 5, 5));
-										g2d.fill(new Rectangle(nx + 40,
-												ny + 70, 5, 5));
-										g2d.fill(new Rectangle(nx + 10,
-												ny + 15, 3, 3));
+										g2d.fill(new Rectangle(nx + 70, ny + 30, 5, 5));
+										g2d.fill(new Rectangle(nx + 40, ny + 70, 5, 5));
+										g2d.fill(new Rectangle(nx + 10, ny + 15, 3, 3));
 										g2d.setColor(LIGHT_OFF_GREEN);
-										g2d.fill(new Rectangle(nx + 30,
-												ny + 15, 4, 10));
-										g2d.fill(new Rectangle(nx + 80,
-												ny + 20, 4, 10));
-										g2d.fill(new Rectangle(nx + 20,
-												ny + 80, 4, 10));
+										g2d.fill(new Rectangle(nx + 30, ny + 15, 4, 10));
+										g2d.fill(new Rectangle(nx + 80, ny + 20, 4, 10));
+										g2d.fill(new Rectangle(nx + 20, ny + 80, 4, 10));
 										g2d.draw(new Rectangle(nx, ny, 100, 100));
 										break;
 									case 'L':
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(BLUE);
-										g2d.fill(new Rectangle(nx + 70,
-												ny + 65, 30, 5));
-										g2d.fill(new Rectangle(nx, ny + 70, 70,
-												5));
-										g2d.fill(new Rectangle(nx + 40,
-												ny + 25, 60, 5));
-										g2d.fill(new Rectangle(nx, ny + 30, 40,
-												5));
+										g2d.fill(new Rectangle(nx + 70, ny + 65, 30, 5));
+										g2d.fill(new Rectangle(nx, ny + 70, 70, 5));
+										g2d.fill(new Rectangle(nx + 40, ny + 25, 60, 5));
+										g2d.fill(new Rectangle(nx, ny + 30, 40, 5));
 										break;
 									case 'W':
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(BROWN);
-										g2d.fill(new Rectangle(nx, ny + 20,
-												100, 10));
-										g2d.fill(new Rectangle(nx, ny + 70,
-												100, 10));
+										g2d.fill(new Rectangle(nx, ny + 20, 100, 10));
+										g2d.fill(new Rectangle(nx, ny + 70, 100, 10));
 										g2d.setColor(Color.BLACK);
 										g2d.draw(new Rectangle(nx, ny, 100, 100));
 										break;
@@ -1220,10 +1068,8 @@ public class MapEdit extends JFrame {
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(LIGHT_BROWN);
-										g2d.fill(new Rectangle(nx, ny + 20,
-												100, 10));
-										g2d.fill(new Rectangle(nx, ny + 70,
-												100, 10));
+										g2d.fill(new Rectangle(nx, ny + 20, 100, 10));
+										g2d.fill(new Rectangle(nx, ny + 70, 100, 10));
 										break;
 
 									case '>':
@@ -1239,14 +1085,10 @@ public class MapEdit extends JFrame {
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(LIGHT_OFF_TAN);
-										g2d.fill(new Rectangle(nx, ny + 30, 60,
-												4));
-										g2d.fill(new Rectangle(nx + 60,
-												ny + 26, 40, 4));
-										g2d.fill(new Rectangle(nx, ny + 80, 30,
-												4));
-										g2d.fill(new Rectangle(nx + 30,
-												ny + 76, 70, 4));
+										g2d.fill(new Rectangle(nx, ny + 30, 60, 4));
+										g2d.fill(new Rectangle(nx + 60, ny + 26, 40, 4));
+										g2d.fill(new Rectangle(nx, ny + 80, 30, 4));
+										g2d.fill(new Rectangle(nx + 30, ny + 76, 70, 4));
 										g2d.draw(new Rectangle(nx, ny, 100, 100));
 										break;
 									default:
@@ -1262,43 +1104,30 @@ public class MapEdit extends JFrame {
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(OFF_GREEN);
-										g2d.fill(new Rectangle(nx + 30,
-												ny + 15, 4, 10));
-										g2d.fill(new Rectangle(nx + 80,
-												ny + 20, 4, 10));
-										g2d.fill(new Rectangle(nx + 20,
-												ny + 80, 4, 10));
+										g2d.fill(new Rectangle(nx + 30, ny + 15, 4, 10));
+										g2d.fill(new Rectangle(nx + 80, ny + 20, 4, 10));
+										g2d.fill(new Rectangle(nx + 20, ny + 80, 4, 10));
 										g2d.setColor(Color.GRAY);
-										g2d.fill(new Rectangle(nx + 70,
-												ny + 30, 5, 5));
-										g2d.fill(new Rectangle(nx + 40,
-												ny + 70, 5, 5));
-										g2d.fill(new Rectangle(nx + 10,
-												ny + 15, 3, 3));
+										g2d.fill(new Rectangle(nx + 70, ny + 30, 5, 5));
+										g2d.fill(new Rectangle(nx + 40, ny + 70, 5, 5));
+										g2d.fill(new Rectangle(nx + 10, ny + 15, 3, 3));
 										g2d.setColor(Color.DARK_GRAY);
 										g2d.draw(new Rectangle(nx, ny, 100, 100));
 										g2d.setFont(MOUSE);
 										g2d.setColor(Color.BLACK);
-										g2d.drawString("spawn", nx + 30,
-												ny + 40);
+										g2d.drawString("spawn", nx + 30, ny + 40);
 										break;
 									case '1':
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(OFF_GREEN);
-										g2d.fill(new Rectangle(nx + 30,
-												ny + 15, 4, 10));
-										g2d.fill(new Rectangle(nx + 80,
-												ny + 20, 4, 10));
-										g2d.fill(new Rectangle(nx + 20,
-												ny + 80, 4, 10));
+										g2d.fill(new Rectangle(nx + 30, ny + 15, 4, 10));
+										g2d.fill(new Rectangle(nx + 80, ny + 20, 4, 10));
+										g2d.fill(new Rectangle(nx + 20, ny + 80, 4, 10));
 										g2d.setColor(Color.GRAY);
-										g2d.fill(new Rectangle(nx + 70,
-												ny + 30, 5, 5));
-										g2d.fill(new Rectangle(nx + 40,
-												ny + 70, 5, 5));
-										g2d.fill(new Rectangle(nx + 10,
-												ny + 15, 3, 3));
+										g2d.fill(new Rectangle(nx + 70, ny + 30, 5, 5));
+										g2d.fill(new Rectangle(nx + 40, ny + 70, 5, 5));
+										g2d.fill(new Rectangle(nx + 10, ny + 15, 3, 3));
 										g2d.setColor(Color.DARK_GRAY);
 										g2d.draw(new Rectangle(nx, ny, 100, 100));
 										break;
@@ -1306,10 +1135,8 @@ public class MapEdit extends JFrame {
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(Color.ORANGE);
-										g2d.fill(new Rectangle(nx + 70,
-												ny + 65, 10, 10));
-										g2d.fill(new Rectangle(nx + 30,
-												ny + 30, 15, 15));
+										g2d.fill(new Rectangle(nx + 70, ny + 65, 10, 10));
+										g2d.fill(new Rectangle(nx + 30, ny + 30, 15, 15));
 										break;
 									case 'W':
 										g2d.setColor(getColor(theChar));
@@ -1322,14 +1149,10 @@ public class MapEdit extends JFrame {
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(Color.LIGHT_GRAY);
-										g2d.drawLine(nx, ny + 15, nx + 100,
-												ny + 15);
-										g2d.drawLine(nx, ny + 100 - 14,
-												nx + 100, ny + 100 - 14);
-										g2d.drawLine(nx, ny + 100 / 2,
-												nx + 100, ny + 100 / 2);
-										g2d.drawLine(nx + 100 / 2, ny,
-												nx + 100 / 2, ny + 100);
+										g2d.drawLine(nx, ny + 15, nx + 100, ny + 15);
+										g2d.drawLine(nx, ny + 100 - 14, nx + 100, ny + 100 - 14);
+										g2d.drawLine(nx, ny + 100 / 2, nx + 100, ny + 100 / 2);
+										g2d.drawLine(nx + 100 / 2, ny, nx + 100 / 2, ny + 100);
 										break;
 
 									case '>':
@@ -1345,12 +1168,9 @@ public class MapEdit extends JFrame {
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(Color.GRAY);
-										g2d.fill(new Rectangle(nx, ny + 30, 4,
-												4));
-										g2d.fill(new Rectangle(nx + 60,
-												ny + 26, 4, 4));
-										g2d.fill(new Rectangle(nx, ny + 80, 4,
-												4));
+										g2d.fill(new Rectangle(nx, ny + 30, 4, 4));
+										g2d.fill(new Rectangle(nx + 60, ny + 26, 4, 4));
+										g2d.fill(new Rectangle(nx, ny + 80, 4, 4));
 										g2d.setColor(Color.DARK_GRAY);
 										g2d.draw(new Rectangle(nx, ny, 100, 100));
 										break;
@@ -1359,12 +1179,9 @@ public class MapEdit extends JFrame {
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(MED_GRAY);
-										g2d.fill(new Rectangle(nx, ny + 30, 4,
-												4));
-										g2d.fill(new Rectangle(nx + 60,
-												ny + 26, 4, 4));
-										g2d.fill(new Rectangle(nx, ny + 80, 4,
-												4));
+										g2d.fill(new Rectangle(nx, ny + 30, 4, 4));
+										g2d.fill(new Rectangle(nx + 60, ny + 26, 4, 4));
+										g2d.fill(new Rectangle(nx, ny + 80, 4, 4));
 										break;
 									default:
 										g2d.setColor(getColor(theChar));
@@ -1379,56 +1196,39 @@ public class MapEdit extends JFrame {
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(LIGHT_SAND_BLUE);
-										g2d.fill(new Rectangle(nx + 30,
-												ny + 15, 4, 10));
-										g2d.fill(new Rectangle(nx + 80,
-												ny + 20, 4, 10));
-										g2d.fill(new Rectangle(nx + 20,
-												ny + 80, 4, 10));
+										g2d.fill(new Rectangle(nx + 30, ny + 15, 4, 10));
+										g2d.fill(new Rectangle(nx + 80, ny + 20, 4, 10));
+										g2d.fill(new Rectangle(nx + 20, ny + 80, 4, 10));
 										g2d.setColor(DARK_SAND_BLUE);
-										g2d.fill(new Rectangle(nx + 70,
-												ny + 30, 5, 5));
-										g2d.fill(new Rectangle(nx + 40,
-												ny + 70, 5, 5));
-										g2d.fill(new Rectangle(nx + 10,
-												ny + 15, 3, 3));
+										g2d.fill(new Rectangle(nx + 70, ny + 30, 5, 5));
+										g2d.fill(new Rectangle(nx + 40, ny + 70, 5, 5));
+										g2d.fill(new Rectangle(nx + 10, ny + 15, 3, 3));
 										g2d.draw(new Rectangle(nx, ny, 100, 100));
 										g2d.setFont(MOUSE);
 										g2d.setColor(Color.BLACK);
-										g2d.drawString("spawn", nx + 30,
-												ny + 40);
+										g2d.drawString("spawn", nx + 30, ny + 40);
 										break;
 									case '1':
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(LIGHT_SAND_BLUE);
-										g2d.fill(new Rectangle(nx + 30,
-												ny + 15, 4, 10));
-										g2d.fill(new Rectangle(nx + 80,
-												ny + 20, 4, 10));
-										g2d.fill(new Rectangle(nx + 20,
-												ny + 80, 4, 10));
+										g2d.fill(new Rectangle(nx + 30, ny + 15, 4, 10));
+										g2d.fill(new Rectangle(nx + 80, ny + 20, 4, 10));
+										g2d.fill(new Rectangle(nx + 20, ny + 80, 4, 10));
 										g2d.setColor(DARK_SAND_BLUE);
-										g2d.fill(new Rectangle(nx + 70,
-												ny + 30, 5, 5));
-										g2d.fill(new Rectangle(nx + 40,
-												ny + 70, 5, 5));
-										g2d.fill(new Rectangle(nx + 10,
-												ny + 15, 3, 3));
+										g2d.fill(new Rectangle(nx + 70, ny + 30, 5, 5));
+										g2d.fill(new Rectangle(nx + 40, ny + 70, 5, 5));
+										g2d.fill(new Rectangle(nx + 10, ny + 15, 3, 3));
 										g2d.draw(new Rectangle(nx, ny, 100, 100));
 										break;
 									case 'L':
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(LIGHT_SAND_BLUE);
-										g2d.fill(new Rectangle(nx, ny + 30, 40,
-												4));
-										g2d.fill(new Rectangle(nx + 80,
-												ny + 76, 20, 4));
-										g2d.fill(new Rectangle(nx, ny + 80, 80,
-												4));
-										g2d.fill(new Rectangle(nx + 40,
-												ny + 26, 60, 4));
+										g2d.fill(new Rectangle(nx, ny + 30, 40, 4));
+										g2d.fill(new Rectangle(nx + 80, ny + 76, 20, 4));
+										g2d.fill(new Rectangle(nx, ny + 80, 80, 4));
+										g2d.fill(new Rectangle(nx + 40, ny + 26, 60, 4));
 										break;
 									case 'W':
 										g2d.setColor(getColor(theChar));
@@ -1443,10 +1243,8 @@ public class MapEdit extends JFrame {
 										g2d.setColor(Color.LIGHT_GRAY);
 										g2d.drawLine(nx, ny, nx + 100, ny + 100);
 										g2d.drawLine(nx + 100, ny, nx, ny + 100);
-										g2d.drawLine(nx, ny + 100 / 2, nx,
-												ny + 100 / 2);
-										g2d.drawLine(nx + 100 / 2, ny,
-												nx + 100 / 2, ny + 100);
+										g2d.drawLine(nx, ny + 100 / 2, nx, ny + 100 / 2);
+										g2d.drawLine(nx + 100 / 2, ny, nx + 100 / 2, ny + 100);
 										break;
 
 									case '>':
@@ -1462,14 +1260,10 @@ public class MapEdit extends JFrame {
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(SAND_BLUE);
-										g2d.fill(new Rectangle(nx + 70,
-												ny + 65, 10, 10));
-										g2d.fill(new Rectangle(nx + 30,
-												ny + 30, 15, 15));
-										g2d.fill(new Rectangle(nx + 65,
-												ny + 20, 15, 15));
-										g2d.fill(new Rectangle(nx + 50,
-												ny + 70, 20, 20));
+										g2d.fill(new Rectangle(nx + 70, ny + 65, 10, 10));
+										g2d.fill(new Rectangle(nx + 30, ny + 30, 15, 15));
+										g2d.fill(new Rectangle(nx + 65, ny + 20, 15, 15));
+										g2d.fill(new Rectangle(nx + 50, ny + 70, 20, 20));
 										g2d.draw(new Rectangle(nx, ny, 100, 100));
 										break;
 
@@ -1481,19 +1275,14 @@ public class MapEdit extends JFrame {
 										// Brick pattern
 										int i;
 										for (i = 0; i < 10; i++)
-											g2d.fill(new Rectangle(nx, ny
-													+ (10 * i)
-													- (i != 0 ? 2 : 0), 100,
+											g2d.fill(new Rectangle(nx, ny + (10 * i) - (i != 0 ? 2 : 0), 100,
 													i != 0 ? 5 : 3));
 
-										g2d.fill(new Rectangle(nx, ny + 98,
-												100, 2));
+										g2d.fill(new Rectangle(nx, ny + 98, 100, 2));
 
 										for (i = 0; i < 6; i++)
-											g2d.fill(new Rectangle(nx
-													+ (20 * i)
-													- (i != 0 ? 2 : 0), ny,
-													i != 0 ? 5 : 3, 100));
+											g2d.fill(new Rectangle(nx + (20 * i) - (i != 0 ? 2 : 0), ny, i != 0 ? 5 : 3,
+													100));
 										break;
 
 									default:
@@ -1529,8 +1318,7 @@ public class MapEdit extends JFrame {
 										g2d.fillOval(nx + 40, ny + 40, 15, 10);
 										g2d.setFont(MOUSE);
 										g2d.setColor(Color.BLACK);
-										g2d.drawString("spawn", nx + 30,
-												ny + 40);
+										g2d.drawString("spawn", nx + 30, ny + 40);
 										break;
 									case '1':
 										g2d.setColor(getColor(theChar));
@@ -1558,8 +1346,7 @@ public class MapEdit extends JFrame {
 
 									case 'L':
 										g2d.setColor(getColor(theChar));
-										g2d.fill((new Rectangle(nx, ny, 100,
-												100)));
+										g2d.fill((new Rectangle(nx, ny, 100, 100)));
 
 										g2d.setColor(Color.GREEN);
 										g2d.fillOval(nx + 70, ny + 10, 5, 5);
@@ -1570,37 +1357,29 @@ public class MapEdit extends JFrame {
 
 									case 'W':
 										g2d.setColor(getColor(theChar));
-										g2d.fill((new Rectangle(nx, ny, 100,
-												100)));
+										g2d.fill((new Rectangle(nx, ny, 100, 100)));
 										g2d.setColor(Color.BLACK);
-										g2d.draw((new Rectangle(nx, ny, 100,
-												100)));
+										g2d.draw((new Rectangle(nx, ny, 100, 100)));
 										break;
 
 									case 'R':
 										g2d.setColor(getColor(theChar));
-										g2d.fill((new Rectangle(nx, ny, 100,
-												100)));
+										g2d.fill((new Rectangle(nx, ny, 100, 100)));
 										g2d.setColor(Color.BLACK);
 
 										int i;
 										for (i = 0; i < 5; i++)
-											g2d.drawLine(nx, ny + (20 * i),
-													nx + 100 - 1, ny + (20 * i));
+											g2d.drawLine(nx, ny + (20 * i), nx + 100 - 1, ny + (20 * i));
 
 										for (i = 0; i < 5; i++)
 											for (int cB = 0; cB < 5; cB++)
-												g2d.fillRect(
-														nx + (20 * cB) + 8, ny
-																+ (20 * i) + 2,
-														2, 2);
+												g2d.fillRect(nx + (20 * cB) + 8, ny + (20 * i) + 2, 2, 2);
 
 										break;
 
 									case '2':
 										g2d.setColor(getColor(theChar));
-										g2d.fill((new Rectangle(nx, ny, 100,
-												100)));
+										g2d.fill((new Rectangle(nx, ny, 100, 100)));
 										g2d.setColor(DRAB_BROWN);
 										g2d.fillRect(nx + 10, ny + 70, 5, 5);
 										g2d.fillRect(nx + 50, ny + 30, 10, 10);
@@ -1609,21 +1388,17 @@ public class MapEdit extends JFrame {
 
 									case 'C':
 										g2d.setColor(getColor(theChar));
-										g2d.fill((new Rectangle(nx, ny, 100,
-												100)));
+										g2d.fill((new Rectangle(nx, ny, 100, 100)));
 										g2d.setColor(Color.GRAY);
 										g2d.drawLine(nx, ny, nx + 100, ny + 100);
 										g2d.drawLine(nx + 100, ny, nx, ny + 100);
-										g2d.drawLine(nx, ny + 100 / 2,
-												nx + 100, ny + 100 / 2);
-										g2d.drawLine(nx + 100 / 2, ny,
-												nx + 100 / 2, ny + 100);
+										g2d.drawLine(nx, ny + 100 / 2, nx + 100, ny + 100 / 2);
+										g2d.drawLine(nx + 100 / 2, ny, nx + 100 / 2, ny + 100);
 										break;
 
 									default:
 										g2d.setColor(getColor(theChar));
-										g2d.fill((new Rectangle(nx, ny, 100,
-												100)));
+										g2d.fill((new Rectangle(nx, ny, 100, 100)));
 										break;
 									}
 									break;// End Grassy
@@ -1635,46 +1410,33 @@ public class MapEdit extends JFrame {
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(LIGHT_OFF_GREEN);
-										g2d.fill(new Rectangle(nx + 30,
-												ny + 15, 4, 10));
-										g2d.fill(new Rectangle(nx + 80,
-												ny + 20, 4, 10));
-										g2d.fill(new Rectangle(nx + 20,
-												ny + 80, 4, 10));
-										g2d.fill(new Rectangle(nx + 60,
-												ny + 60, 4, 10));
+										g2d.fill(new Rectangle(nx + 30, ny + 15, 4, 10));
+										g2d.fill(new Rectangle(nx + 80, ny + 20, 4, 10));
+										g2d.fill(new Rectangle(nx + 20, ny + 80, 4, 10));
+										g2d.fill(new Rectangle(nx + 60, ny + 60, 4, 10));
 										g2d.draw(new Rectangle(nx, ny, 100, 100));
 										g2d.setFont(MOUSE);
 										g2d.setColor(Color.BLACK);
-										g2d.drawString("spawn", nx + 30,
-												ny + 40);
+										g2d.drawString("spawn", nx + 30, ny + 40);
 										break;
 									case '1':
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(LIGHT_OFF_GREEN);
-										g2d.fill(new Rectangle(nx + 30,
-												ny + 15, 4, 10));
-										g2d.fill(new Rectangle(nx + 80,
-												ny + 20, 4, 10));
-										g2d.fill(new Rectangle(nx + 20,
-												ny + 80, 4, 10));
-										g2d.fill(new Rectangle(nx + 60,
-												ny + 60, 4, 10));
+										g2d.fill(new Rectangle(nx + 30, ny + 15, 4, 10));
+										g2d.fill(new Rectangle(nx + 80, ny + 20, 4, 10));
+										g2d.fill(new Rectangle(nx + 20, ny + 80, 4, 10));
+										g2d.fill(new Rectangle(nx + 60, ny + 60, 4, 10));
 										g2d.draw(new Rectangle(nx, ny, 100, 100));
 										break;
 									case 'L':
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(LIGHT_BLUE);
-										g2d.fill(new Rectangle(nx, ny + 30, 40,
-												4));
-										g2d.fill(new Rectangle(nx + 80,
-												ny + 76, 20, 4));
-										g2d.fill(new Rectangle(nx, ny + 80, 80,
-												4));
-										g2d.fill(new Rectangle(nx + 40,
-												ny + 26, 60, 4));
+										g2d.fill(new Rectangle(nx, ny + 30, 40, 4));
+										g2d.fill(new Rectangle(nx + 80, ny + 76, 20, 4));
+										g2d.fill(new Rectangle(nx, ny + 80, 80, 4));
+										g2d.fill(new Rectangle(nx + 40, ny + 26, 60, 4));
 										break;
 									case 'W':
 										g2d.setColor(getColor(theChar));
@@ -1689,10 +1451,8 @@ public class MapEdit extends JFrame {
 										g2d.setColor(Color.RED);
 										g2d.drawLine(nx, ny, nx + 100, ny + 100);
 										g2d.drawLine(nx + 100, ny, nx, ny + 100);
-										g2d.drawLine(nx, ny + 100 / 2,
-												nx + 100, ny + 100 / 2);
-										g2d.drawLine(nx + 100 / 2, ny,
-												nx + 100 / 2, ny + 100);
+										g2d.drawLine(nx, ny + 100 / 2, nx + 100, ny + 100 / 2);
+										g2d.drawLine(nx + 100 / 2, ny, nx + 100 / 2, ny + 100);
 										break;
 
 									case '>':
@@ -1719,12 +1479,9 @@ public class MapEdit extends JFrame {
 										g2d.setColor(getColor(theChar));
 										g2d.fill(new Rectangle(nx, ny, 100, 100));
 										g2d.setColor(MED_GRAY);
-										g2d.fill(new Rectangle(nx, ny + 30, 4,
-												4));
-										g2d.fill(new Rectangle(nx + 60,
-												ny + 26, 4, 4));
-										g2d.fill(new Rectangle(nx, ny + 80, 4,
-												4));
+										g2d.fill(new Rectangle(nx, ny + 30, 4, 4));
+										g2d.fill(new Rectangle(nx + 60, ny + 26, 4, 4));
+										g2d.fill(new Rectangle(nx, ny + 80, 4, 4));
 										// g2d.draw(getBounds());
 										break;
 									default:
@@ -1763,32 +1520,25 @@ public class MapEdit extends JFrame {
 						String type = stuff.get(0);
 						Image enImg;
 
-						if (zoom
-								|| (enX - x > -100 && enX - x < this.getWidth()
-										&& enY - y > -100 && enY - y < this
-										.getHeight() + 200)) {
+						if (zoom || (enX - x > -100 && enX - x < this.getWidth() && enY - y > -100
+								&& enY - y < this.getHeight() + 200)) {
 							String sB = "images/icon.png";
 							if (type.equals("Head Boss")) {
 								sB = "images/enemies/bosses/Head.png";
-								enImg = new ImageIcon(getClass()
-										.getResource(sB)).getImage();
+								enImg = new ImageIcon(getClass().getResource(sB)).getImage();
 							} else if (type.equals("Lizard Man")) {
 								sB = "images/enemies/bosses/LizardMan/front/w.png";
-								enImg = new ImageIcon(getClass()
-										.getResource(sB)).getImage();
+								enImg = new ImageIcon(getClass().getResource(sB)).getImage();
 							} else if (type.equals("Pod")) {
 								sB = "images/podAll.png";
-								enImg = new ImageIcon(getClass()
-										.getResource(sB)).getImage();
+								enImg = new ImageIcon(getClass().getResource(sB)).getImage();
 							}
 
 							else {
 
-								enImg = new ImageIcon(getClass().getResource(
-										stuff.get(3))).getImage();
+								enImg = new ImageIcon(getClass().getResource(stuff.get(3))).getImage();
 							}
-							g2d.drawImage(enImg, enX - x, enY - y - 200,
-									mapEdit);
+							g2d.drawImage(enImg, enX - x, enY - y - 200, mapEdit);
 						}
 						int stuffG = 6;
 						if (hasPath(stuff.get(0))) {
@@ -1802,9 +1552,7 @@ public class MapEdit extends JFrame {
 							// System.out.println(points.length);
 							g2d.setColor(Color.black);
 							for (int c3 = 0; c3 < points.length; c3++) {
-								g2d.drawLine(addX, addY, addX
-										+ (points[c3][0] * 100), addY
-										+ (points[c3][1] * 100));
+								g2d.drawLine(addX, addY, addX + (points[c3][0] * 100), addY + (points[c3][1] * 100));
 								addX += (points[c3][0] * 100);
 								addY += (points[c3][1] * 100);
 							}
@@ -1842,39 +1590,29 @@ public class MapEdit extends JFrame {
 					try {
 						int px = Integer.parseInt(stuff.get(0));
 						int py = Integer.parseInt(stuff.get(1));
-						int val = stuff.size() > 4 ? Integer.parseInt(stuff
-								.get(4)) : 0;
-						if (zoom
-								|| (px - x > -100 && px - x < this.getWidth()
-										&& py - y > -100 && py - y < this
-										.getHeight() + 200)) {
+						int val = stuff.size() > 4 ? Integer.parseInt(stuff.get(4)) : 0;
+						if (zoom || (px - x > -100 && px - x < this.getWidth() && py - y > -100
+								&& py - y < this.getHeight() + 200)) {
 							if (val == -3) {
 								g2d.setColor(Color.BLACK);
 								if (theSpawn == spawnNum)
 									g2d.setColor(Color.RED);
 								g2d.setFont(MOUSE);
-								g2d.drawString("Spawn" + spawnNum, px - x + 20,
-										py - y - 150);
+								g2d.drawString("Spawn" + spawnNum, px - x + 20, py - y - 150);
 								spawnNum++;
 							} else if (val == -2) {
 								try {
-									Image pImg = new ImageIcon(getClass()
-											.getResource(
-													getAllWanted(stuff.get(2))))
+									Image pImg = new ImageIcon(getClass().getResource(getAllWanted(stuff.get(2))))
 											.getImage();
-									g2d.drawImage(pImg, px - x, py - y - 200,
-											mapEdit);
+									g2d.drawImage(pImg, px - x, py - y - 200, mapEdit);
 								} catch (Exception ex) {
-									System.out.println(getAllWanted(stuff
-											.get(2)));
+									System.out.println(getAllWanted(stuff.get(2)));
 									ex.printStackTrace();
 									System.exit(0);
 								}
 							} else {
-								Image pImg = new ImageIcon(getClass()
-										.getResource(stuff.get(2))).getImage();
-								g2d.drawImage(pImg, px - x, py - y - 200,
-										mapEdit);
+								Image pImg = new ImageIcon(getClass().getResource(stuff.get(2))).getImage();
+								g2d.drawImage(pImg, px - x, py - y - 200, mapEdit);
 							}
 						} else {
 							if (val == -3)
@@ -1907,21 +1645,16 @@ public class MapEdit extends JFrame {
 						int px = Integer.parseInt(stuff.get(0));
 						int py = Integer.parseInt(stuff.get(1));
 						Image pImg;
-						if (zoom
-								|| (px - x > -100 && px - x < this.getWidth()
-										&& py - y > -100 && py - y < this
-										.getHeight() + 200)) {
+						if (zoom || (px - x > -100 && px - x < this.getWidth() && py - y > -100
+								&& py - y < this.getHeight() + 200)) {
 							if (stuff.get(4).equals("normal")) {
-								pImg = new ImageIcon(getClass().getResource(
-										"images/portals/normal/0.png")).getImage();
+								pImg = new ImageIcon(getClass().getResource("images/portals/normal/0.png")).getImage();
 							} else if (stuff.get(4).equals("boss")) {
-								pImg = new ImageIcon(getClass().getResource(
-										"images/portals/boss/0.png")).getImage();
+								pImg = new ImageIcon(getClass().getResource("images/portals/boss/0.png")).getImage();
 							} else {
-								pImg = new ImageIcon(getClass().getResource(
-										"images/portals/" + stuff.get(4) + "/"
-												+ stuff.get(6) + "/c.png"))
-										.getImage();
+								pImg = new ImageIcon(getClass()
+										.getResource("images/portals/" + stuff.get(4) + "/" + stuff.get(6) + "/c.png"))
+												.getImage();
 							}
 							String to = "to " + stuff.get(2);
 							g2d.setFont(MOUSE);
@@ -1956,14 +1689,10 @@ public class MapEdit extends JFrame {
 					try {
 						int px = Integer.parseInt(stuff.get(0));
 						int py = Integer.parseInt(stuff.get(1));
-						if (zoom
-								|| (px - x > -100 && px - x < this.getWidth()
-										&& py - y > -100 && py - y < this
-										.getHeight() + 200)) {
-							
-							Image pImg = new ImageIcon(getClass().getResource(
-									getImageChar(stuff.get(2)))).getImage();
-
+						if (zoom || (px - x > -100 && px - x < this.getWidth() && py - y > -100
+								&& py - y < this.getHeight() + 200)) {
+							Image pImg = new ImageIcon(getClass().getResource(getImageChar(stuff.get(2))))
+									.getImage();
 							g2d.drawImage(pImg, px - x, py - y - 200, mapEdit);
 						}
 					} catch (Exception e) {
@@ -1978,10 +1707,8 @@ public class MapEdit extends JFrame {
 					if (weatherT > 0)
 						weatherT = -1;
 					weatherT++;
-					g2d.drawImage(
-							new ImageIcon(getClass().getResource(
-									"images/weather/rain/" + weatherT + ".png"))
-									.getImage(), 0, 0, this);
+					g2d.drawImage(new ImageIcon(getClass().getResource("images/weather/rain/" + weatherT + ".png"))
+							.getImage(), 0, 0, this);
 
 				} else if (weather.equals("obscure")) {
 					if (!strings[0].split(",")[0].equals("Desert")) {
@@ -1989,28 +1716,20 @@ public class MapEdit extends JFrame {
 							weatherT = -1;
 						weatherT++;
 
-						g2d.drawImage(
-								new ImageIcon(getClass().getResource(
-										"images/weather/snow/" + weatherT
-												+ ".png")).getImage(), 0, 0,
-								this);
+						g2d.drawImage(new ImageIcon(getClass().getResource("images/weather/snow/" + weatherT + ".png"))
+								.getImage(), 0, 0, this);
 
 					} else {
 						if (weatherT > 0)
 							weatherT = -1;
 						weatherT++;
-						g2d.drawImage(
-								new ImageIcon(getClass().getResource(
-										"images/weather/sand/" + weatherT
-												+ ".png")).getImage(), 0, 0,
-								this);
+						g2d.drawImage(new ImageIcon(getClass().getResource("images/weather/sand/" + weatherT + ".png"))
+								.getImage(), 0, 0, this);
 
 					}
 				} else if (weather.equals("fog")) {
-					g2d.drawImage(
-							new ImageIcon(getClass().getResource(
-									"images/weather/fog/0.png")).getImage(), 0,
-							0, this);
+					g2d.drawImage(new ImageIcon(getClass().getResource("images/weather/fog/0.png")).getImage(), 0, 0,
+							this);
 				}
 				g2d.setFont(MOUSE);
 				g2d.setColor(Color.RED);
@@ -2022,10 +1741,8 @@ public class MapEdit extends JFrame {
 
 				if (choosing && !zoom) {
 
-					int theX = ((int) (this.getWidth() / 100) * 100) / 2
-							+ (x % 100);
-					int theY = ((int) (this.getHeight() / 100) * 100) / 2 + 50
-							+ (y % 100);
+					int theX = ((int) (this.getWidth() / 100) * 100) / 2 + (x % 100);
+					int theY = ((int) (this.getHeight() / 100) * 100) / 2 + 50 + (y % 100);
 					g2d.setColor(Color.red);
 					g2d.fillRect(theX - 6, theY - 6, 12, 12);
 					g2d.setColor(Color.black);
@@ -2036,19 +1753,16 @@ public class MapEdit extends JFrame {
 
 					if (blocks == 0) {
 						g2d.setColor(Color.red);
-						g2d.drawString("" + getSelShowStringBlocks(), m.x + 10,
-								m.y - 10);
+						g2d.drawString("" + getSelShowStringBlocks(), m.x + 10, m.y - 10);
 					} else if (blocks == 1) {
 						g2d.setColor(Color.black);
 						if (enPre) {
 
-							g2d.drawString(getEnemyShowString(),
-									((int) ((m.x + x) / 100) * 100) + 50 - x,
+							g2d.drawString(getEnemyShowString(), ((int) ((m.x + x) / 100) * 100) + 50 - x,
 									((int) ((m.y + y) / 100) * 100) + 50 - y);
 						} else {
 
-							g2d.drawString(getEnemyShowString(),
-									((int) ((m.x + x) / 50) * 50 - x),
+							g2d.drawString(getEnemyShowString(), ((int) ((m.x + x) / 50) * 50 - x),
 									((int) ((m.y + y) / 50) * 50 - y));
 						}
 					} else if (blocks == 2) {
@@ -2056,13 +1770,11 @@ public class MapEdit extends JFrame {
 						String portalS = getPortalShowString();
 						if (enPre) {
 
-							g2d.drawString(portalS,
-									((int) ((m.x + x) / 100) * 100) + 25 - x,
+							g2d.drawString(portalS, ((int) ((m.x + x) / 100) * 100) + 25 - x,
 									((int) ((m.y + y) / 100) * 100) + 50 - y);
 						} else {
 
-							g2d.drawString(portalS,
-									((int) ((m.x + x) / 50) * 50 + 25 - x),
+							g2d.drawString(portalS, ((int) ((m.x + x) / 50) * 50 + 25 - x),
 									((int) ((m.y + y) / 50) * 50 + 50 - y));
 						}
 
@@ -2071,13 +1783,11 @@ public class MapEdit extends JFrame {
 
 						if (enPre) {
 
-							g2d.drawString(getObjectShowString(),
-									((int) ((m.x + x) / 25) * 25) + 25 - x,
+							g2d.drawString(getObjectShowString(), ((int) ((m.x + x) / 25) * 25) + 25 - x,
 									((int) ((m.y + y) / 25) * 25) + 50 - y);
 						} else {
 
-							g2d.drawString(getObjectShowString(),
-									((int) ((m.x + x) / 50) * 50 + 25 - x),
+							g2d.drawString(getObjectShowString(), ((int) ((m.x + x) / 50) * 50 + 25 - x),
 									((int) ((m.y + y) / 50) * 50 + 50 - y));
 						}
 
@@ -2086,22 +1796,19 @@ public class MapEdit extends JFrame {
 
 						if (enPre) {
 
-							g2d.drawString(nString,
-									((int) ((m.x + x) / 50) * 50) + 25 - x,
+							g2d.drawString(nString, ((int) ((m.x + x) / 50) * 50) + 25 - x,
 									((int) ((m.y + y) / 50) * 50) + 50 - y);
 						} else {
 
-							g2d.drawString(nString,
-									((int) ((m.x + x) / 100) * 100 + 25 - x),
+							g2d.drawString(nString, ((int) ((m.x + x) / 100) * 100 + 25 - x),
 									((int) ((m.y + y) / 100) * 100 + 50 - y));
 						}
 
 					} else if (blocks == MAXBLOCKS + 1) {
 						g2d.setColor(Color.black);
 
-						g2d.drawString("Path", ((int) ((m.x + x) / 100) * 100)
-								+ 25 - x, ((int) ((m.y + y) / 100) * 100) + 50
-								- y);
+						g2d.drawString("Path", ((int) ((m.x + x) / 100) * 100) + 25 - x,
+								((int) ((m.y + y) / 100) * 100) + 50 - y);
 
 					}
 
@@ -2228,15 +1935,12 @@ public class MapEdit extends JFrame {
 	}
 
 	public class ObjectChooser extends JFrame {
-		String[] typesOfCollectibles = { "Invisible Cloak", "Banana", "Donut",
-				"????", "Gem", "Video Game",
-				"Sinister Black Orb of Ultimate Agony and Suffering",
-				"Wizard Hat", "Cobalt Hat", "Goggles", "Cape" };
-		String[] typesOfObjects = { "Normal", "Collectible",
-				"SpecialCollectible", "RandSkinObject", "Spawn", "BossBlock",
-				"HookObject", "DropPoint", "Money","ActivatedBossWallActivator","ActivatedBossWall","PushCube","BombCube"};
-		String[] typesOfCoins = { "1", "3", "5", "10", "20", "50", "100",
-				"-100" };
+		String[] typesOfCollectibles = { "Invisible Cloak", "Banana", "Donut", "????", "Gem", "Video Game",
+				"Sinister Black Orb of Ultimate Agony and Suffering", "Wizard Hat", "Cobalt Hat", "Goggles", "Cape" };
+		String[] typesOfObjects = { "Normal", "Collectible", "SpecialCollectible", "RandSkinObject", "Spawn",
+				"BossBlock", "HookObject", "DropPoint", "Money", "ActivatedBossWallActivator", "ActivatedBossWall",
+				"PushCube", "BombCube" };
+		String[] typesOfCoins = { "1", "3", "5", "10", "20", "50", "100", "-100" };
 		ObjectChooser l = this;
 		int stage = 0;
 		JButton okButton;
@@ -2277,7 +1981,7 @@ public class MapEdit extends JFrame {
 							oImageString = "images/objects/HookObject.png";
 						else if (oType.equals("DropPoint"))
 							oImageString = "images/objects/chestC.png";
-						
+
 						else if (oType.equals("Money")) {
 							list.setListData(typesOfCoins);
 							list.setSelectedIndex(-1);
@@ -2288,26 +1992,19 @@ public class MapEdit extends JFrame {
 							stage = 1;
 						} else if (oType.equals("RandSkinObject")) {
 							JFileChooser chooser = new JFileChooser(
-									MapEdit.class.getProtectionDomain()
-											.getCodeSource().getLocation()
-											.getPath()
+									MapEdit.class.getProtectionDomain().getCodeSource().getLocation().getPath()
 											+ "/images");
 							chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-							chooser.setSelectedFile(new File(MapEdit.class
-									.getProtectionDomain().getCodeSource()
-									.getLocation().getPath()
-									+ "/images"));
+							chooser.setSelectedFile(
+									new File(MapEdit.class.getProtectionDomain().getCodeSource().getLocation().getPath()
+											+ "/images"));
 							chooser.showOpenDialog(l);
 
-							String[] splits = chooser.getSelectedFile()
-									.getPath().split("images");
-							oImageString = "images"
-									+ splits[splits.length - 1].replace("\\",
-											"/") + "/";
+							String[] splits = chooser.getSelectedFile().getPath().split("images");
+							oImageString = "images" + splits[splits.length - 1].replace("\\", "/") + "/";
 							l.exit();
-						}
-						else if (oType.equals("ActivatedBossWall"))
+						} else if (oType.equals("ActivatedBossWall"))
 							oImageString = "images/portals/acBossWall.png";
 						else if (oType.equals("ActivatedBossWallActivator"))
 							oImageString = "images/dummy.png";
@@ -2317,9 +2014,7 @@ public class MapEdit extends JFrame {
 							oImageString = "images/objects/bombCube.png";
 						else {
 							JFileChooser chooser = new JFileChooser(
-									MapEdit.class.getProtectionDomain()
-											.getCodeSource().getLocation()
-											.getPath()
+									MapEdit.class.getProtectionDomain().getCodeSource().getLocation().getPath()
 											+ "/images");
 							chooser.setFileFilter(new FileFilter() {
 
@@ -2333,32 +2028,24 @@ public class MapEdit extends JFrame {
 								public boolean accept(File f) {
 									// TODO Auto-generated method stub
 									String fileName = f.getName();
-									return (fileName.endsWith(".png")
-											|| fileName.endsWith(".jpg")
-											|| fileName.endsWith(".gif") || !fileName
-											.contains("."));
+									return (fileName.endsWith(".png") || fileName.endsWith(".jpg")
+											|| fileName.endsWith(".gif") || !fileName.contains("."));
 								}
 							});
 							int returnVal = chooser.showOpenDialog(l);
 
-							while (!(returnVal == JFileChooser.APPROVE_OPTION
-									&& chooser.getSelectedFile().exists() && !chooser
-									.getSelectedFile().isDirectory())) {
-								chooser.setSelectedFile(new File(MapEdit.class
-										.getProtectionDomain().getCodeSource()
-										.getLocation().getPath()
-										+ "/images"));
+							while (!(returnVal == JFileChooser.APPROVE_OPTION && chooser.getSelectedFile().exists()
+									&& !chooser.getSelectedFile().isDirectory())) {
+								chooser.setSelectedFile(new File(
+										MapEdit.class.getProtectionDomain().getCodeSource().getLocation().getPath()
+												+ "/images"));
 								returnVal = chooser.showOpenDialog(l);
 							}
-							String[] splits = chooser.getSelectedFile()
-									.getPath().split("images");
-							oImageString = "images"
-									+ splits[splits.length - 1].replace("\\",
-											"/");
+							String[] splits = chooser.getSelectedFile().getPath().split("images");
+							oImageString = "images" + splits[splits.length - 1].replace("\\", "/");
 
 						}
-						if (!oType.equals("Money")
-								&& !oType.equals("Collectible")) {
+						if (!oType.equals("Money") && !oType.equals("Collectible")) {
 							oCollectible = "normal";
 							l.exit();
 						}
@@ -2366,8 +2053,7 @@ public class MapEdit extends JFrame {
 						if (oType.equals("Money")) {
 							oCollectible = "normal";
 							oValue = Integer.parseInt(list.getSelectedValue());
-							oImageString = "images/objects/collectibles/coin"
-									+ list.getSelectedValue() + ".png";
+							oImageString = "images/objects/collectibles/coin" + list.getSelectedValue() + ".png";
 							exit();
 						} else {
 							oCollectible = list.getSelectedValue();
@@ -2437,6 +2123,9 @@ public class MapEdit extends JFrame {
 		}
 	}
 
+	public static String[] typesOfNPCs = { "kepler", "sirCobalt", "gatekeeper", "plato", "reyzu", "macaroni",
+			"shopkeep", "wizard", "TutorialSirCobalt" };
+
 	public class NPCChooser extends JFrame {
 		// JLabel levelLabel;
 		// JButton mHealth;
@@ -2444,8 +2133,7 @@ public class MapEdit extends JFrame {
 		// JButton melee;
 		// JButton ranged;
 		// JButton special;
-		String[] typesOfNPCs = { "kepler", "sirCobalt", "gatekeeper", "plato",
-				"reyzu", "macaroni", "shopkeep", "wizard","TutorialSirCobalt"};
+
 		NPCChooser l = this;
 		int stage = 0;
 		JButton okButton;
@@ -2651,11 +2339,9 @@ public class MapEdit extends JFrame {
 		// JButton melee;
 		// JButton ranged;
 		// JButton special;
-		String[] typesOfEnemies = { "Standing", "Tracking", "Head Boss",
-				"Path", "Path Security", "Launch", "Pursuing Launch", "Charge",
-				"Walking", "Slime", "Explosive Spawning", "Chain", "Tail",
-				"See Chase", "See Shoot", "Security", "Look Chase",
-				"Side To Player", "Lizard-Man", "Pod" };
+		String[] typesOfEnemies = { "Standing", "Tracking", "Head Boss", "Path", "Path Security", "Launch",
+				"Pursuing Launch", "Charge", "Walking", "Slime", "Explosive Spawning", "Chain", "Tail", "See Chase",
+				"See Shoot", "Security", "Look Chase", "Side To Player", "Lizard-Man", "Pod" };
 		EnemyChooser l = this;
 		int stage = 0;
 		JButton okButton;
@@ -2697,9 +2383,7 @@ public class MapEdit extends JFrame {
 							l.exit();
 						} else if (stage == 1) {
 							JFileChooser chooser = new JFileChooser(
-									MapEdit.class.getProtectionDomain()
-											.getCodeSource().getLocation()
-											.getPath()
+									MapEdit.class.getProtectionDomain().getCodeSource().getLocation().getPath()
 											+ "/images");
 							chooser.setFileFilter(new FileFilter() {
 
@@ -2713,42 +2397,36 @@ public class MapEdit extends JFrame {
 								public boolean accept(File f) {
 									// TODO Auto-generated method stub
 									String fileName = f.getName();
-									return (fileName.endsWith(".png")
-											|| fileName.endsWith(".jpg")
-											|| fileName.endsWith(".gif") || !fileName
-											.contains("."));
+									return (fileName.endsWith(".png") || fileName.endsWith(".jpg")
+											|| fileName.endsWith(".gif") || !fileName.contains("."));
 								}
 							});
 							int returnVal = chooser.showOpenDialog(l);
 
-							while (!(returnVal == JFileChooser.APPROVE_OPTION
-									&& chooser.getSelectedFile().exists() && !chooser
-									.getSelectedFile().isDirectory())) {
-								chooser.setSelectedFile(new File(MapEdit.class
-										.getProtectionDomain().getCodeSource()
-										.getLocation().getPath()
-										+ "/images"));
+							while (!(returnVal == JFileChooser.APPROVE_OPTION && chooser.getSelectedFile().exists()
+									&& !chooser.getSelectedFile().isDirectory())) {
+								chooser.setSelectedFile(new File(
+										MapEdit.class.getProtectionDomain().getCodeSource().getLocation().getPath()
+												+ "/images"));
 								returnVal = chooser.showOpenDialog(l);
 							}
-							String[] splits = chooser.getSelectedFile()
-									.getPath().split("images");
-							eImageString = "images"
-									+ splits[splits.length - 1].replace("\\",
-											"/");
+							String[] splits = chooser.getSelectedFile().getPath().split("images");
+							eImageString = "images" + splits[splits.length - 1].replace("\\", "/");
 							eBaseHealth = 100;
 							stage++;
 
 							eFlying = "false";
-							String[]options=new String[]{"true","false"};
-							String s="Is this a flying enemy?";
-							if(eType.equals("Side To Player"))
-								s="Does it follow on the X axis?";
-							int chosen=JOptionPane.showOptionDialog(l, s, "Map Maker", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, "false");
-							if(chosen==0)
-								eFlying="true";
+							String[] options = new String[] { "true", "false" };
+							String s = "Is this a flying enemy?";
+							if (eType.equals("Side To Player"))
+								s = "Does it follow on the X axis?";
+							int chosen = JOptionPane.showOptionDialog(l, s, "Map Maker", JOptionPane.DEFAULT_OPTION,
+									JOptionPane.INFORMATION_MESSAGE, null, options, "false");
+							if (chosen == 0)
+								eFlying = "true";
 							l.exit();
 						}
-					}// end stage 0
+					} // end stage 0
 				}
 			});
 			this.add(okButton, BorderLayout.SOUTH);
@@ -2810,6 +2488,24 @@ public class MapEdit extends JFrame {
 		}
 	}
 
+public String getImageChar(String type){
+	String s="/images/npcs/map/stationary/";
+	switch(type){
+	case "kepler":
+	case"sirCobalt": 
+	case"gatekeeper":
+	case"plato":
+	case"reyzu":
+	case"macaroni":
+	case"shopkeep":
+	case"wizard":
+	return s+type+".png";	
+	case	"TutorialSirCobalt":
+			return s+"sirCobalt.png";
+	}
+	return "/images/icon.png";
+}
+
 	public Color getColor(char type) {
 		// TODO Auto-generated method stub
 		switch (getTexturePack()) {
@@ -2836,8 +2532,7 @@ public class MapEdit extends JFrame {
 				return LIGHT_BLUE;
 
 			default:
-				System.err.println("Type " + type
-						+ " does not have a color case");
+				System.err.println("Type " + type + " does not have a color case");
 				return Color.RED;
 			}
 
@@ -2865,8 +2560,7 @@ public class MapEdit extends JFrame {
 				return LIGHT_BLUE;
 
 			default:
-				System.err.println("Type " + type
-						+ " does not have a color case");
+				System.err.println("Type " + type + " does not have a color case");
 				return Color.RED;
 			}
 		case 'I':
@@ -2893,8 +2587,7 @@ public class MapEdit extends JFrame {
 				return LIGHT_BLUE;
 
 			default:
-				System.err.println("Type " + type
-						+ " does not have a color case");
+				System.err.println("Type " + type + " does not have a color case");
 				return Color.RED;
 			}
 		case 'V':
@@ -2920,8 +2613,7 @@ public class MapEdit extends JFrame {
 				return LIGHT_BLUE;
 
 			default:
-				System.err.println("Type " + type
-						+ " does not have a color case");
+				System.err.println("Type " + type + " does not have a color case");
 				return Color.RED;
 			}
 		case 'H':
@@ -2948,8 +2640,7 @@ public class MapEdit extends JFrame {
 				return LIGHT_BLUE;
 
 			default:
-				System.err.println("Type " + type
-						+ " does not have a color case");
+				System.err.println("Type " + type + " does not have a color case");
 				return Color.RED;
 			}
 		case 'L':
@@ -2971,8 +2662,7 @@ public class MapEdit extends JFrame {
 			case '*':
 				return LIGHT_BLUE;
 			default:
-				System.err.println("Type " + type
-						+ " does not have a color case");
+				System.err.println("Type " + type + " does not have a color case");
 				return Color.RED;
 			}
 		case 'G':
@@ -2999,8 +2689,7 @@ public class MapEdit extends JFrame {
 				return LIGHT_BLUE;
 
 			default:
-				System.err.println("Type " + type
-						+ " does not have a color case");
+				System.err.println("Type " + type + " does not have a color case");
 				return Color.RED;
 			}
 
@@ -3015,8 +2704,7 @@ public class MapEdit extends JFrame {
 		try {
 			File saveFile = new File("bin/projects/" + project + "/" + name);
 			if (saveFile.exists()) {
-				BufferedReader reader = new BufferedReader(new FileReader(
-						saveFile));
+				BufferedReader reader = new BufferedReader(new FileReader(saveFile));
 				String line;
 
 				while ((line = reader.readLine()) != null) {
@@ -3051,13 +2739,11 @@ public class MapEdit extends JFrame {
 
 		try {
 
-			File saveFile = new File("bin/projects/" + project + "/"
-					+ nameWithE());
+			File saveFile = new File("bin/projects/" + project + "/" + nameWithE());
 
 			if (saveFile.exists()) {
 
-				BufferedReader reader = new BufferedReader(new FileReader(
-						saveFile));
+				BufferedReader reader = new BufferedReader(new FileReader(saveFile));
 				String line;
 
 				while ((line = reader.readLine()) != null) {
@@ -3072,13 +2758,11 @@ public class MapEdit extends JFrame {
 		}
 		try {
 
-			File saveFile = new File("bin/projects/" + project + "/"
-					+ nameWithP());
+			File saveFile = new File("bin/projects/" + project + "/" + nameWithP());
 
 			if (saveFile.exists()) {
 
-				BufferedReader reader = new BufferedReader(new FileReader(
-						saveFile));
+				BufferedReader reader = new BufferedReader(new FileReader(saveFile));
 				String line;
 
 				while ((line = reader.readLine()) != null) {
@@ -3093,13 +2777,11 @@ public class MapEdit extends JFrame {
 		}
 		try {
 
-			File saveFile = new File("bin/projects/" + project + "/"
-					+ nameWithN());
+			File saveFile = new File("bin/projects/" + project + "/" + nameWithN());
 
 			if (saveFile.exists()) {
 
-				BufferedReader reader = new BufferedReader(new FileReader(
-						saveFile));
+				BufferedReader reader = new BufferedReader(new FileReader(saveFile));
 				String line;
 
 				while ((line = reader.readLine()) != null) {
@@ -3114,13 +2796,11 @@ public class MapEdit extends JFrame {
 		}
 		try {
 
-			File saveFile = new File("bin/projects/" + project + "/"
-					+ nameWithO());
+			File saveFile = new File("bin/projects/" + project + "/" + nameWithO());
 
 			if (saveFile.exists()) {
 
-				BufferedReader reader = new BufferedReader(new FileReader(
-						saveFile));
+				BufferedReader reader = new BufferedReader(new FileReader(saveFile));
 				String line;
 
 				while ((line = reader.readLine()) != null) {
@@ -3138,8 +2818,7 @@ public class MapEdit extends JFrame {
 			lines.clear();
 			File saveFile = new File("bin/projects/" + project + "/info.txt");
 			if (saveFile.exists()) {
-				BufferedReader reader = new BufferedReader(new FileReader(
-						saveFile));
+				BufferedReader reader = new BufferedReader(new FileReader(saveFile));
 				String line;
 
 				while ((line = reader.readLine()) != null) {
@@ -3148,8 +2827,7 @@ public class MapEdit extends JFrame {
 				}
 				reader.close();
 
-				if (lines.size() > 0
-						&& name.split("/")[1].startsWith(lines.get(0)))
+				if (lines.size() > 0 && name.split("/")[1].startsWith(lines.get(0)))
 					defaultMap = true;
 			}
 		} catch (Exception ex) {
@@ -3464,8 +3142,7 @@ public class MapEdit extends JFrame {
 		int block = (int) ((x + (this.getWidth() / 2)) / 100);
 		strings[1] += "I";
 		for (int c = 2; c < strings.length - 1; c++) {
-			strings[c] = strings[c].substring(0, block) + "1"
-					+ strings[c].substring(block);
+			strings[c] = strings[c].substring(0, block) + "1" + strings[c].substring(block);
 		}
 		strings[strings.length - 1] += "I";
 	}
@@ -3514,8 +3191,7 @@ public class MapEdit extends JFrame {
 
 		int block = (int) ((x + (this.getWidth() / 2)) / 100);
 		for (int c = 1; c < strings.length; c++) {
-			strings[c] = strings[c].substring(0, block - 1)
-					+ strings[c].substring(block);
+			strings[c] = strings[c].substring(0, block - 1) + strings[c].substring(block);
 		}
 	}
 
@@ -3643,19 +3319,25 @@ public class MapEdit extends JFrame {
 			return 0;
 		}
 	}
+
 	public boolean getObjectCollide() {
-		String[]options=new String[]{"Yes","No"};;
+		String[] options = new String[] { "Yes", "No" };
+		;
 		switch (oType) {
-		case"Normal":
-		case"Collectible":
-		case"RandSkinObject":
-			return JOptionPane.showOptionDialog(mapEdit, "Is this a wall object?", "Map Maker",JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, "No")==0;
-		case"Spawn":
-			return JOptionPane.showOptionDialog(mapEdit, "Is this also a checkpoint?", "Map Maker",JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, "No")==0;
-//		case"PushCube":
-//		case"BombCube":
-//			return JOptionPane.showOptionDialog(mapEdit, "Is this also a checkpoint?", "Map Maker",JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, "No")==0;
-			default:
+		case "Normal":
+		case "Collectible":
+		case "RandSkinObject":
+			return JOptionPane.showOptionDialog(mapEdit, "Is this a wall object?", "Map Maker",
+					JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, "No") == 0;
+		case "Spawn":
+			return JOptionPane.showOptionDialog(mapEdit, "Is this also a checkpoint?", "Map Maker",
+					JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, "No") == 0;
+		// case"PushCube":
+		// case"BombCube":
+		// return JOptionPane.showOptionDialog(mapEdit, "Is this also a
+		// checkpoint?", "Map Maker",JOptionPane.DEFAULT_OPTION,
+		// JOptionPane.INFORMATION_MESSAGE, null, options, "No")==0;
+		default:
 			return false;
 		}
 	}
@@ -3674,10 +3356,8 @@ public class MapEdit extends JFrame {
 		case "Path Security":
 		case "Security":
 			String string = "images/enemies/unique/cop.png";
-			JFileChooser chooser = new JFileChooser(MapEdit.class
-					.getProtectionDomain().getCodeSource().getLocation()
-					.getPath()
-					+ "/images");
+			JFileChooser chooser = new JFileChooser(
+					MapEdit.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "/images");
 			chooser.setFileFilter(new FileFilter() {
 
 				@Override
@@ -3690,18 +3370,14 @@ public class MapEdit extends JFrame {
 				public boolean accept(File f) {
 					// TODO Auto-generated method stub
 					String fileName = f.getName();
-					return (fileName.endsWith(".png")
-							|| fileName.endsWith(".jpg")
-							|| fileName.endsWith(".gif") || !fileName
-							.contains("."));
+					return (fileName.endsWith(".png") || fileName.endsWith(".jpg") || fileName.endsWith(".gif")
+							|| !fileName.contains("."));
 				}
 			});
 			int returnVal = chooser.showOpenDialog(mapEdit);
 			if (returnVal == JOptionPane.YES_OPTION) {
-				String[] splits = chooser.getSelectedFile().getPath()
-						.split("images");
-				string = "images"
-						+ splits[splits.length - 1].replace("\\", "/");
+				String[] splits = chooser.getSelectedFile().getPath().split("images");
+				string = "images" + splits[splits.length - 1].replace("\\", "/");
 			}
 			return string;
 		default:
@@ -3715,17 +3391,13 @@ public class MapEdit extends JFrame {
 			return JOptionPane.showInputDialog("Distance?");
 		case "Path":
 		case "PatrolChase":
-			return JOptionPane.showOptionDialog(mapEdit,
-					"Is this a backwards path enemy?", "Map Maker",
-					JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE,
-					null, new String[] { "Yes", "No" }, "Yes") == 0 ? ",B"
-					: ",L";
+			return JOptionPane.showOptionDialog(mapEdit, "Is this a backwards path enemy?", "Map Maker",
+					JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] { "Yes", "No" },
+					"Yes") == 0 ? ",B" : ",L";
 		case "Path Security":
-			return JOptionPane.showOptionDialog(mapEdit,
-					"Is this a backwards path security enemy?", "Map Maker",
-					JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE,
-					null, new String[] { "Yes", "No" }, "Yes") == 0 ? ",B"
-					: ",L";
+			return JOptionPane.showOptionDialog(mapEdit, "Is this a backwards path security enemy?", "Map Maker",
+					JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] { "Yes", "No" },
+					"Yes") == 0 ? ",B" : ",L";
 
 		default:
 			return null;
@@ -3753,32 +3425,32 @@ public class MapEdit extends JFrame {
 		return this.getImageChar(nString);
 	}
 
-	public String getImageChar(String nString) {
-		switch (nString) {
-		case "kepler":
-			return "images/npcs/map/stationary/kepler.png";
-		case "sirCobalt":
-			return "images/npcs/map/stationary/sirCobalt.png";
-		case "TutorialSirCobalt":
-			return "images/npcs/map/stationary/sirCobalt.png";
-		case "wizard":
-			return "images/npcs/map/stationary/wizard.png";
-		case "shopkeep":
-			return "images/npcs/map/stationary/shopkeep.png";
-		case "plato":
-			return "images/npcs/map/stationary/plato.png";
-		case "Police man":
-			return "images/npcs/map/stationary/policeman.png";
-		case "gatekeeper":
-			return "images/npcs/map/stationary/gatekeeper.png";
-		case "macaroni":
-			return "images/npcs/map/stationary/macaroni.png";
-		case "reyzu":
-			return "images/npcs/map/stationary/reyzu.png";
-		default:
-			return null;
-		}
-	}
+//	public String getImageChar(String nString) {
+//		switch (nString) {
+//		case "kepler":
+//			return "images/npcs/map/stationary/kepler.png";
+//		case "sirCobalt":
+//			return "images/npcs/map/stationary/sirCobalt.png";
+//		case "TutorialSirCobalt":
+//			return "images/npcs/map/stationary/sirCobalt.png";
+//		case "wizard":
+//			return "images/npcs/map/stationary/wizard.png";
+//		case "shopkeep":
+//			return "images/npcs/map/stationary/shopkeep.png";
+//		case "plato":
+//			return "images/npcs/map/stationary/plato.png";
+//		case "Police man":
+//			return "images/npcs/map/stationary/policeman.png";
+//		case "gatekeeper":
+//			return "images/npcs/map/stationary/gatekeeper.png";
+//		case "macaroni":
+//			return "images/npcs/map/stationary/macaroni.png";
+//		case "reyzu":
+//			return "images/npcs/map/stationary/reyzu.png";
+//		default:
+//			return null;
+//		}
+//	}
 
 	public int npcX() {
 		switch (nString) {
@@ -3874,10 +3546,10 @@ public class MapEdit extends JFrame {
 			return "-5";
 		case "DropPoint":
 			return "-6";
-		case"ActivatedBossWallActivator":
-			return"-7";
-		case"ActivatedBossWall":
-			return"-8";
+		case "ActivatedBossWallActivator":
+			return "-7";
+		case "ActivatedBossWall":
+			return "-8";
 		case "PushCube":
 			return "-9";
 		case "BombCube":
