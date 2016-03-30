@@ -1610,7 +1610,13 @@ public class MapEdit extends JFrame {
 									ex.printStackTrace();
 									System.exit(0);
 								}
-							} else {
+							}
+							else if(val==-1){
+								Image pImg = new ImageIcon(getClass().getResource("images/objects/collectibles/keyCrystal/"+stuff.get(2)+".png"))
+										.getImage();
+								g2d.drawImage(pImg, px - x, py - y - 200, mapEdit);
+							}
+							else {
 								Image pImg = new ImageIcon(getClass().getResource(stuff.get(2))).getImage();
 								g2d.drawImage(pImg, px - x, py - y - 200, mapEdit);
 							}
@@ -1968,7 +1974,7 @@ public class MapEdit extends JFrame {
 					if (stage == 0) {
 						oType = list.getSelectedValue();
 						if (oType.equals("SpecialCollectible"))
-							oImageString = "images/objects/collectibles/special.png";
+							oImageString = JOptionPane.showInputDialog(ObjectChooser.this,"What is the value of this Key Crystal?\n1, 3, or 5");
 						else if (oType.equals("Spawn"))
 							oImageString = "images/icon.png";
 						else if (oType.equals("BossBlock"))
