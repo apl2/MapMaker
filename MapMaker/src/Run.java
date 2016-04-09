@@ -159,7 +159,6 @@ public class Run extends JFrame {
 		newPack.addActionListener(new newPC());
 		loadPack = new JButton("Load Pack");
 		loadPack.addActionListener(new loadPC());
-
 		drawPan = new JPanel() {
 			@Override
 			public void paintComponent(Graphics g) {
@@ -232,7 +231,7 @@ public class Run extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			run.remove(bPanel);
-			// run.remove(drawPan);
+		  //run.remove(drawPan);
 			run.revalidate();
 			run.add(jf, BorderLayout.NORTH);
 			run.add(newP, BorderLayout.SOUTH);
@@ -265,7 +264,6 @@ public class Run extends JFrame {
 					lm.addElement(removeExtension(listen[c].getPath()));
 				}
 			}
-
 			listModReFresh();
 			run.remove(bPanel);
 			// run.remove(drawPan);
@@ -278,7 +276,6 @@ public class Run extends JFrame {
 			JPanel loadPan = new JPanel();
 			loadPan.add(load);
 			loadPan.add(delete);
-
 			run.add(loadPan, BorderLayout.SOUTH);
 			run.revalidate();
 			loadPan.validate();

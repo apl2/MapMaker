@@ -102,7 +102,7 @@ public class MapEdit extends JFrame {
 	int selEn;
 	int theSpawn;
 	ArrayList<String> objects = new ArrayList<String>();
-	int oValue;
+	String oValue;
 	int weatherT;
 	String[] charNameList = new String[] { "shovel", "club", "diamond", "heart", "sirCobalt", "wizard", "macaroni" };
 	JList<String> charNames;
@@ -445,13 +445,12 @@ public class MapEdit extends JFrame {
 							}
 							int theX = ((int) ((m.x + x) / sen) * sen) + objectsAddX();
 							int theY = ((int) ((m.y + y) / sen) * sen) + 200 + objectsAddY();
-							String s = getObjectsVal();
-							int amount = 0;
+							String s = getObjectsVal();//TODO HERE
+							String amount = "0";
 							if (s == null) {
 								amount = oValue;
 							} else {
-								amount = Integer.parseInt(s);
-
+								amount = s;
 							}
 
 							objects.add(theX + "," + theY + "," + oImageString + "," + getObjectCollide() + "," + amount
@@ -597,13 +596,16 @@ public class MapEdit extends JFrame {
 								sB = "images/enemies/bosses/Head.png";
 								enImg = new ImageIcon(getClass().getResource(sB)).getImage();
 							} else if (ch.equals("Lizard Man")) {
-								sB = "images/enemies/bosses/LizardMan/front/w.png";
+								sB = "images/enemies/bosses/LizardMan/front/n.png";
 								enImg = new ImageIcon(getClass().getResource(sB)).getImage();
 							} else if (ch.equals("Pod")) {
 								sB = "images/podAll.png";
 								enImg = new ImageIcon(getClass().getResource(sB)).getImage();
 							}
-
+							else if(ch.equals("Stone")){
+								sB="images/enemies/bosses/Stone.png";
+								enImg=new ImageIcon(getClass().getResource(sB)).getImage();
+							}
 							else {
 								enImg = new ImageIcon(getClass().getResource(stuff.get(3))).getImage();
 							}
@@ -696,11 +698,29 @@ public class MapEdit extends JFrame {
 							}
 							stuff.add(currentS);
 							Image enImg;
-							if (stuff.size() > 4 && stuff.get(4).equals("-2")) {
+							if (stuff.size() > 4) {
+								if(stuff.get(4).equals("-2"))
 								enImg = new ImageIcon(getClass().getResource(getAllWanted(stuff.get(2)))).getImage();
-							} else {
+								else if(stuff.get(4).equals("-14"))
+									enImg = new ImageIcon(getClass().getResource("images/objects/householdObjects/tableBook.png")).getImage();
+								else if(stuff.get(4).equals("-16"))
+									enImg = new ImageIcon(getClass().getResource("images/icon.png")).getImage();
+								else if(stuff.get(4).equals("-1"))
+									enImg = new ImageIcon(getClass().getResource("images/icon.png")).getImage();
+								else{
+									try{
+									int o=Integer.parseInt(stuff.get(4));
+									if(o<-15&&o>-20)
+										enImg = new ImageIcon(getClass().getResource("images/icon.png")).getImage();
+									else
+										enImg = new ImageIcon(getClass().getResource(stuff.get(2))).getImage();	
+									}catch(Exception ex){
+										enImg = new ImageIcon(getClass().getResource(stuff.get(2))).getImage();
+									}
+									
+									}
+							}else
 								enImg = new ImageIcon(getClass().getResource(stuff.get(2))).getImage();
-							}
 							// if(stuff.size()<4){
 							// System.out.println("Thingy");
 							//
@@ -735,7 +755,25 @@ public class MapEdit extends JFrame {
 										currentS += enemies.get(c).charAt(c2);
 									}
 								}
-								Image enImg = new ImageIcon(getClass().getResource(stuff.get(3))).getImage();
+								String sB="images/icon.png";
+								Image enImg;
+								String type=stuff.get(0);
+								if (type.equals("Head Boss")) {
+									sB = "images/enemies/bosses/Head.png";
+									enImg = new ImageIcon(getClass().getResource(sB)).getImage();
+								} else if (type.equals("Lizard Man")) {
+									sB = "images/enemies/bosses/LizardMan/front/n.png";
+									enImg = new ImageIcon(getClass().getResource(sB)).getImage();
+								} else if (type.equals("Pod")) {
+									sB = "images/podAll.png";
+									enImg = new ImageIcon(getClass().getResource(sB)).getImage();
+								}
+								else if (type.equals("Stone")) {
+									sB = "images/enemies/bosses/Stone.png";
+									enImg = new ImageIcon(getClass().getResource(sB)).getImage();
+								}
+								else
+								enImg = new ImageIcon(getClass().getResource(stuff.get(3))).getImage();
 								if (new Rectangle(Integer.parseInt(stuff.get(1)), Integer.parseInt(stuff.get(2)),
 										enImg.getWidth(null), enImg.getHeight(null)).contains(
 												new Point(x + m.x, y + m.y + 200))
@@ -1527,13 +1565,16 @@ public class MapEdit extends JFrame {
 								sB = "images/enemies/bosses/Head.png";
 								enImg = new ImageIcon(getClass().getResource(sB)).getImage();
 							} else if (type.equals("Lizard Man")) {
-								sB = "images/enemies/bosses/LizardMan/front/w.png";
+								sB = "images/enemies/bosses/LizardMan/front/n.png";
 								enImg = new ImageIcon(getClass().getResource(sB)).getImage();
 							} else if (type.equals("Pod")) {
 								sB = "images/podAll.png";
 								enImg = new ImageIcon(getClass().getResource(sB)).getImage();
 							}
-
+							else if (type.equals("Stone")) {
+								sB = "images/enemies/bosses/Stone.png";
+								enImg = new ImageIcon(getClass().getResource(sB)).getImage();
+							}
 							else {
 
 								enImg = new ImageIcon(getClass().getResource(stuff.get(3))).getImage();
@@ -1590,7 +1631,12 @@ public class MapEdit extends JFrame {
 					try {
 						int px = Integer.parseInt(stuff.get(0));
 						int py = Integer.parseInt(stuff.get(1));
-						int val = stuff.size() > 4 ? Integer.parseInt(stuff.get(4)) : 0;
+						int val =0;
+						try{
+						val=stuff.size() > 4 ? Integer.parseInt(stuff.get(4)) : 0;}
+						catch(Exception ex){
+							val=0;
+						}
 						if (zoom || (px - x > -100 && px - x < this.getWidth() && py - y > -100
 								&& py - y < this.getHeight() + 200)) {
 							if (val == -3) {
@@ -1603,6 +1649,33 @@ public class MapEdit extends JFrame {
 							} else if (val == -2) {
 								try {
 									Image pImg = new ImageIcon(getClass().getResource(getAllWanted(stuff.get(2))))
+											.getImage();
+									g2d.drawImage(pImg, px - x, py - y - 200, mapEdit);
+								} catch (Exception ex) {
+									System.out.println(getAllWanted(stuff.get(2)));
+									ex.printStackTrace();
+									System.exit(0);
+								}
+							}else if(val==-14){
+								
+								try {
+									Image pImg = new ImageIcon(getClass().getResource("images/objects/householdObjects/tableBook.png"))
+											.getImage();
+									g2d.drawImage(pImg, px - x, py - y - 200, mapEdit);
+									if(stuff.get(2).equals("0")){
+										pImg = new ImageIcon(getClass().getResource("images/objects/householdObjects/dangerousFire.gif"))
+												.getImage();
+										g2d.drawImage(pImg, px - x-250, py - y - 200+50, mapEdit);
+									}
+								} catch (Exception ex) {
+									System.out.println(getAllWanted(stuff.get(2)));
+									ex.printStackTrace();
+									System.exit(0);
+								}
+							}else if(val<-15&&val>-20){
+								
+								try {
+									Image pImg = new ImageIcon(getClass().getResource("images/icon.png"))
 											.getImage();
 									g2d.drawImage(pImg, px - x, py - y - 200, mapEdit);
 								} catch (Exception ex) {
@@ -1829,9 +1902,9 @@ public class MapEdit extends JFrame {
 				// TODO Auto-generated method stub
 				if (blocks == 0) {
 					if (selNum < 1) {
-						selNum = 9;
+						selNum = 10;
 					}
-					if (selNum > 9) {
+					if (selNum > 10) {
 						selNum = 1;
 					}
 					switch (selNum) {
@@ -1863,6 +1936,9 @@ public class MapEdit extends JFrame {
 						break;
 					case 9:
 						selChar = 'I';
+						break;
+					case 10:
+						selChar ='0';
 						break;
 					}
 
@@ -2049,7 +2125,7 @@ public class MapEdit extends JFrame {
 							}
 							String[] splits = chooser.getSelectedFile().getPath().split("images");
 							oImageString = "images" + splits[splits.length - 1].replace("\\", "/");
-
+							oValue=JOptionPane.showInputDialog(ObjectChooser.this,"Description key? 0=none");
 						}
 						if (!oType.equals("Money") && !oType.equals("Collectible")) {
 							oCollectible = "normal";
@@ -2058,7 +2134,7 @@ public class MapEdit extends JFrame {
 					} else {
 						if (oType.equals("Money")) {
 							oCollectible = "normal";
-							oValue = Integer.parseInt(list.getSelectedValue());
+							oValue = list.getSelectedValue();
 							oImageString = "images/objects/collectibles/coin" + list.getSelectedValue() + ".png";
 							exit();
 						} else {
@@ -2347,7 +2423,7 @@ public class MapEdit extends JFrame {
 		// JButton special;
 		String[] typesOfEnemies = { "Standing", "Tracking", "Head Boss", "Path", "Path Security", "Launch",
 				"Pursuing Launch", "Charge", "Walking", "Slime", "Explosive Spawning", "Chain", "Tail", "See Chase",
-				"See Shoot", "Security", "Look Chase", "Side To Player", "Lizard-Man", "Pod" };
+				"See Shoot", "Security", "Look Chase", "Side To Player", "Lizard Man", "Pod","Stone" };
 		EnemyChooser l = this;
 		int stage = 0;
 		JButton okButton;
@@ -2386,6 +2462,10 @@ public class MapEdit extends JFrame {
 						} else if (eType.equals("Pod")) {
 							eImageString = "Pod";
 							eBaseHealth = 1000;
+							l.exit();
+						}else if (eType.equals("Stone")) {
+							eImageString = "Stone";
+							eBaseHealth = 750;
 							l.exit();
 						} else if (stage == 1) {
 							JFileChooser chooser = new JFileChooser(
@@ -2514,6 +2594,8 @@ public String getImageChar(String type){
 
 	public Color getColor(char type) {
 		// TODO Auto-generated method stub
+		if(type=='0')
+			return getBackground();
 		switch (getTexturePack()) {
 		case 'D':
 			switch (type) {
@@ -3209,9 +3291,8 @@ public String getImageChar(String type){
 			return "grass";
 		case '2':
 			return "dirt";
-		case 'O':
-
-			return "spawn";
+		case '0':
+			return "nothing";
 
 		case 'W':
 			return "wall";
@@ -3565,7 +3646,7 @@ public String getImageChar(String type){
 		case "Normal":
 		case "Collectible":
 		default:
-			return "0";
+			return null;
 		}
 	}
 
@@ -3583,7 +3664,6 @@ public String getImageChar(String type){
 			return s;
 		}
 	}
-
 	String[] typesOfCollectibles = { "Cape" };
 
 	public String getCollectiblePath(String name) {
