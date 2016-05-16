@@ -239,7 +239,7 @@ public class MapEdit extends JFrame {
 					int sel = JOptionPane.showOptionDialog(mapEdit, "Which texture pack do you want?", "Texture Pack",
 							JOptionPane.CANCEL_OPTION, JOptionPane.DEFAULT_OPTION, null, options, 0);
 					if (sel > 0) {
-						String[] options2 = { "cancel", "none", "rain", "obscure", "fog" };
+						String[] options2 = { "cancel", "none","normal", "rain", "obscure", "fog" };
 						int sel2 = JOptionPane.showOptionDialog(mapEdit, "What weather do you want?", "Weather",
 								JOptionPane.CANCEL_OPTION, JOptionPane.DEFAULT_OPTION, null, options2, 0);
 						if (sel2 > 0) {
