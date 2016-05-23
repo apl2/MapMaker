@@ -668,7 +668,7 @@ public class MapEdit extends JFrame {
 							}
 
 							else if (stuff.get(4).equals("boss")) {
-								enImg = new ImageIcon(getClass().getResource("images/portals/boss/0.png")).getImage();
+								enImg = new ImageIcon(getClass().getResource("images/portals/boss/open/0.png")).getImage();
 							} else {
 								enImg = new ImageIcon(getClass()
 										.getResource("images/portals/" + stuff.get(4) + "/" + stuff.get(6) + "/c.png"))
@@ -715,6 +715,7 @@ public class MapEdit extends JFrame {
 									else
 										enImg = new ImageIcon(getClass().getResource(stuff.get(2))).getImage();	
 									}catch(Exception ex){
+										//System.out.println(stuff.get(2));
 										enImg = new ImageIcon(getClass().getResource(stuff.get(2))).getImage();
 									}
 									
@@ -1690,6 +1691,7 @@ public class MapEdit extends JFrame {
 								g2d.drawImage(pImg, px - x, py - y - 200, mapEdit);
 							}
 							else {
+								//System.out.println(stuff.get(2)+","+val);
 								Image pImg = new ImageIcon(getClass().getResource(stuff.get(2))).getImage();
 								g2d.drawImage(pImg, px - x, py - y - 200, mapEdit);
 							}
@@ -1729,7 +1731,7 @@ public class MapEdit extends JFrame {
 							if (stuff.get(4).equals("normal")) {
 								pImg = new ImageIcon(getClass().getResource("images/portals/normal/0.png")).getImage();
 							} else if (stuff.get(4).equals("boss")) {
-								pImg = new ImageIcon(getClass().getResource("images/portals/boss/0.png")).getImage();
+								pImg = new ImageIcon(getClass().getResource("images/portals/boss/open/0.png")).getImage();
 							} else {
 								pImg = new ImageIcon(getClass()
 										.getResource("images/portals/" + stuff.get(4) + "/" + stuff.get(6) + "/c.png"))
